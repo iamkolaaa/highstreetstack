@@ -66,3 +66,10 @@ test('fmtDate', () => {
   assert.equal(fmtDate('2026-09-15'), '15 Sep 2026');
   assert.equal(fmtDate(null), '');
 });
+
+test('bad date strings never produce NaN', () => {
+  assert.deepEqual(progress({ start: '26/09/2026', target: '2026-10-06' }, d('2026-09-27')), { day: 0, total: 0, pct: 0 });
+  assert.deepEqual(progress({ start: '2026-09-15', target: 'soon' }, d('2026-09-27')), { day: 12, total: 0, pct: 0 });
+  assert.equal(fmtDate('26/09/2026'), '');
+  assert.equal(fmtDate('2026-13-45'), '');
+});

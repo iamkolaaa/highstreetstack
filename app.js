@@ -125,7 +125,7 @@ async function submitEnquiry(e) {
   btn.disabled = true; btn.textContent = 'Sending…';
   const body = {
     name: name.value.trim(), biz: $('biz').value.trim(), email: email.value.trim(),
-    phone: $('phone').value.trim(), msg: $('msg').value.trim(), website: $('website').value,
+    phone: $('phone').value.trim(), msg: $('msg').value.trim(), hss_ref: $('hss_ref').value,
     source: location.href
   };
   try {
