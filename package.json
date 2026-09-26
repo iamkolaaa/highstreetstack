@@ -1,0 +1,10 @@
+{
+  "name": "highstreetstack",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate-data.mjs",
+    "serve": "python3 -m http.server 8080"
+  }
+}
