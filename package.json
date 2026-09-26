@@ -5,6 +5,6 @@
   "scripts": {
     "test": "node --test",
     "validate": "node scripts/validate-data.mjs",
-    "serve": "python3 -m http.server 8080"
+    "serve": "node scripts/serve.mjs"
   }
 }

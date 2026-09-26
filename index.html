@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>High Street Stack · Kola Salau, Solutions Architect</title>
+<meta name="description" content="Websites, automation and a CRM you own, for local businesses in Bletchley and Milton Keynes. £0 to run.">
+<meta property="og:title" content="High Street Stack">
+<meta property="og:description" content="The tech stack for the high street. Websites, automation and a CRM you own.">
+<meta property="og:url" content="https://highstreetstack.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><b>highstreetstack.com</b> &nbsp;·&nbsp; Kola Salau, Solutions Architect &nbsp;·&nbsp; Bletchley, Milton Keynes</div>
+    <nav><a href="#board">Board</a><a href="#work">Work</a><a href="#stack">Stack</a><a href="#contact">Contact</a><a href="https://github.com/iamkolaaa">GitHub</a></nav>
+  </header>
+
+  <section class="hero" aria-labelledby="h1">
+    <div>
+      <div class="eyebrow">Websites, automation and a CRM you own</div>
+      <h1 id="h1">The tech stack for the <em>high street</em>.</h1>
+      <p class="lede">I build the website, the enquiry system and the automations for local businesses that don't have one yet. It all runs on free tiers and you keep the keys.</p>
+      <div class="pills"><span class="pill">Website</span><span class="pill">CRM you control</span><span class="pill">Automation</span><span class="pill">£0 to run</span></div>
+    </div>
+    <aside class="now idle" id="now" aria-live="polite">
+      <div class="k"><span><span class="dot">●</span> <span id="now-label">Now building</span></span><span id="now-days"></span></div>
+      <h2 id="now-name">Next slot open</h2>
+      <p class="sub" id="now-note">Ready to start a new build. <a href="#contact">Start a project</a>.</p>
+      <div class="bar"><i id="now-bar" style="width:0%"></i></div>
+      <div class="meta"><span id="now-start"></span><span id="now-target"></span></div>
+    </aside>
+  </section>
+
+  <section id="board-section">
+    <div class="sh"><h3 id="board">Project board</h3><span id="board-updated"></span></div>
+    <div class="board" id="board-list" aria-busy="true"><div class="empty">Loading board…</div></div>
+    <p class="note">Green dot means the live site answered the last daily check.</p>
+  </section>
+
+  <section id="work">
+    <div class="sh"><h3>Case study</h3><span>01 of 01, more as they go live</span></div>
+    <div class="case">
+      <div class="txt">
+        <h4>Nobody Left Behind<span>Community fitness, Milton Keynes</span></h4>
+        <p>A free-to-join fitness community running boxing, track and gym sessions across the week. They needed a site people could register on from Instagram, live attendee counts per session, and paid tickets for two sessions, all without a monthly bill.</p>
+        <p>The site is static and hosted free. Registration and join forms post to a small backend the organisers can open from their phone. Stripe handles the two paid sessions. Sign-ups now land in one place with a timestamp and a first-timer flag.</p>
+        <div class="kv">
+          <div><div class="l">Live</div><div class="v"><a href="https://nlbuk.com">nlbuk.com</a></div></div>
+          <div><div class="l">Delivered</div><div class="v">Aug 2026</div></div>
+          <div><div class="l">Running cost</div><div class="v">£0 per month</div></div>
+          <div><div class="l">Monthly bill</div><div class="v">None</div></div>
+        </div>
+      </div>
+      <div class="shot" role="img" aria-label="Sketch of the NLB registration flow: Instagram link, form, backend, list, session card, Stripe ticket">
+        <div class="fake"><span>Instagram bio link</span><b>nlbuk.com</b></div>
+        <div class="fake"><span>Register for Wednesday Boxing</span><b>form</b></div>
+        <div class="fake"><span>Backend</span><b>validate + save</b></div>
+        <div class="fake"><span>Registrations list</span><b>row added</b></div>
+        <div class="fake"><span>Session card</span><b>18 going</b></div>
+        <div class="fake"><span>Paid session</span><b>Stripe ticket</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="sh"><h3>What every client gets</h3><span>Same stack, tuned per business</span></div>
+    <div class="stack">
+      <div><h5>A fast website</h5><p>Static, mobile-first, hosted free. Your domain, your Google Business listing linked.</p><div class="cost">£0 hosting</div></div>
+      <div><h5>A CRM you control</h5><p>Enquiries and bookings land in a system you own and can open from your phone. Views for today, this week, unanswered.</p><div class="cost">£0, your account</div></div>
+      <div><h5>Automation</h5><p>Email confirmations, next-day reminders, WhatsApp follow-up links.</p><div class="cost">£0 to run</div></div>
+      <div><h5>Handover</h5><p>You own the accounts. I remove my access when we're done, in writing, with the GDPR paperwork.</p><div class="cost">Monthly care plan optional</div></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="sh"><h3>Start a project</h3><span>Reply within one working day</span></div>
+    <form id="enquiry" novalidate>
+      <label>Your name<input id="name" name="name" type="text" autocomplete="name" placeholder="Jay Patel" required></label>
+      <label>Business<input id="biz" name="biz" type="text" autocomplete="organization" placeholder="Patel Motors, Bletchley"></label>
+      <label>Email<input id="email" name="email" type="email" autocomplete="email" placeholder="jay@patelmotors.co.uk" required></label>
+      <label>Phone, optional<input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="07700 900123"></label>
+      <label class="full">What do you need?<textarea id="msg" name="msg" placeholder="No website yet. We take bookings on WhatsApp and lose track."></textarea></label>
+      <label class="sr-only" aria-hidden="true">Leave empty<input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></label>
+      <button type="submit" id="send">Send enquiry</button>
+    </form>
+    <p class="form-msg" id="form-msg" hidden></p>
+    <p class="note">Or email <span id="mail">hello@highstreetstack.com</span>. Replying to an enquiry needs no marketing consent; you'll only hear from me about your project.</p>
+  </section>
+
+  <footer>
+    <span>© 2026 High Street Stack · Kola Salau</span>
+    <span>Built on GitHub Pages · <a href="https://github.com/iamkolaaa">github.com/iamkolaaa</a></span>
+  </footer>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
