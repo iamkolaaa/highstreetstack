@@ -2,7 +2,7 @@
 
 Date: 27 Sep 2026
 Owner: Kola Salau
-Status: DRAFT, awaiting Kola's review
+Status: APPROVED by Kola on 27 Sep 2026 ("Go")
 
 ## 1. Purpose
 
@@ -69,8 +69,13 @@ Branding: logo, primary colour, business name from `tenants.json`. Everything el
 
 Online payments, calendar sync, SMS, automated WhatsApp, multi-location, invoicing, reports beyond simple counts.
 
-## 7. Open questions for Kola
+## 7. Decisions from Kola, 27 Sep 2026
 
-1. Confirm Supabase account model: Kola's account with per-client projects (default), or client-owned accounts.
-2. Cloudflare account: Kola needs a free Cloudflare account for Pages and Turnstile. Create one, or prefer Netlify?
-3. First client to build for: Z Autoz (garage add-ons: vehicle reg, MOT reminders) or the barbers (staff-based booking)?
+1. Supabase projects live in Kola's account. Client-owned accounts are an option later.
+2. Kola already has a Cloudflare account. Pages and Turnstile use it.
+3. First tenant: Do It For The Art Studio (barbers). Built as a demo first, on a free subdomain, with sample data, for the reveal. Staff-based bookings are in v1 because barbers book per barber.
+4. Transactional email needs a sender: Resend free tier (3,000 a month), sending from highstreetstack.com. Kola signs up; Claude adds the DNS records. Until then, magic-link emails use Supabase's built-in sender, which is limited to a few per hour and is fine for the demo.
+
+## 8. Demo mode
+
+Each tenant has a `demo: true|false` flag. Demo tenants get a "Demo data" banner, seeded sample customers and jobs, and a "Reset demo" button in Settings. Turning demo off wipes the sample rows. This is how Kola shows the reveal without touching real data.
