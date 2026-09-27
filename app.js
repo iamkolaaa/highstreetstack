@@ -1,6 +1,6 @@
 import { progress, pickNow, groupRows, isUp, fmtDate, STATUS_ORDER } from './lib/board.js';
 
-export const ENQUIRY_URL = '';
+export const ENQUIRY_URL = 'https://script.google.com/macros/s/AKfycbzyyZ09tSvfzT12O3PaPwFx92hih4zh2iQ4U_0cxT7oNXhNqJxwRlLOxvtFIePpUCjN/exec';
 
 const GROUP_LABEL = { in_progress: 'In progress', live: 'Live', in_talks: 'In talks' };
 const $ = id => document.getElementById(id);
