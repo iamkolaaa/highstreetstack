@@ -1,6 +1,6 @@
 # High Street Stack
 
-Portfolio site for Kola Salau, Solutions Architect. Live at https://highstreetstack.com.
+Portfolio site for High Street Stack, Solutions Architect, Milton Keynes. Live at https://highstreetstack.com.
 
 ## Update the project board
 

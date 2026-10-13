@@ -2,7 +2,7 @@ import { progress, pickNow, groupRows, isUp, fmtDate, STATUS_ORDER } from './lib
 
 export const ENQUIRY_URL = 'https://script.google.com/macros/s/AKfycbzyyZ09tSvfzT12O3PaPwFx92hih4zh2iQ4U_0cxT7oNXhNqJxwRlLOxvtFIePpUCjN/exec';
 
-const GROUP_LABEL = { in_progress: 'In progress', live: 'Live', in_talks: 'In talks' };
+const GROUP_LABEL = { in_progress: 'In progress', live: 'Live', in_talks: 'In progress' };
 const $ = id => document.getElementById(id);
 
 function el(tag, cls, text) {
@@ -42,9 +42,19 @@ function renderNow(rows, today) {
 
 function renderRow(row, status, today) {
   const up = row.status === 'live' && isUp(status, row.id);
-  const r = el('div', 'row ' + (row.status === 'in_progress' ? 'prog' : up ? 'live' : ''));
+  const talks = row.status === 'in_talks';
+  const r = el('div', 'row ' + (row.status === 'in_progress' ? 'prog' : up ? 'live' : talks ? 'talks' : ''));
   r.appendChild(el('span', 'd'));
-  const name = el('div', 'name', row.name);
+  const name = el('div', 'name');
+  if (talks) {
+    // Name is blurred until the project is signed; screen readers get the placeholder instead.
+    const blur = el('span', 'redact', row.name);
+    blur.setAttribute('aria-hidden', 'true');
+    name.appendChild(blur);
+    name.appendChild(el('span', 'sr-only', 'Business name withheld until the project starts'));
+  } else {
+    name.textContent = row.name;
+  }
   if (row.client_line) name.appendChild(el('small', null, row.client_line));
   r.appendChild(name);
   if (row.status === 'in_progress') {
@@ -62,6 +72,8 @@ function renderRow(row, status, today) {
     r.appendChild(cell('Estimate', row.estimate));
   }
   const links = el('div', 'links');
+  // In-talks rows carry no outbound links: a Maps or Instagram link would name the business.
+  if (talks) { r.appendChild(links); return r; }
   if (row.live_url) links.appendChild(link(row.live_url, row.live_url.replace(/^https?:\/\//, ''), up ? 'on' : ''));
   if (row.repo_url) links.appendChild(link(row.repo_url, 'Code'));
   if (row.link_url) links.appendChild(link(row.link_url, row.link_label || 'Link'));
