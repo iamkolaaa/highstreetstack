@@ -51,17 +51,7 @@ section{padding-block:28px;border-top:1px solid var(--line)}
 .row .links a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-strong)}
 .row .links a:hover{color:var(--text)}
 .row .links a.on{color:var(--green)}
-.case{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.case .txt p{color:var(--muted);margin:0 0 12px;max-width:58ch}
-.case .txt h4{font-family:var(--display);font-size:30px;font-weight:700;margin:0 0 8px;line-height:1.05;letter-spacing:-.02em}
-.case .txt h4 span{color:var(--muted);font-weight:500;font-size:18px;display:block;letter-spacing:0}
-.shot{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;min-height:240px;display:flex;flex-direction:column;gap:10px}
-.shot .fake{border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
-.shot .fake b{color:var(--text);font-weight:500}
-.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
-.kv div{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-.kv .l{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-.kv .v{font-size:13px;margin-top:2px}
+.row .name .redact{display:inline-block;color:var(--muted);filter:blur(5px);user-select:none;-webkit-user-select:none;pointer-events:none;opacity:.8}
 .stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .stack div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
 .stack h5{font-family:var(--display);font-size:17px;font-weight:600;margin:0 0 6px}
@@ -89,7 +79,6 @@ button:disabled{opacity:.6;cursor:default}
   .row{grid-template-columns:14px 1fr auto;grid-template-areas:"d name links" ". c1 c1" ". c2 c2" ". c3 c3";row-gap:4px}
   .row .d{grid-area:d}.row .name{grid-area:name}.row .links{grid-area:links}
   .row .c:nth-of-type(2){grid-area:c1}.row .c:nth-of-type(3){grid-area:c2}.row .c:nth-of-type(4){grid-area:c3}
-  .case{grid-template-columns:1fr}
   form{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
