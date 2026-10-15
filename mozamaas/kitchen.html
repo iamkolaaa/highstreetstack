@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staff · pre-orders</title>
+<meta name="description" content="Staff view of paid pre-orders.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#e73f0c">
+<link rel="canonical" href="https://highstreetstack.com/mozamaas/kitchen.html">
+<meta property="og:type" content="website"><meta property="og:title" content="Staff · pre-orders"><meta property="og:description" content="Staff view of paid pre-orders.">
+<meta property="og:url" content="https://highstreetstack.com/mozamaas/kitchen.html"><meta property="og:image" content="https://highstreetstack.com/mozamaas/img/m/yo-hero-1.jpg">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="assets/site.css?v=202610151542">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="index.html" aria-label="YO! Sushi and Panku pre-orders — home"><img src="img/yo/logo.svg" alt="YO!" style="height:40px;width:auto"><span class="brand-text"><b>Pre-order</b><small>YO! Sushi &amp; Panku kiosks · Accrington · Padiham · Colne</small></span></a>
+  <nav class="nav" aria-label="Main"><a href="index.html#order">Order</a><a href="workplaces.html">Workplaces</a><a href="christmas.html">Christmas</a><a href="faq.html">FAQ</a></nav>
+  <a class="basket-btn" id="hdr-basket" href="index.html#order"><span class="count" id="hdr-count">0</span><span id="hdr-total">Basket</span></a>
+</div></header>
+<main id="main"><style>
+.kbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0}.kday{font-family:var(--display);font-weight:900;font-size:24px;margin:26px 0 10px}
+.kbox{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}.kbox h3{margin:0 0 10px;font-family:var(--display)}.kbox h3 small{font:600 13px var(--body);color:var(--ink-3)}
+table{border-collapse:collapse;width:100%;font-size:15px}th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.olist{margin-top:10px;display:grid;gap:6px;font-size:14px}.allergy{background:#fde3e0;color:#9a1c12;border-radius:8px;padding:6px 8px;margin-top:4px;font-weight:600}
+.ocard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}.ocard.ref{opacity:.6}.ocard header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.pill{font:700 12px var(--body);border-radius:999px;padding:3px 9px;background:var(--surface-2)}.pill.deliver{background:var(--plum-soft);color:var(--plum)}.pill.bad{background:#fde3e0;color:#9a1c12}
+.ocard ul{margin:8px 0;padding-left:20px}.ocard footer{font-size:13.5px;color:var(--ink-2)}tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
+@media print{.kbar,#gate,.page-hero{display:none!important}.kbox{break-inside:avoid;border:1px solid #999}}
+</style>
+<section class="page-hero"><div class="wrap"><h1>Pre-orders · staff</h1><p>Make lists, orders and month totals. Keep this page to yourselves.</p></div></section>
+<div class="wrap" style="padding-block:24px 60px">
+<form id="gate" class="panel" style="max-width:420px"><div class="field"><label for="pin">Staff PIN</label><input type="text" id="pin" inputmode="numeric" autocomplete="off" style="-webkit-text-security:disc"></div><button class="btn btn-primary" type="submit">Open</button><p class="hint" id="msg" role="status"></p></form>
+<div id="app" hidden>
+<div class="kbar"><button class="chip" data-view="make" type="button">Make list</button><button class="chip" data-view="orders" type="button">Orders</button><button class="chip" data-view="month" type="button">Month totals</button><input type="month" id="month" class="chip" aria-label="Month"></div>
+<div class="kbar"><button class="chip" data-k="All" type="button">All kiosks</button><button class="chip" data-k="Accrington" type="button">Accrington</button><button class="chip" data-k="Padiham" type="button">Padiham</button><button class="chip" data-k="Colne" type="button">Colne</button><button class="chip" id="reload" type="button">Refresh</button><button class="chip" id="print" type="button">Print</button><span class="hint" id="gen"></span></div>
+<div id="out"></div></div></div></main><footer class="site-foot"><div class="wrap">
+  <div><h4>Pre-order sushi for your team</h4><p style="margin:0;font-size:14.5px">Anything on the counter, made fresh the morning you collect. Pay by card when you order.</p></div>
+  <div><h4>Our kiosks</h4><ul><li><a href="index.html#accrington">YO! Sushi · Tesco Extra Accrington</a></li><li><a href="index.html#padiham">YO! Sushi · Tesco Padiham</a></li><li><a href="index.html#colne">Panku · Asda Colne</a></li></ul></div>
+  <div><h4>Ordering</h4><ul><li><a href="workplaces.html">For workplaces</a></li><li><a href="christmas.html">Christmas</a></li><li><a href="faq.html">FAQ</a></li><li><a href="allergens.html">Allergens &amp; food safety</a></li></ul></div>
+  <div><h4>The small print</h4><ul><li><a href="terms.html">Terms of sale</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="kitchen.html" rel="nofollow">Staff</a></li></ul></div>
+  <p class="legal">YO! Sushi and Panku kiosks owned and operated under licence by Moza Maas Ltd (company no. 15846070), an independent franchisee. YO! and Panku names, logos and product photography belong to their owners and are used with permission. Card payments are processed securely by Stripe. Site by High Street Stack.</p>
+</div></footer>
+<script src="assets/kitchen.js?v=202610151542" defer></script></body></html>
