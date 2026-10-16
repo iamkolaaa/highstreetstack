@@ -30,7 +30,7 @@ function render() {
   document.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === view)));
   document.querySelectorAll("[data-k]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === kioskF)));
   $("#gen").textContent = "Updated " + new Date(DATA.generated).toLocaleString("en-GB");
-  if (view === "make") renderMake(); else if (view === "orders") renderOrders(); else renderMonth();
+  if (view === "make") renderMake(); else if (view === "orders") renderOrders(); else if (view === "stock") renderStock(); else renderMonth();
 }
 function renderMake() {
   const today = iso(new Date()); const days = [...Array(8)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() + i); return iso(d); });
@@ -55,6 +55,30 @@ function renderOrders() {
     ${o.notes ? `<div class="allergy">⚠ Allergies / notes: ${esc(o.notes)}</div>` : ""}
     <ul>${o.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
     <footer>Paid <b>${gbp(o.total)}</b>${o.discount ? ` (incl. −${gbp(o.discount)} ${esc(o.code)})` : ""}${o.delivery ? ` · delivery ${gbp(o.delivery)}` : ""} · ref ${esc(o.ref)} · opt-in ${esc(o.optin)} · <a href="https://dashboard.stripe.com/payments/${esc(o.pi)}" target="_blank" rel="noopener">Stripe</a></footer></article>`).join("") || `<p class="empty">No paid orders yet.</p>`;
+}
+function renderStock() {
+  if (kioskF === "All") kioskF = "Accrington";
+  document.querySelectorAll("[data-k]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === kioskF)));
+  const menu = DATA.menu[kioskF] || []; const out = (DATA.stock || {})[kioskF] || [];
+  const cats = [...new Set(menu.filter((x) => !x.b).map((x) => x.c))];
+  const html = [`<p class="hint">Tap to mark an item out of stock at <b>${esc(kioskF)}</b>. Customers can't order it (or any bundle containing it) until you mark it back in stock. ${out.length} item${out.length === 1 ? "" : "s"} out of stock now.</p>`];
+  for (const c of cats) {
+    html.push(`<h2 class="kday" style="font-size:19px">${esc(c)}</h2><div class="stockgrid">`);
+    for (const it of menu.filter((x) => !x.b && x.c === c)) { const isOut = out.includes(it.n);
+      html.push(`<div class="stockrow${isOut ? " is-out" : ""}"><div><div class="nm">${esc(it.n)}</div><div class="st">${isOut ? "Out of stock" : "In stock"}</div></div><button type="button" data-item="${esc(it.n)}" data-out="${isOut ? "0" : "1"}">${isOut ? "Mark back in stock" : "Mark out of stock"}</button></div>`); }
+    html.push(`</div>`);
+  }
+  $("#out").innerHTML = html.join("");
+  $("#out").querySelectorAll("button[data-item]").forEach((b) => b.addEventListener("click", () => setStock(b, b.dataset.item, b.dataset.out === "1")));
+}
+async function setStock(btn, item, outFlag) {
+  btn.disabled = true; btn.textContent = "Saving…";
+  try {
+    const r = await fetch(API + "/stock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: sessionStorage.getItem("mm-pin") || "", kiosk: kioskF, item, out: outFlag }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $("#msg").textContent = j.error === "bad_pin" ? "Your PIN has changed. Refresh the page." : "Couldn't save. Try again."; btn.disabled = false; btn.textContent = outFlag ? "Mark out of stock" : "Mark back in stock"; return; }
+    DATA.stock = j.out || DATA.stock; renderStock();
+  } catch { btn.disabled = false; btn.textContent = "Try again"; }
 }
 function vatOf(o) { // estimate: standard-rated share of the goods, discount spread evenly, delivery treated as zero-rated
   const menu = DATA.menu[o.kiosk] || []; let goods = 0, std = 0;

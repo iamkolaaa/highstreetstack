@@ -7,9 +7,11 @@ const KIOSKS = {
   Padiham:    { brand: "YO! Sushi", short: "YO!", store: "Tesco, Wyre Street, Padiham BB12 8DQ", lat: 53.801489, lng: -2.310579, cls: "yo" },
   Colne:      { brand: "Panku",     short: "Panku", store: "Asda, Swinden Retail Park, Corporation Street, Colne BB8 8LU", lat: 53.848467, lng: -2.196852, cls: "panku" },
 };
-const SLOT_AM = "11:30–12:30", SLOT_PM = "16:00–17:00", SLOT_DEL = "11:30–13:00";
+const SLOT_AM = "11:30–12:30", SLOT_PM = "16:00–17:00";
+const CONTACT = "mozamaasltd@gmail.com";
 let R = { // defaults; replaced by GET /config when the function answers
-  minCollect: 20, minDeliver: 60, deliveryFee: 5, deliveryFreeOver: 80, deliveryMiles: 5,
+  minCollect: 20, minDeliver: 80, deliveryFee: 0, deliveryFreeOver: 80, deliveryMiles: 5,
+  deliveryTimes: ["11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"],
   deliveryDays: { Accrington: [1, 2, 3, 4, 5], Padiham: [1, 2, 3, 4, 5], Colne: [1, 2, 3, 4, 5] }, pmSlotKiosks: ["Accrington", "Padiham"], pmSlotDays: [5, 6],
   bufferMin: 30, collectHours: 24, deliverHours: 48, largeSharers: 15, largeHours: 72,
   xmasFrom: "2026-12-19", xmasTo: "2026-12-24", xmasHours: 168, deliveryOffFrom: "2026-12-19", deliveryOffTo: "2027-01-03",
@@ -18,9 +20,11 @@ let R = { // defaults; replaced by GET /config when the function answers
 };
 const CODES = ["OFFICE10", "QR10", "TESCO10", "ASDA10", "LINKEDIN10", "FB10", "XMAS10", "LEAFLET10", "PRESS", "EMAIL", "WALKIN"];
 let paymentsReady = null;
+let OUT = {}; // kiosk -> [item names marked out of stock by the kiosk team]
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const gbp = (n) => "£" + (Math.round(n * 100) / 100).toFixed(2);
+const gbp0 = (n) => Number.isInteger(n) ? "£" + n : gbp(n);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
 const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -38,6 +42,8 @@ const save = () => store.set("mm-order", { kiosk: S.kiosk, baskets: S.baskets, m
 const basket = () => (S.baskets[S.kiosk] = S.baskets[S.kiosk] || {});
 const items = () => MENU[S.kiosk] || [];
 const find = (n) => items().find((x) => x.name === n);
+const isOut = (it) => { const o = OUT[S.kiosk] || []; return !!it && (o.includes(it.name) || (it.bundle || []).some(([n]) => o.includes(n))); };
+const outInBasket = () => Object.keys(basket()).filter((n) => isOut(find(n)));
 
 function counts() {
   let platters = 0, sub = 0, n = 0;
@@ -55,7 +61,7 @@ function needHours(date) {
   return h;
 }
 function slotsFor(date) {
-  if (S.mode === "deliver") return [SLOT_DEL];
+  if (S.mode === "deliver") return R.deliveryTimes;
   const s = [SLOT_AM]; if (R.pmSlotKiosks.includes(S.kiosk) && R.pmSlotDays.includes(wd(date))) s.push(SLOT_PM); return s;
 }
 function slotOk(date, slot) { const start = atLocal(date, slot.slice(0, 5)); return start - Date.now() >= (needHours(date) * 60 + R.bufferMin) * 60e3; }
@@ -73,7 +79,7 @@ function totals() {
   const codeKnown = CODES.includes(code); const offerOpen = iso(new Date()) <= R.offerCloses;
   const codeOk = codeKnown && offerOpen && c.sub >= R.offerMin;
   const disc = codeOk ? Math.round(Math.round(c.sub * 100) * R.offerPct / 100) / 100 : 0;
-  const deliv = S.mode === "deliver" && c.n ? ((c.sub - disc) >= R.deliveryFreeOver ? 0 : R.deliveryFee) : 0;
+  const deliv = S.mode === "deliver" && c.n && R.deliveryFee > 0 && (c.sub - disc) < R.deliveryFreeOver ? R.deliveryFee : 0;
   return { ...c, code, codeKnown, codeOk, offerOpen, disc, deliv, total: Math.round((c.sub - disc + deliv) * 100) / 100 };
 }
 
@@ -96,8 +102,9 @@ function cardHtml(it) {
   const tags = [it.popular && !it.bundle ? `<span class="tag hot">Popular</span>` : "", it.was ? `<span class="tag save">Save ${gbp(it.was - it.price)}</span>` : "", it.vegan ? `<span class="tag veg">Vegan</span>` : it.veg ? `<span class="tag veg">Veggie</span>` : "", it.raw_fish ? `<span class="tag fish">Raw fish</span>` : ""].join("");
   const img = it.img ? `<img src="${esc(it.img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" width="400" height="300">` : `<div class="noimg">${esc(it.name)}</div>`;
   const pcs = it.pieces ? ` <span class="tag pc">${it.pieces} pcs</span>` : "";
-  const ctrl = qn ? `<div class="stepper" role="group" aria-label="Quantity of ${esc(it.name)}"><button type="button" data-d="-1" aria-label="Remove one">−</button><output>${qn}</output><button type="button" data-d="1" aria-label="Add one">+</button></div>` : `<button class="add" type="button" data-d="1" aria-label="Add ${esc(it.name)}">Add</button>`;
-  return `<article class="card ${k.cls}${qn ? " in" : ""}" data-name="${esc(it.name)}"><div class="ph">${img}<div class="tags">${tags}</div></div><div class="body"><h4>${esc(it.name)}${pcs}</h4>${it.desc ? `<p>${esc(it.desc)}</p>` : ""}<div class="foot"><span class="price">${gbp(it.price)}${it.was ? `<s>${gbp(it.was)}</s>` : ""}</span>${ctrl}</div></div></article>`;
+  const out = isOut(it);
+  const ctrl = out ? `<span class="soldout">Out of stock</span>` : qn ? `<div class="stepper" role="group" aria-label="Quantity of ${esc(it.name)}"><button type="button" data-d="-1" aria-label="Remove one">−</button><output>${qn}</output><button type="button" data-d="1" aria-label="Add one">+</button></div>` : `<button class="add" type="button" data-d="1" aria-label="Add ${esc(it.name)}">Add</button>`;
+  return `<article class="card ${k.cls}${qn ? " in" : ""}${out ? " out" : ""}" data-name="${esc(it.name)}"><div class="ph">${img}<div class="tags">${tags}</div></div><div class="body"><h4>${esc(it.name)}${pcs}</h4>${it.desc ? `<p>${esc(it.desc)}</p>` : ""}<div class="foot"><span class="price">${gbp(it.price)}${it.was ? `<s>${gbp(it.was)}</s>` : ""}</span>${ctrl}</div></div></article>`;
 }
 function renderMenu() {
   const term = q.trim().toLowerCase(); const out = [];
@@ -117,6 +124,7 @@ function bindMenu() {
   });
 }
 function change(name, d) {
+  if (d > 0 && isOut(find(name))) { toast(`${name} is out of stock at ${S.kiosk} right now.`); return; }
   const b = basket(); const v = Math.max(0, Math.min(60, (b[name] || 0) + d)); if (v) b[name] = v; else delete b[name];
   save(); renderBasket();
   if (d > 0) pulse();
@@ -128,13 +136,14 @@ function renderBasket() {
   const t = totals(); const b = basket();
   $("#hdr-count").textContent = t.n; $("#hdr-total").textContent = t.n ? gbp(t.total) : "Basket";
   $("#bar").hidden = !t.n; $("#bar-count").textContent = `${t.n} item${t.n === 1 ? "" : "s"}`; $("#bar-total").textContent = gbp(t.total);
-  const lines = Object.entries(b).map(([n, qn]) => { const it = find(n); if (!it) return ""; return `<li data-name="${esc(n)}"><div><div class="nm">${esc(n)}</div><div class="sub">${gbp(it.price)} each</div></div><div class="mini"><button type="button" data-d="-1" aria-label="Remove one ${esc(n)}">−</button><output>${qn}</output><button type="button" data-d="1" aria-label="Add one ${esc(n)}">+</button></div></li>`; }).join("");
+  const lines = Object.entries(b).map(([n, qn]) => { const it = find(n); if (!it) return ""; return `<li data-name="${esc(n)}"><div><div class="nm">${esc(n)}</div><div class="sub">${isOut(it) ? `<span class="soldout">Out of stock: please remove</span>` : `${gbp(it.price)} each`}</div></div><div class="mini"><button type="button" data-d="-1" aria-label="Remove one ${esc(n)}">−</button><output>${qn}</output><button type="button" data-d="1" aria-label="Add one ${esc(n)}">+</button></div></li>`; }).join("");
   $("#lines").innerHTML = lines || `<li class="empty">Your basket is empty. Add something tasty from the menu.</li>`;
   // mode
   $$("#seg button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.mode === S.mode)));
   $("#deliver-box").hidden = S.mode !== "deliver";
   const dd = (R.deliveryDays[S.kiosk] || []).map((n) => ["Sundays", "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays"][n]);
-  $("#deliver-days").textContent = dd.length ? `Delivery to workplaces within ${R.deliveryMiles} miles of the kiosk, ${dd.join(" and ")}, 11:30–13:00. Minimum ${gbp(R.minDeliver)}; ${gbp(R.deliveryFee)} delivery, free over ${gbp(R.deliveryFreeOver)}. Order 48 hours ahead.` : "Delivery isn't running from this kiosk at the moment.";
+  const dayList = dd.length === 5 && !dd.includes("Saturdays") && !dd.includes("Sundays") ? "Monday to Friday" : dd.join(", ");
+  $("#deliver-days").textContent = dd.length ? `${R.deliveryFee > 0 ? "Delivery" : "Free delivery"} to workplaces within ${R.deliveryMiles} miles of the kiosk, ${dayList}. Minimum order ${gbp0(R.minDeliver)}. Choose the time you'd like and we'll email to confirm it. Order at least ${R.deliverHours} hours before your delivery time.` : "Delivery isn't running from this kiosk at the moment.";
   renderDays(); renderSlots();
   // code
   const codeHint = $("#code-hint");
@@ -169,14 +178,15 @@ function renderSlots() {
   const box = $("#slots"); if (!S.date) { box.innerHTML = ""; S.slot = ""; return; }
   const list = slotsFor(S.date); const ok = list.filter((s) => slotOk(S.date, s));
   if (!ok.includes(S.slot)) S.slot = ok[0] || "";
-  box.innerHTML = list.map((s) => `<button type="button" class="chip" data-slot="${s}" aria-pressed="${s === S.slot}" ${ok.includes(s) ? "" : "disabled"}>${S.mode === "deliver" ? "Delivery " : "Collect "}${s}</button>`).join("");
-  $("#slot-hint").textContent = S.mode === "deliver" ? "We deliver between 11:30 and 13:00." : (R.pmSlotKiosks.includes(S.kiosk) ? "Afternoon collection (16:00–17:00) is on Fridays and Saturdays." : "Collect between 11:30 and 12:30.");
+  box.innerHTML = list.map((s) => `<button type="button" class="chip" data-slot="${s}" aria-pressed="${s === S.slot}" ${ok.includes(s) ? "" : "disabled"}>${S.mode === "deliver" ? "" : "Collect "}${s}</button>`).join("");
+  $("#slot-hint").textContent = S.mode === "deliver" ? "Requested delivery time. We'll email to confirm it, usually within one working day; our driver takes a photo at hand-over to confirm delivery." : (R.pmSlotKiosks.includes(S.kiosk) ? "Afternoon collection (16:00–17:00) is on Fridays and Saturdays." : "Collect between 11:30 and 12:30.");
 }
 function validate() {
   const t = totals(); const p = [];
   if (!t.n) p.push("add something to your basket");
-  else if (t.sub < (S.mode === "deliver" ? R.minDeliver : R.minCollect)) p.push(`reach the ${gbp(S.mode === "deliver" ? R.minDeliver : R.minCollect)} minimum${S.mode === "deliver" ? " for delivery" : ""}`);
+  else if (t.sub < (S.mode === "deliver" ? R.minDeliver : R.minCollect)) p.push(`reach the ${gbp0(S.mode === "deliver" ? R.minDeliver : R.minCollect)} minimum${S.mode === "deliver" ? " for delivery" : ""}`);
   if (!S.date || !S.slot) p.push("choose a day and time");
+  if (outInBasket().length) p.push("remove items that are out of stock");
   if (S.mode === "deliver" && !(pc && pc.ok && pc.postcode === normPc(S.postcode))) p.push("check your delivery postcode");
   if (!$("#consent").checked) p.push("tick to agree to the order terms");
   const msg = $("#status");
@@ -209,6 +219,7 @@ const ERR = {
   empty: "Your basket is empty.", unknown_kiosk: "Please choose a kiosk.", date_blocked: "The kiosk is closed that day — pick another.",
   no_delivery_that_day: "We don't deliver on that day — pick another or collect.", bad_slot: "Please pick a time slot.",
   bad_postcode: "We couldn't find that postcode.", out_of_area: "That address is outside our delivery area.",
+  out_of_stock: "Something in your basket has just gone out of stock at this kiosk. It's marked in your basket: remove it and try again.",
   day_full: "That day is fully booked at this kiosk — please choose another day.", stripe: "The payment page couldn't open. Please try again in a minute.",
 };
 async function pay() {
@@ -219,6 +230,7 @@ async function pay() {
     const j = await r.json().catch(() => ({}));
     if (r.ok && j.url) { store.set("mm-last", { kiosk: S.kiosk, items: body.items, date: S.date, slot: S.slot, mode: S.mode, total: t.total }); location.href = j.url; return; }
     if (j.error === "payments_not_configured") paymentsReady = false;
+    if (j.error === "out_of_stock") { await loadStock(); renderMenu(); renderBasket(); }
     toast(ERR[j.error] || "Something went wrong. Please try again.");
   } catch { toast("We couldn't reach the payment service. Check your connection and try again."); }
   validate();
@@ -234,17 +246,20 @@ async function showConfirmation(id) {
   if (!o) { $("#c-body").innerHTML = `<p>Thank you — your payment went through. Your receipt is on its way by email.</p>`; return; }
   $("#c-title").textContent = o.firstName ? `Thanks, ${o.firstName}!` : "Thank you!";
   $("#c-ref").textContent = o.ref ? `ORDER ${o.ref}` : "ORDER CONFIRMED";
-  const when = `${fmtDay(o.date)}, ${o.slot}`;
-  $("#c-body").innerHTML = `<dl><dt>${o.mode === "deliver" ? "Delivery" : "Collect"}</dt><dd>${esc(when)}</dd><dt>Where</dt><dd>${o.mode === "deliver" ? "To your workplace" : `${esc(o.brand)} counter, ${esc(o.store)}`}</dd><dt>Paid</dt><dd>${gbp(o.total)}</dd></dl><ul class="ticks">${o.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul><p class="hint" style="margin-top:14px">We make it fresh on the morning. Your card receipt comes from Stripe. Keep it chilled and eat it on the day. Need to change or cancel? Do it at least 24 hours before for a full refund.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn btn-primary" id="ics" type="button">Add to calendar</button><button class="btn btn-ghost" id="c-close" type="button">Back to the menu</button></div>`;
+  const when = o.mode === "deliver" ? `${fmtDay(o.date)}, requested for ${o.slot} (we'll email to confirm)` : `${fmtDay(o.date)}, ${o.slot}`;
+  $("#c-body").innerHTML = `<dl><dt>${o.mode === "deliver" ? "Delivery" : "Collect"}</dt><dd>${esc(when)}</dd><dt>Where</dt><dd>${o.mode === "deliver" ? "To your workplace" : `${esc(o.brand)} counter, ${esc(o.store)}`}</dd><dt>Paid</dt><dd>${gbp(o.total)}</dd></dl><ul class="ticks">${o.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul><p class="hint" style="margin-top:14px">We make it fresh on the morning. Your card receipt comes from Stripe. Keep it chilled and eat it on the day. Need to change or cancel? Email ${CONTACT} at least 24 hours before for a full refund.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn btn-primary" id="ics" type="button">Add to calendar</button><button class="btn btn-ghost" id="c-close" type="button">Back to the menu</button></div>`;
   $("#ics").onclick = () => downloadIcs(o); $("#c-close").onclick = () => { box.hidden = true; };
   if (o.kiosk && S.baskets[o.kiosk]) { S.baskets[o.kiosk] = {}; save(); renderBasket(); renderMenu(); }
 }
 function downloadIcs(o) {
-  const [a, b] = o.slot.split("–"); const st = atLocal(o.date, a), en = atLocal(o.date, b);
+  const [a, b] = o.slot.split("–"); const st = atLocal(o.date, a), en = b ? atLocal(o.date, b) : new Date(st.getTime() + 60 * 60e3);
   const z = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Moza Maas//Pre-order//EN", "BEGIN:VEVENT", `UID:${o.ref || Date.now()}@mozamaas`, `DTSTAMP:${z(new Date())}`, `DTSTART:${z(st)}`, `DTEND:${z(en)}`, `SUMMARY:${o.mode === "deliver" ? "Sushi delivery" : "Collect sushi order"} (${o.brand} ${o.kiosk})`, `LOCATION:${(o.mode === "deliver" ? "Your workplace" : o.store).replace(/,/g, "\\,")}`, `DESCRIPTION:Order ${o.ref}. ${o.items.join("; ").replace(/,/g, "\\,")}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const a2 = document.createElement("a"); a2.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a2.download = "sushi-order.ics"; document.body.appendChild(a2); a2.click(); a2.remove();
 }
+
+/* ---------- stock ---------- */
+async function loadStock() { try { const r = await fetch(API + "/stock", { cache: "no-store" }); if (r.ok) OUT = (await r.json()).out || {}; } catch { /* keep last known */ } }
 
 /* ---------- mobile sheet ---------- */
 function openSheet(open) { $("#basket").classList.toggle("open", open); $("#scrim").hidden = !open; document.body.style.overflow = open ? "hidden" : ""; }
@@ -277,9 +292,11 @@ async function boot() {
   if (qs.get("paid") && qs.get("session_id")) showConfirmation(qs.get("session_id"));
   if (qs.get("cancelled")) toast("Payment cancelled — your basket is still here.");
   if (qs.toString()) history.replaceState(null, "", location.pathname + location.hash);
-  // live rules
+  // live stock and rules
+  loadStock().then(() => { renderMenu(); renderBasket(); });
   try { const r = await fetch(API + "/config"); if (r.ok) { const j = await r.json(); paymentsReady = !!j.paymentsReady; R = Object.assign(R, j.rules || {}); renderBasket(); } } catch { /* keep defaults */ }
   setInterval(renderBasket, 60e3); // slots close as the clock moves
+  setInterval(() => loadStock().then(() => { renderMenu(); renderBasket(); }), 5 * 60e3);
 }
 document.addEventListener("DOMContentLoaded", boot);
 })();

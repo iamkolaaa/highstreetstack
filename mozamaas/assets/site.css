@@ -229,3 +229,10 @@ h2.title{font-family:var(--display);font-weight:900;font-size:clamp(28px,3.6vw,4
 .kiosk-opt .badge.panku{font-size:10px;letter-spacing:.02em}
 @media (max-width:640px){.ribbon .wrap{gap:2px 14px;font-size:12.5px;padding-block:8px}.ribbon .wrap span:nth-child(2){display:none}}
 @media (min-width:1061px){#sheet-close{display:none}}
+.card.out{opacity:.6}.card.out img{filter:grayscale(1)}
+.soldout{display:inline-block;font:700 12px/1.2 var(--body);color:#9a1c12;background:#fde3e0;border-radius:999px;padding:6px 10px}
+.lines .soldout{padding:2px 8px;font-size:11.5px}
+.stockgrid{display:grid;gap:6px}.stockrow{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.stockrow.is-out{background:#fde3e0;border-color:#f3b8b0}.stockrow .nm{font-weight:600}.stockrow .st{font:700 12px var(--body);color:#1f6a24}.stockrow.is-out .st{color:#9a1c12}
+.stockrow button{font:700 13px var(--body);border-radius:999px;border:1px solid var(--line);background:var(--surface-2);padding:8px 12px;cursor:pointer;min-width:150px}
+.stockrow.is-out button{background:#1f6a24;color:#fff;border-color:#1f6a24}
