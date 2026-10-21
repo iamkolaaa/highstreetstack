@@ -1,0 +1,1092 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://*.supabase.co wss://*.supabase.co; img-src 'self' data:; base-uri 'none'; form-action 'self'">
+<title>Money · High Street Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#EEF2F0; --surface:#FFFFFF; --sunk:#E3E9E6; --ink:#14201B; --muted:#5A6A64; --line:#D5DDD9;
+  --accent:#1D5C55; --accent-ink:#FFFFFF; --accent-soft:#D6E9E5;
+  --good:#2C7548; --good-soft:#DCEFE2; --warn:#9A5B0E; --warn-soft:#F6E7CF; --bad:#AE2A21; --bad-soft:#F7DAD6;
+  --hsbc:#AE2A21; --monzo:#1D5C55;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0C1311; --surface:#141D1A; --sunk:#1B2622; --ink:#E3ECE8; --muted:#8C9E97; --line:#26332F;
+  --accent:#71C2B5; --accent-ink:#0C1311; --accent-soft:#1A302B;
+  --good:#6FC78C; --good-soft:#18301F; --warn:#E6A650; --warn-soft:#33260F; --bad:#F27C70; --bad-soft:#3A1916;
+  --hsbc:#F27C70; --monzo:#71C2B5;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0C1311; --surface:#141D1A; --sunk:#1B2622; --ink:#E3ECE8; --muted:#8C9E97; --line:#26332F;
+  --accent:#71C2B5; --accent-ink:#0C1311; --accent-soft:#1A302B;
+  --good:#6FC78C; --good-soft:#18301F; --warn:#E6A650; --warn-soft:#33260F; --bad:#F27C70; --bad-soft:#3A1916;
+  --hsbc:#F27C70; --monzo:#71C2B5;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);margin:0}
+.wrap{max-width:520px;margin:0 auto;padding-inline:16px;padding-block:12px 48px;display:flex;flex-direction:column;gap:28px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+h2{font:600 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.muted{color:var(--muted)} .small{font-size:12.5px}
+.chip{display:inline-flex;align-items:center;gap:4px;font:600 11px/1 var(--f-body);letter-spacing:.02em;padding:4px 7px;border-radius:999px;white-space:nowrap;background:var(--sunk);color:var(--muted)}
+.chip.good{background:var(--good-soft);color:var(--good)} .chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)} .chip.acc{background:var(--accent-soft);color:var(--accent)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+header.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-top:4px}
+.brand{font:700 17px/1 var(--f-display);letter-spacing:-.02em}
+.brand span{color:var(--muted);font-weight:500}
+
+/* 1 — today */
+.today{background:var(--accent);color:var(--accent-ink);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.today .eyebrow{font:600 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.today .act{font:600 21px/1.25 var(--f-display);letter-spacing:-.01em;text-wrap:balance}
+.today .meta{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;opacity:.9}
+.today .btns{display:flex;gap:8px}
+.today button{border:0;border-radius:10px;padding:10px 14px;font-weight:600}
+.today .done{background:var(--accent-ink);color:var(--accent)}
+.today .later{background:transparent;color:var(--accent-ink);border:1px solid currentColor;opacity:.85}
+.nextdd{display:flex;flex-direction:column;gap:6px}
+.nextdd .dd{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.src{font:600 10.5px/1 var(--f-body);letter-spacing:.04em;padding:3px 6px;border-radius:5px;border:1px solid currentColor}
+.src.HSBC{color:var(--hsbc)} .src.Monzo{color:var(--monzo)} .src.unknown{color:var(--muted)}
+
+/* 2 — debt-free */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.big{font:700 38px/1 var(--f-display);letter-spacing:-.03em}
+.mid{font:600 22px/1.1 var(--f-num);letter-spacing:-.02em}
+.lbl{font-size:12px;color:var(--muted);margin-bottom:4px}
+.chart{width:100%;height:auto;display:block}
+.chart text{font:10px var(--f-num);fill:var(--muted)}
+.sub-lines{display:flex;flex-direction:column;gap:6px;font-size:13px;border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+details.whatif summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--accent);list-style:none}
+details.whatif summary::-webkit-details-marker{display:none}
+.wi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.wi-grid label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.wi-grid input[type=number]{font:600 15px var(--f-num);padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.wi-check{grid-column:1/-1;flex-direction:row!important;align-items:center;gap:8px!important}
+.wi-out{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--sunk);border-radius:10px;padding:10px}
+.wi-out div{display:flex;flex-direction:column;gap:2px}
+
+/* 3 — target */
+.target .name{font:600 20px/1.2 var(--f-display)}
+.bar{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.queue{display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:13px}
+
+/* 4 — cash strip */
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.days{display:flex;flex-direction:column;margin-top:8px}
+.day{display:grid;grid-template-columns:52px 1fr auto;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.day .d{font-weight:600;line-height:1.2} .day .d small{display:block;font-weight:400;color:var(--muted)}
+.day .ev{display:flex;flex-direction:column;gap:2px}
+.day .bals{text-align:right;font-size:12px;display:flex;flex-direction:column;gap:2px}
+.neg{color:var(--bad);font-weight:600}
+
+/* 5 — budget */
+table{border-collapse:collapse;width:100%}
+.btable td,.btable th{padding:7px 0;border-top:1px solid var(--line);font-size:13px;text-align:right}
+.btable th{font-weight:600;color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-top:0}
+.btable td:first-child,.btable th:first-child{text-align:left}
+.btable tr.total td{font-weight:600;border-top:2px solid var(--ink)}
+.gap{margin-top:12px;background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:10px 12px;font-size:13px}
+.gap b{font-family:var(--f-num)}
+
+/* 6 — board */
+.sorts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.sorts button{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600}
+.sorts button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.board{overflow-x:auto;margin-inline:-14px;padding-inline:14px}
+.board table{min-width:330px}
+.board th{font:600 10.5px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 0 8px 8px}
+.board th:first-child{text-align:left;padding-left:0}
+.board td{padding:9px 0 9px 8px;border-top:1px solid var(--line);font-size:13px;text-align:right;vertical-align:top}
+.board td:first-child{text-align:left;padding-left:0}
+.board .cn{font-weight:600} .board .cs{font-size:11.5px;color:var(--muted);margin-top:2px;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.board tr.promo td{border-top:0;padding-top:0;font-size:11.5px}
+.board tr.promo td:first-child{padding-left:10px;border-left:2px solid var(--warn)}
+.board tr.target td:first-child .cn::before{content:"◎ ";color:var(--accent)}
+.board tfoot td{font-weight:600;border-top:2px solid var(--ink)}
+.up{color:var(--bad)} .down{color:var(--good)}
+.noncard{margin-top:12px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+
+/* 7 — pots */
+.pots{display:grid;gap:12px}
+.pot .row{margin-bottom:6px}
+
+/* 8 — flags */
+.flags{display:flex;flex-direction:column;gap:8px}
+.flag{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px}
+.flag .dot{width:8px;height:8px;border-radius:50%;margin-top:6px;background:var(--muted)}
+.flag.bad .dot{background:var(--bad)} .flag.warn .dot{background:var(--warn)} .flag.good .dot{background:var(--good)}
+.flag b{font-weight:600}
+footer{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:14px}
+footer ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .4s ease}}
+
+[hidden]{display:none!important}
+html{scroll-padding-top:72px}
+body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 8px;margin-top:-4px}
+.hdr-right{display:flex;align-items:center;gap:8px;position:relative;margin-left:auto}
+.btn-update{border:0;border-radius:999px;padding:8px 14px;font-weight:600;background:var(--accent);color:var(--accent-ink)}
+.btn-update[disabled]{opacity:.6;cursor:progress}
+.btn-acct{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;width:34px;height:34px;font-weight:700;line-height:1}
+.acct-menu{position:absolute;right:0;top:42px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:200px;z-index:30;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.acct-menu button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px}
+.upd-status{background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:8px 12px;margin-top:-16px}
+.upd-status.bad{background:var(--bad-soft);color:var(--bad)}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar .in{display:flex;max-width:560px;width:100%;overflow-x:auto}
+.tabbar button{flex:1 0 auto;border:0;background:none;color:var(--muted);font-weight:600;font-size:13px;padding:14px 10px 12px;border-top:2px solid transparent}
+.tabbar button[aria-selected="true"]{color:var(--ink);border-top-color:var(--accent)}
+[data-tab][hidden]{display:none!important}
+.empty h2{margin-bottom:8px}
+/* auth */
+.auth{max-width:420px;margin:0 auto;padding:40px 16px;display:flex;flex-direction:column;gap:18px}
+.auth .brand{font-size:24px}
+.auth .seg{display:flex;gap:6px}
+.auth .seg button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:9px;font-weight:600}
+.auth .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.auth form{display:flex;flex-direction:column;gap:12px}
+.auth label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted)}
+.auth input,.wi-form input,.wi-form select{font:500 16px var(--f-body);padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+.auth .primary,.wi-btns .primary{border:0;border-radius:10px;padding:12px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.auth .link{border:0;background:none;color:var(--accent);font-weight:600;padding:4px;text-align:left}
+.msg{border-radius:10px;padding:10px 12px;font-size:13.5px}
+.msg.ok{background:var(--good-soft);color:var(--good)} .msg.err{background:var(--bad-soft);color:var(--bad)}
+/* roadmap / what-if */
+.rm-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;overflow:hidden;margin-top:8px}
+.rm-stats>div{padding:12px 14px;border-bottom:1px solid var(--line)}
+.rm-stats>div:nth-child(odd){border-right:1px solid var(--line)}
+.rm-stats .v{font:600 22px/1.15 var(--f-num);letter-spacing:-.02em;margin:4px 0 2px}
+.wi-card{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.wi-card h3{margin:0;font:600 18px/1.2 var(--f-display)}
+.wi-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wi-form label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted);font-weight:600}
+.wi-form .hint{font-size:12px;font-weight:400;color:var(--muted)}
+.wi-form .full{grid-column:1/-1}
+.wi-check{display:grid!important;grid-template-columns:24px 1fr;gap:10px;align-items:start;grid-column:1/-1;color:var(--ink)!important}
+.wi-check input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}
+.wi-check .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.wi-res{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.wi-res .v{font:600 24px/1.1 var(--f-num);letter-spacing:-.02em;margin:4px 0 2px}
+.wi-table td,.wi-table th{padding:9px 0;border-top:1px solid var(--line);font-size:13.5px;text-align:left}
+.wi-table th{font:600 10.5px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:0}
+.wi-table td:last-child,.wi-table th:last-child{text-align:right}
+.wi-btns{display:flex;gap:10px;flex-wrap:wrap}
+.wi-btns button{flex:1 1 140px}
+.wi-btns .ghost{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:12px;font-weight:700}
+.wi-btns .primary[disabled]{opacity:.45;cursor:default}
+@media (max-width:380px){.wi-form,.wi-res{grid-template-columns:1fr}}
+@media (max-width:440px){#todayLbl{display:none}.hdr-right .chip{font-size:10px;padding:3px 6px}}
+</style>
+</head>
+<body>
+<div class="auth" id="authView" hidden>
+  <div class="brand">Money <span>· High Street Stack</span></div>
+  <p class="muted" style="margin:0">Your debts, your plan and your daily numbers in one private place.</p>
+  <div class="seg" role="group" aria-label="Sign in or sign up">
+    <button type="button" id="segIn" aria-pressed="true">Sign in</button>
+    <button type="button" id="segUp" aria-pressed="false">Sign up</button>
+  </div>
+  <form id="fIn" autocomplete="on">
+    <label>Email<input type="email" id="inEmail" autocomplete="username" required></label>
+    <label>Password<input type="password" id="inPass" autocomplete="current-password" required></label>
+    <button class="primary" type="submit">Sign in</button>
+    <button class="link" type="button" id="btnMagic">Email me a sign-in link instead</button>
+    <button class="link" type="button" id="btnForgot">Forgot password?</button>
+  </form>
+  <form id="fUp" hidden autocomplete="on">
+    <label>Your name<input type="text" id="upName" autocomplete="name" required></label>
+    <label>Email<input type="email" id="upEmail" autocomplete="username" required></label>
+    <label>Password (8+ characters)<input type="password" id="upPass" autocomplete="new-password" minlength="8" required></label>
+    <button class="primary" type="submit">Create account</button>
+  </form>
+  <form id="fNew" hidden>
+    <label>New password (8+ characters)<input type="password" id="newPass" autocomplete="new-password" minlength="8" required></label>
+    <button class="primary" type="submit">Save new password</button>
+  </form>
+  <div class="msg" id="authMsg" hidden></div>
+</div>
+
+<div id="appView" hidden>
+<div class="wrap">
+  <header class="top" id="appHeader">
+    <div class="brand">Money <span id="todayLbl"></span></div>
+    <div class="hdr-right">
+      <span class="chip" id="freshness">Loading…</span>
+      <button type="button" class="btn-update" id="btnUpdate" title="Get the latest balances and transactions from the home lab">Update</button>
+      <button type="button" class="btn-acct" id="btnAcct" aria-haspopup="true" aria-expanded="false" title="Account">⋯</button>
+      <div class="acct-menu" id="acctMenu" hidden><div class="small muted" id="acctEmail"></div><button type="button" id="btnSignOut">Sign out</button></div>
+    </div>
+  </header>
+  <div class="upd-status small" id="updStatus" hidden></div>
+  <div class="empty panel" id="emptyState" hidden>
+    <h2>No data yet</h2>
+    <p>Your account is set up. Once your data source is connected (a home-lab pull, or an upload in the next phase), your dashboard appears here.</p>
+  </div>
+
+  <!-- 1 -->
+  <section aria-label="Today">
+    <div class="today" id="today"></div>
+    <div class="panel nextdd" id="nextdd" style="margin-top:10px"></div>
+  </section>
+
+  <section aria-labelledby="h-total">
+    <h2 id="h-total">Total position</h2>
+    <div class="panel" id="total"></div>
+  </section>
+
+  <!-- 2 -->
+  <section aria-labelledby="h-free">
+    <h2 id="h-free">Debt-free date</h2>
+    <div class="panel">
+      <div class="hero" id="hero"></div>
+      <svg class="chart" id="pathChart" viewBox="0 0 340 120" role="img" aria-label="Projected total card debt by month" style="margin-top:14px"></svg>
+      <div class="sub-lines" id="heroSub"></div>
+      <details class="whatif" style="margin-top:12px">
+        <summary>What if… (pay, cards SO, money owed) ›</summary>
+        <div class="wi-grid">
+          <label for="wiPay">Net pay £/wk<input id="wiPay" type="number" step="0.01" inputmode="decimal"></label>
+          <label for="wiSo">Cards SO £/wk<input id="wiSo" type="number" step="1" inputmode="decimal"></label>
+          <label class="wi-check" for="wiLump"><input id="wiLump" type="checkbox"> <span id="wiLumpTxt">Money owed to you</span> lands in Jan 2027</label>
+          <div class="wi-out" id="wiOut"></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section aria-labelledby="h-target">
+    <h2 id="h-target">Snowball target</h2>
+    <div class="panel target" id="target"></div>
+  </section>
+
+  <!-- 4 -->
+  <section aria-labelledby="h-cash">
+    <h2 id="h-cash">Next 14 days · HSBC and Monzo</h2>
+    <div class="panel">
+      <div class="legend"><span><i style="background:var(--hsbc)"></i>HSBC</span><span><i style="background:var(--monzo)"></i>Monzo cards</span></div>
+      <svg class="chart" id="cashChart" viewBox="0 0 340 130" role="img" aria-label="Projected HSBC and Monzo balances, next 14 days"></svg>
+      <div class="days" id="days"></div>
+      <p class="small muted" style="margin:8px 0 0" id="cashNote"></p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section aria-labelledby="h-budget">
+    <h2 id="h-budget">Budget this month</h2>
+    <div class="panel">
+      <table class="btable" id="budget"></table>
+      <div class="gap" id="gap"></div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section aria-labelledby="h-board">
+    <h2 id="h-board">The board</h2>
+    <div class="panel">
+      <div class="sorts" role="group" aria-label="Sort cards">
+        <button type="button" id="s-bal" data-sort="bal" aria-pressed="true">Kill order</button>
+        <button type="button" id="s-apr" data-sort="apr" aria-pressed="false">APR</button>
+        <button type="button" id="s-dd" data-sort="dd" aria-pressed="false">DD date</button>
+        <button type="button" id="s-delta" data-sort="delta" aria-pressed="false">Since Aug</button>
+      </div>
+      <div class="board"><table id="board"></table></div>
+      <div class="noncard" id="noncard"></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section aria-labelledby="h-pots">
+    <h2 id="h-pots">Pots</h2>
+    <div class="panel pots" id="pots"></div>
+  </section>
+
+  <!-- 8 -->
+  <section aria-labelledby="h-flags">
+    <h2 id="h-flags">Flags</h2>
+    <div class="flags" id="flags"></div>
+  </section>
+
+  <section aria-labelledby="h-roadmap" data-tab="whatif">
+    <h2 id="h-roadmap">Debt payoff roadmap</h2>
+    <div class="small muted" id="rmAsOf"></div>
+    <div class="rm-stats panel" id="rmStats"></div>
+    <div class="panel wi-card">
+      <h3>Change the inputs</h3>
+      <p class="small muted">Nothing changes in the plan until you press “Make this the plan”. Any money freed up goes to the cards in kill order.</p>
+      <div class="wi-form" id="wiForm"></div>
+    </div>
+    <div class="panel wi-card" id="wiResult"></div>
+  </section>
+  <footer id="foot"></footer>
+</div>
+
+
+</div>
+<nav class="tabbar" id="tabbar" hidden aria-label="Sections"><div class="in" role="tablist">
+  <button type="button" role="tab" data-go="today">Today</button>
+  <button type="button" role="tab" data-go="debts">Debts</button>
+  <button type="button" role="tab" data-go="cash">Cash</button>
+  <button type="button" role="tab" data-go="budget">Budget</button>
+  <button type="button" role="tab" data-go="whatif">What-if</button>
+  <button type="button" role="tab" data-go="progress">Progress</button>
+</div></nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js" integrity="sha384-UagCvVPT5XXA0Hx+nJYUAGBFseHT9zBgpJMSebsAxl9lciTwbT+39j5VfRjdP5Tp" crossorigin="anonymous"></script>
+<script src="config.js"></script>
+<script>
+window.renderDashboard = function(S){
+const D = S.debts, B = S.budget, SO = S.standing_orders, A = S.actuals;
+
+/* ---------- formatting ---------- */
+const gbp = (n, dp=2) => (n<0?'−':'') + '£' + Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:dp,maximumFractionDigits:dp});
+const gbp0 = n => gbp(n,0);
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const iso = s => { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); };
+const addDays = (dt,n) => new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()+n);
+const sameDay = (a,b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+const fmtD = dt => `${WD[dt.getDay()]} ${dt.getDate()} ${MON[dt.getMonth()]}`;
+const fmtLong = dt => `${dt.getDate()} ${MON[dt.getMonth()]} ${dt.getFullYear()}`;
+const daysBetween = (a,b) => Math.round((b - a)/864e5);
+const ymd = dt => dt.getFullYear()*10000 + (dt.getMonth()+1)*100 + dt.getDate();
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+                set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
+
+const now = new Date(); const TODAY = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const SEED_DAY = iso(D.as_of);
+$('todayLbl').textContent = '· ' + fmtD(TODAY);
+const TX_DAY = A ? iso(A.asof) : null;
+$('freshness').textContent = `Balances ${SEED_DAY.getDate()} ${MON[SEED_DAY.getMonth()]}` + (TX_DAY ? ` · txns ${TX_DAY.getDate()} ${MON[TX_DAY.getMonth()]}` : '');
+
+/* ---------- engines ---------- */
+const cardName = c => (c.issuer.replace(' Bank','').replace('American Express','Amex').replace('Virgin Money','Virgin') + (c.last4 ? ' ' + c.last4 : '')).trim();
+const SAINSBURYS_APR_ASSUMED = 0.25, BW_START = 400, BW_PM = 108.33;
+
+// Port of engine/snowball.py run(): the plan-of-record. Aug balances, 11 cards, freed minimums do not roll.
+const PLAN_CARDS = [['Capital One',947.20,0.2247,37.96],['Fluid',1360.11,0.372,58.01],['NatWest',1541.11,0.225,60.18],['Tesco 5661',2630.49,0.265,130.00],['Vanquis',2741.42,0.293,101.83],['Virgin',3144.49,0.2649,101.92],['Lloyds 2732',3576.38,0.2805,164.37],['Tesco 1369',3938.74,0.265,179.00],['MBNA',4497.90,0.2731,204.19],['Amex',6659.12,0.332,291.81],['Lloyds 8080',6680.47,0.263,294.58]];
+function runPlan(extraBase){
+  const bal={}, rate={}, mn={}; PLAN_CARDS.forEach(([n,b,r,m])=>{bal[n]=b;rate[n]=r;mn[n]=m;});
+  const order=[...PLAN_CARDS].sort((a,b)=>a[1]-b[1]).map(c=>c[0]);
+  let bw=BW_START, mo=0, tot=0;
+  while(Object.keys(bal).length && mo<600){
+    mo++; let extra=extraBase;
+    if(bw>0){ const p=Math.min(BW_PM,bw); bw-=p; extra+=BW_PM-p; } else extra+=BW_PM;
+    let pool=Object.keys(bal).reduce((s,n)=>s+mn[n],0)+Math.max(extra,0);
+    for(const n in bal){ const i=bal[n]*rate[n]/12; bal[n]+=i; tot+=i; }
+    for(const n of Object.keys(bal)){ const p=Math.min(mn[n],bal[n],pool); bal[n]-=p; pool-=p; }
+    for(const n of order){ if(pool<=0) break; if((bal[n]||0)>0){ const p=Math.min(pool,bal[n]); bal[n]-=p; pool-=p; } }
+    for(const n of Object.keys(bal)) if(bal[n]<=0.01) delete bal[n];
+  }
+  return {months:mo, interest:tot, label:monthLabel(2026,11,mo)};
+}
+function monthLabel(y,m,add){ const k=y*12+m-1+add; return MON[k%12]+' '+Math.floor(k/12); }
+
+// Port of engine/live.py: promo-aware, every card, live balances, freed minimums roll.
+function loadCards(){
+  return D.cards.filter(c=>(c.balance_live||0)>0).map(c=>{
+    const apr = c.interest_precomputed ? 0 : c.apr!=null ? c.apr : SAINSBURYS_APR_ASSUMED, promos=c.promo||[];
+    const tr = promos.map(p=>({bal:p.amount, apr, until:ymd(iso(p.expires))}));
+    const rest = c.balance_live - promos.reduce((s,p)=>s+p.amount,0);
+    if(rest>0.005) tr.push({bal:rest, apr, until:null});
+    return {id:c.id, name:cardName(c), min:c.min||0, tr};
+  });
+}
+const rateOf = (t,day) => (t.until && day < t.until) ? 0 : t.apr;
+function payCard(card, amount, day, promoOk){
+  let paid=0;
+  for(const t of [...card.tr].sort((a,b)=>rateOf(b,day)-rateOf(a,day))){
+    if(amount-paid<=0) break;
+    if(!promoOk && rateOf(t,day)===0) continue;
+    const p=Math.min(t.bal, amount-paid); t.bal-=p; paid+=p;
+  }
+  return paid;
+}
+function runLive(extraBase, {start=[2026,10], overpayFrom=1, bw=true, lumps={}}={}){
+  const cards = loadCards();
+  const totalMin = cards.reduce((s,c)=>s+c.min,0);
+  const bal = c => c.tr.reduce((s,t)=>s+t.bal,0);
+  let bwbal = bw?BW_START:0, mo=0, tot=0; const killed={}, path=[cards.reduce((s,c)=>s+bal(c),0)];
+  while(cards.some(c=>bal(c)>0.01) && mo<600){
+    const k=start[0]*12+start[1]-1+mo, day=Math.floor(k/12)*10000+(k%12+1)*100+1;
+    mo++;
+    let extra = mo>overpayFrom ? extraBase : 0;
+    if(bwbal>0){ const p=Math.min(BW_PM,bwbal); bwbal-=p; extra+=BW_PM-p; } else if(bw) extra+=BW_PM;
+    extra += lumps[mo]||0;
+    let pool = totalMin + extra;
+    for(const c of cards) for(const t of c.tr){ const i=t.bal*rateOf(t,day)/12; t.bal+=i; tot+=i; }
+    const live = cards.filter(c=>bal(c)>0.01);
+    for(const c of live) pool -= payCard(c, Math.min(c.min, bal(c), pool), day, true);
+    const expired = c => c.tr.some(t=>t.until && day>=t.until && t.bal>0.01);
+    for(const c of [...live].sort((a,b)=>(expired(a)?0:1)-(expired(b)?0:1) || bal(a)-bal(b))){ if(pool<=0.005) break; pool -= payCard(c,pool,day,false); }
+    const firstExp = c => Math.min(...c.tr.filter(t=>t.until).map(t=>t.until), 99999999);
+    for(const c of [...live].sort((a,b)=>firstExp(a)-firstExp(b))){ if(pool<=0.005) break; pool -= payCard(c,pool,day,true); }
+    for(const c of live) if(bal(c)<=0.01 && !(c.id in killed)) killed[c.id]=mo;
+    path.push(cards.reduce((s,c)=>s+bal(c),0));
+  }
+  return {months:mo, interest:tot, label:monthLabel(start[0],start[1],mo), killed, path, start};
+}
+
+/* ---------- plan inputs ---------- */
+const MIN_TOTAL = D.minimums_total;
+const cardsSoWeekly = SO.hsbc_weekly_friday.find(s=>s.ref==='Cards').amount;
+const L = B.lines_monthly;
+const BILLS_MONZO = B.bills_via_monzo ? L.subs_insurance + L.bw_legal : 0;
+const overpayFromSo = so => so*52/12 - MIN_TOTAL - BILLS_MONZO;
+const plan = runPlan(S.checks.plan.overpay);
+const BUF = B.unpaid_weeks_buffer;
+const bufferLumps = () => { if(!BUF) return {}; const per=BUF.target/BUF.months.length, o={};
+  for(const m of BUF.months){ o[(Number(m.slice(0,4))-2026)*12+Number(m.slice(5,7))-10+1] = -per; } return o; };
+const live = runLive(overpayFromSo(cardsSoWeekly), {lumps:bufferLumps()});
+const liveLump = runLive(overpayFromSo(cardsSoWeekly), {lumps:{...bufferLumps(), 4:(bufferLumps()[4]||0)+D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0)}});
+const planOK = plan.months===S.checks.plan.months && Math.abs(plan.interest-S.checks.plan.interest)<1;
+const liveOK = live.months===S.checks.live.months && Math.abs(live.interest-S.checks.live.interest)<1;
+
+// weekly plumbing: what's left in HSBC for living after every SO and HSBC-side commitment
+// HSBC after Friday's standing orders = free money for food, fuel and living
+const otherSOs = SO.hsbc_weekly_friday.filter(s=>s.ref!=='Cards').reduce((t,s)=>t+s.amount,0);
+const FOOD_POT = SO.hsbc_weekly_friday.some(s=>s.ref==='Food Fuel');
+const LIVING_WK = ((FOOD_POT ? 0 : L.food_fuel) + L.other_living)*12/52;
+function hsbcWeekly(pay, cardsSo){
+  const hsbcBills = B.bills_via_monzo ? 0 : L.subs_insurance + L.bw_legal;
+  return pay - cardsSo - otherSOs - (hsbcBills + (L.emergency_fund||0))*12/52;
+}
+
+/* ---------- 1. today's one action ---------- */
+const ACTIONS = [
+  {id:'rumbi-trip', t:'Ask Rumbi to confirm she’s saving her half of the Thailand flights — then drop your £95 SO to £25', where:'chat with Rumbi', mins:5, due:'2026-11-05'},
+  {id:'bills-to-monzo', t:'Move bills to Monzo: Admiral, The One, TomTom ×2, Vodafone, PureGym, Prime, BW Legal', where:'each provider', mins:30, due:'2026-10-31'},
+  {id:'chrome-sites', t:'Claude extension on the home lab: allow Bunzl, Power BI and BrightHR', where:'home lab Chrome', mins:2, due:null},
+  {id:'vanquis-fee', t:'Ask Vanquis to refund the £12 late fee from the 28 Sep bounce (first time, paid next day)', where:'Vanquis app chat', mins:5, due:null},
+  {id:'azp', t:'Check the Allianz home emergency (AZP HE) £54 doesn’t renew', where:'HSBC, ~13 Oct', mins:2, due:'2026-10-13', from:'2026-10-10'},
+  {id:'mandates', t:'Cancel dead mandates AWP P&C and Stripe', where:'HSBC app', mins:3, due:null},
+];
+const knownLoan = l => D.cards.some(c=>c.match && l.name.toLowerCase().includes(c.match));
+// urgent actions derived from the latest export
+if(A){
+  for(const r of A.returned){
+    const c = D.cards.find(c=>c.id===r.card); if(!c || daysBetween(iso(r.date),TODAY)>10 || (c.returned_resolved||[]).includes(r.date)) continue;
+    ACTIONS.unshift({id:`returned-${r.card}-${r.date}`, t:`Pay ${cardName(c)} ${gbp(r.amount)} by debit card now — the direct debit was returned on ${fmtD(iso(r.date))}`, where:`${c.issuer} app`, mins:3, due:A.asof});
+  }
+  const sb = A.last_paid.sainsburys, sa = ACTIONS.find(a=>a.id==='sainsburys');
+  const sbCard = D.cards.find(c=>c.id==='sainsburys');
+  if(sbCard && sbCard.status==='closed'){ const i=ACTIONS.indexOf(sa); if(i>=0) ACTIONS.splice(i,1); }
+  else if(sb && sa && daysBetween(iso(sb.date),TODAY)>45){ sa.t = `Sainsbury’s Bank card 4329 (£383.28): no payment found since ${fmtLong(iso(sb.date))}. Log in, pay the minimum, set a DD`; sa.due = addDays(TODAY,1).toISOString().slice(0,10); sa.mins=10; }
+  for(const l of A.unknown_loans.filter(l=>!knownLoan(l))) ACTIONS.push({id:`loan-${l.name}`, t:`What is “${l.name}” (${gbp(l.amount)} on ${fmtD(iso(l.last))})? Balance, rate, end date — it’s not on the board`, where:'app or email', mins:5, due:null});
+  const sv = ACTIONS.find(a=>a.id==='savings-sos');
+  if(sv && A.leaks.length) sv.t = `Stop savings still running: ${A.leaks.map(l=>`${l.name.replace(/ Trading212$/,'')} ${gbp0(l.total)}`).join(', ')} (last 7 days). Nationwide £433 → £20`;
+}
+let done = store.get('kde-done', []);
+let later = [];
+function renderToday(){
+  const open = ACTIONS.filter(a=>!done.includes(a.id) && !later.includes(a.id) && (!a.from || iso(a.from)<=TODAY));
+  const rank = a => a.due ? ymd(iso(a.due)) : 99999999;
+  open.sort((a,b)=>rank(a)-rank(b));
+  const remaining = ACTIONS.filter(a=>!done.includes(a.id)).length;
+  const a = open[0];
+  if(!a){
+    $('today').innerHTML = `<div class="eyebrow">Today’s one action</div><div class="act">${remaining? 'Nothing else due today.' : 'Every open action is done.'}</div>` +
+      (later.length? `<div class="btns"><button type="button" class="later" id="btnReset">Show skipped</button></div>`:'');
+    const r=$('btnReset'); if(r) r.onclick=()=>{ later=[]; renderToday(); };
+    return;
+  }
+  const due = a.due ? iso(a.due) : null, dl = due ? daysBetween(TODAY,due) : null;
+  const dueTxt = !due ? 'no deadline' : dl<0 ? `overdue ${-dl}d` : dl===0 ? 'due today' : `by ${fmtD(due)}`;
+  $('today').innerHTML = `<div class="eyebrow">Today’s one action · ${ACTIONS.length-remaining+1} of ${ACTIONS.length}</div>
+    <div class="act">${esc(a.t)}</div>
+    <div class="meta"><span>${esc(a.where)}</span><span>·</span><span>~${a.mins} min</span><span>·</span><span>${dueTxt}</span></div>
+    <div class="btns"><button type="button" class="done" id="btnDone">Done</button><button type="button" class="later" id="btnLater">Not today</button></div>`;
+  $('btnDone').onclick = ()=>{ done.push(a.id); store.set('kde-done', done); renderToday(); };
+  $('btnLater').onclick = ()=>{ later.push(a.id); renderToday(); };
+}
+
+/* ---------- 4. cash-flow projection ---------- */
+// Opening balances: latest WPS snapshot (data/balances.json); falls back to the plan's 29 Sep projection.
+const BAL = S.balances;
+const OPENING = BAL ? {date:BAL.as_of.slice(0,10), hsbc:BAL.hsbc, monzo:BAL.monzo_current + (BAL.monzo_credit_cards_pot||0), live:true}
+                    : {date:'2026-09-29', hsbc:143, monzo:170, live:false};
+// Where each card DD pulls from during the October transition (doc 03). Later entries win from their date.
+const ROUTE = {
+  amex:[['HSBC','2026-09-01'],['Monzo','2026-10-20']],
+  vanquis:[['HSBC','2026-09-01'],['Monzo','2026-10-01']],
+};
+const OTHER_DD = [{n:'Admiral car',day:2,amt:59.57},{n:'The One (mum’s broadband)',day:4,amt:29.00},{n:'TomTom life + CIC',day:25,amt:70.20}];
+function routeFor(c, dt){
+  const r = ROUTE[c.id]; if(!r) return /Monzo/.test(c.pays_from||'') ? 'Monzo' : /HSBC/.test(c.pays_from||'') ? 'HSBC' : 'unknown';
+  let v=r[0][0]; for(const [acct,from] of r) if(iso(from)<=dt) v=acct; return v;
+}
+function eventsOn(dt){
+  const ev=[], d=dt.getDate(), wd=dt.getDay();
+  if(wd===4) ev.push({n:'Pay', acct:'HSBC', amt:+B.income.net_weekly});
+  if(wd===5){
+    for(const s of SO.hsbc_weekly_friday) if(iso(s.first)<=dt && (!s.last || dt<=iso(s.last))){
+      ev.push({n:`SO ${s.ref}`, acct:'HSBC', amt:-s.amount});
+      if(s.ref==='Cards') ev.push({n:'SO Cards in', acct:'Monzo', amt:+s.amount});
+    }
+    if(daysBetween(iso('2026-09-25'),dt)%14===0) ev.push({n:'BW Legal', acct:'HSBC', amt:-50});
+  }
+  for(const o of SO.one_offs) if(sameDay(iso(o.date),dt)){ ev.push({n:`One-off → ${o.to}`, acct:o.from, amt:-o.amount}); ev.push({n:'One-off in', acct:o.to, amt:+o.amount}); }
+  for(const c of D.cards) if(c.dd_day===d && (c.balance_live||0)>0){
+    const acct=routeFor(c,dt); if(acct==='unknown') continue;
+    ev.push({n:cardName(c), acct, amt:-(c.paying||c.min), card:true});
+  }
+  for(const o of OTHER_DD) if(o.day===d) ev.push({n:o.n, acct:'HSBC', amt:-o.amt});
+  return ev;
+}
+function cashflow(fromDt, nDays){
+  let h=OPENING.hsbc, m=OPENING.monzo; const out=[];
+  for(let dt=addDays(iso(OPENING.date),1); dt<addDays(fromDt,nDays); dt=addDays(dt,1)){
+    const ev=eventsOn(dt);
+    for(const e of ev){ if(e.acct==='HSBC') h+=e.amt; else if(e.acct==='Monzo') m+=e.amt; }
+    if(dt>=fromDt) out.push({dt, ev, h, m});
+  }
+  return out;
+}
+const START = TODAY < addDays(iso(OPENING.date),1) ? addDays(iso(OPENING.date),1) : TODAY;
+const CF = cashflow(START, 14);
+
+/* ---------- render: next DDs ---------- */
+(function(){
+  const long = cashflow(START, 45);
+  const first = long.find(x=>x.ev.some(e=>e.card));
+  if(!first){ $('nextdd').innerHTML='<span class="muted">No card DDs in the next 45 days.</span>'; return; }
+  const cds = first.ev.filter(e=>e.card);
+  const dl = daysBetween(TODAY, first.dt);
+  $('nextdd').innerHTML = `<div class="row"><span class="small muted">Next card DD · ${dl===0?'today':dl===1?'tomorrow':'in '+dl+' days'}</span><span class="small muted">${fmtD(first.dt)}</span></div>` +
+    cds.map(e=>`<div class="dd"><span><b>${esc(e.n)}</b></span><span style="display:flex;gap:8px;align-items:center"><span class="num">${gbp(-e.amt)}</span><span class="src ${e.acct}">${e.acct}</span></span></div>`).join('');
+})();
+
+/* ---------- render: debt-free ---------- */
+(function(){
+  const monthsDiff = (() => { const p=S.checks.plan.label.split(' '), l=live.label.split(' ');
+    return (Number(p[1])*12+MON.indexOf(p[0])) - (Number(l[1])*12+MON.indexOf(l[0])); })();
+  const aheadChip = monthsDiff>0 ? `<span class="chip good">${monthsDiff} mo ahead</span>` : monthsDiff<0 ? `<span class="chip bad">${-monthsDiff} mo behind</span>` : `<span class="chip acc">on plan</span>`;
+  const likeForLike = D.cards.filter(c=>c.balance_aug!=null);
+  const aug = likeForLike.reduce((s,c)=>s+c.balance_aug,0), liveLfl = likeForLike.reduce((s,c)=>s+c.balance_live,0);
+  const delta = liveLfl-aug;
+  $('hero').innerHTML = `
+    <div><div class="lbl">Projected</div><div class="big">${live.label}</div><div style="margin-top:6px">${aheadChip}</div></div>
+    <div><div class="lbl">Plan of record</div><div class="big muted" style="font-weight:500">${S.checks.plan.label}</div><div class="small muted" style="margin-top:6px">interest ${gbp0(S.checks.plan.interest)}</div></div>
+    <div><div class="lbl">Total on cards</div><div class="mid num">${gbp0(D.total_live)}</div></div>
+    <div><div class="lbl">Since Aug statements</div><div class="mid num ${delta>0?'up':'down'}">${delta>0?'+':''}${gbp0(delta)}</div></div>`;
+  $('heroSub').innerHTML = `
+    ${(()=>{ const cs=D.cards.filter(c=>c.limit && c.type!=='loan'); const b=cs.reduce((t,c)=>t+(c.balance_live||0),0), l=cs.reduce((t,c)=>t+c.limit,0)+(D.extra_accounts_on_credit_report||[]).reduce((t,a)=>t+a.limit,0);
+      return l?`<div class="row"><span class="muted">Credit used (limits from credit report)</span><span class="num">${Math.round(b/l*100)}% of ${gbp0(l)}</span></div>`:''; })()}
+    <div class="row"><span class="muted">Projected interest from Oct</span><span class="num">${gbp0(live.interest)}</span></div>
+    <div class="row"><span class="muted">Overpay (£${cardsSoWeekly}/wk to Monzo)</span><span class="num">${gbp0(overpayFromSo(cardsSoWeekly))}/mo</span></div>
+    ${BUF?`<div class="row"><span class="muted">Trip cover held back Nov–Apr</span><span class="num">${gbp0(BUF.target)}</span></div>`:''}
+    <div class="row"><span class="muted">If the ${gbp0(D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0))} owed lands Jan 2027</span><span class="num">${liveLump.label}</span></div>
+    <div class="row"><span class="muted">Stretch goal (Moza Maas profit)</span><span class="num">Dec 2027 · not modelled</span></div>`;
+  drawPath();
+})();
+function drawPath(){
+  const svg=$('pathChart'), W=340, H=120, pl=34, pr=8, pt=12, pb=20;
+  const pts=live.path, n=pts.length-1, max=Math.ceil(pts[0]/10000)*10000;
+  const p=S.checks.plan.label.split(' '), pi=(Number(p[1])*12+MON.indexOf(p[0]))-(live.start[0]*12+live.start[1]-1);
+  const N=Math.max(n,pi);
+  const x=i=>pl+(W-pl-pr)*i/N, y=v=>pt+(H-pt-pb)*(1-v/max);
+  let grid='';
+  for(let v=0; v<=max; v+=10000) grid+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pl-5}" y="${y(v)+3}" text-anchor="end">${v?'£'+v/1000+'k':'0'}</text>`;
+  const line = pts.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  const area = line + `L${x(n)},${y(0)}L${x(0)},${y(0)}Z`;
+  let ticks='';
+  for(let i=1;i<=N;i++){ const k=live.start[0]*12+live.start[1]-1+i; if(k%12===0) ticks+=`<text x="${x(i)}" y="${H-5}" text-anchor="middle">${Math.floor(k/12)}</text>`; }
+  const planMark = `<line x1="${x(pi)}" x2="${x(pi)}" y1="${pt}" y2="${y(0)}" stroke="var(--muted)" stroke-dasharray="3 3" stroke-width="1"/><text x="${x(pi)-4}" y="${pt+6}" text-anchor="end">plan</text>`;
+  svg.innerHTML = `${grid}<path d="${area}" fill="var(--accent-soft)"/><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>${ticks}${planMark}<circle cx="${x(0)}" cy="${y(pts[0])}" r="3.5" fill="var(--accent)"/><circle cx="${x(n)}" cy="${y(0)}" r="3.5" fill="var(--accent)"/>`;
+}
+
+/* ---------- total position ---------- */
+(function(){
+  const cards = D.cards.filter(c=>c.type!=='loan' && (c.balance_live||0)>0).reduce((t,c)=>t+c.balance_live,0);
+  const loans = D.cards.filter(c=>c.type==='loan').reduce((t,c)=>t+(c.balance_live||0),0);
+  const inPlan = D.non_card.filter(n=>n.in_plan!==false), outPlan = D.non_card.filter(n=>n.in_plan===false);
+  const sum = a => a.reduce((t,n)=>t+(n.balance_est||0),0);
+  const owe = cards + loans + sum(inPlan) + sum(outPlan);
+  const CASH = [['hsbc','HSBC'],['monzo_current','Monzo main'],['monzo_credit_cards_pot','Monzo cards pot'],['monzo_food_fuel','Monzo food & fuel'],['monzo_trip_cover','Trip cover pot'],['monzo_emergency_fund','Emergency Fund'],['chase','Chase (trip savings)'],['metro','Metro'],['joint_monzo','Joint'],['nationwide','Nationwide'],['revolut','Revolut']];
+  const cash = BAL ? CASH.reduce((t,[k])=>t+(BAL[k]||0),0) : 0;
+  const owed = D.owed_to_kola.reduce((t,o)=>t+o.amount_est,0);
+  const row = (l,v,cls='') => `<div class="row"><span class="muted">${l}</span><span class="num ${cls}">${gbp(v)}</span></div>`;
+  $('total').innerHTML = `
+    <div class="hero">
+      <div><div class="lbl">You owe</div><div class="mid num up">${gbp0(owe)}</div></div>
+      <div><div class="lbl">You hold</div><div class="mid num">${gbp0(cash)}</div></div>
+    </div>
+    <div class="sub-lines">
+      ${row(`Credit cards (${D.cards.filter(c=>c.type!=='loan'&&(c.balance_live||0)>0).length})`, cards)}
+      ${row('Abound Super Credit', loans)}
+      ${inPlan.map(n=>row(esc(n.name), n.balance_est)).join('')}
+      ${outPlan.map(n=>row(esc(n.name)+' · outside plan', n.balance_est)).join('')}
+      <div class="row" style="border-top:1px solid var(--line);padding-top:6px"><span><b>Net (cash − debt)</b></span><span class="num up"><b>${gbp(cash-owe)}</b></span></div>
+      ${row('Owed to you (Elite Edge + Moza Maas), not counted', owed, 'down')}
+      ${(D.investments||[]).map(i=>row(esc(i.name)+' · at cost, not counted', i.cost_gbp)).join('')}
+      <div class="small muted">Cash = personal accounts and pots in WPS ${BAL?fmtD(iso(BAL.as_of.slice(0,10))):''} (Santander and Tide excluded). Properties and mortgages not included.</div>
+    </div>`;
+})();
+
+/* ---------- what-if ---------- */
+(function(){
+  $('wiLumpTxt').textContent = gbp0(D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0)) + ' owed to you';
+  $('wiPay').value = B.income.net_weekly.toFixed(2); $('wiSo').value = cardsSoWeekly;
+  const upd=()=>{
+    const pay=parseFloat($('wiPay').value)||0, so=parseFloat($('wiSo').value)||0;
+    const lumps = bufferLumps(); if($('wiLump').checked) lumps[4]=(lumps[4]||0)+D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0);
+    const r = runLive(overpayFromSo(so), {lumps});
+    const left = hsbcWeekly(pay, so), living = LIVING_WK;
+    $('wiOut').innerHTML = `<div><span class="small muted">Debt-free</span><b>${r.months>=600?'never':r.label}</b></div>
+      <div><span class="small muted">Interest</span><b class="num">${gbp0(r.interest)}</b></div>
+      <div><span class="small muted">HSBC free</span><b class="num ${left<living?'neg':''}">${gbp0(left)}/wk</b></div>`;
+  };
+  ['wiPay','wiSo','wiLump'].forEach(id=>$(id).addEventListener('input',upd)); upd();
+})();
+
+/* ---------- render: target ---------- */
+(function(){
+  const alive = D.cards.filter(c=>(c.balance_live||0)>0);
+  const order = alive.filter(c=>c.id in live.killed).sort((a,b)=>live.killed[a.id]-live.killed[b.id] || a.balance_live-b.balance_live);
+  const t = order[0], km=live.killed[t.id];
+  const killLabel = i => monthLabel(2026,10,i-1);
+  $('target').innerHTML = `
+    <div class="row"><span class="name">${esc(cardName(t))}</span>${t.status==='investigate'?'<span class="chip warn">unknown card</span>':''}</div>
+    <div class="hero" style="margin-top:12px">
+      <div><div class="lbl">Balance</div><div class="mid num">${gbp(t.balance_live)}</div></div>
+      <div><div class="lbl">Clears</div><div class="mid">${killLabel(km)}</div><div class="small muted">${km} payment${km>1?'s':''} from Oct</div></div>
+      <div><div class="lbl">Paid this month</div><div class="mid num muted">—</div><div class="small muted">needs daily sync</div></div>
+      <div><div class="lbl">APR · min</div><div class="mid num">${t.apr!=null?(t.apr*100).toFixed(2)+'%':'?'} · ${t.min!=null?gbp(t.min):'?'}</div></div>
+    </div>
+    <div class="queue"><div class="small muted">Then</div>${order.slice(1,4).map(c=>`<div class="row"><span>${esc(cardName(c))}</span><span class="num muted">${gbp0(c.balance_live)} · ${killLabel(live.killed[c.id])}</span></div>`).join('')}</div>`;
+})();
+
+/* ---------- render: cash strip ---------- */
+(function(){
+  const svg=$('cashChart'), W=340, H=130, pl=40, pr=8, pt=8, pb=20;
+  const vals=CF.flatMap(r=>[r.h,r.m]);
+  const lo=Math.min(0,...vals), hi=Math.max(...vals), step=hi-lo>1000?500:250;
+  const ymin=Math.floor(lo/step)*step, ymax=Math.ceil(hi/step)*step || step;
+  const n=CF.length, x=i=>pl+(W-pl-pr)*(i+.5)/n, y=v=>pt+(H-pt-pb)*(1-(v-ymin)/(ymax-ymin));
+  let g='';
+  for(let v=ymin; v<=ymax; v+=step) g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="${v===0?1.5:1}"/><text x="${pl-5}" y="${y(v)+3}" text-anchor="end">${v<0?'−':''}£${Math.abs(v)}</text>`;
+  const step_ = key => CF.map((r,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(r[key]).toFixed(1)}`).join('');
+  let lbls=''; CF.forEach((r,i)=>{ if(i%3===0) lbls+=`<text x="${x(i)}" y="${H-5}" text-anchor="middle">${r.dt.getDate()} ${MON[r.dt.getMonth()]}</text>`; });
+  const endDots = CF.length ? `<circle cx="${x(n-1)}" cy="${y(CF[n-1].h)}" r="3" fill="var(--hsbc)"/><circle cx="${x(n-1)}" cy="${y(CF[n-1].m)}" r="3" fill="var(--monzo)"/>` : '';
+  svg.innerHTML = g + `<path d="${step_('h')}" fill="none" stroke="var(--hsbc)" stroke-width="2"/><path d="${step_('m')}" fill="none" stroke="var(--monzo)" stroke-width="2"/>` + lbls + endDots;
+  $('days').innerHTML = CF.filter(r=>r.ev.length).map(r=>`<div class="day">
+      <div class="d">${r.dt.getDate()} ${MON[r.dt.getMonth()]}<small>${WD[r.dt.getDay()]}</small></div>
+      <div class="ev">${r.ev.filter(e=>!/ in$/.test(e.n)).map(e=>`<span>${esc(e.n)} <span class="num ${e.amt>0?'down':'muted'}">${e.amt>0?'+':''}${gbp(e.amt)}</span> <span class="src ${e.acct}">${e.acct}</span></span>`).join('')}</div>
+      <div class="bals num"><span class="${r.h<0?'neg':''}" style="color:${r.h<0?'':'var(--hsbc)'}">${gbp0(r.h)}</span><span class="${r.m<0?'neg':''}" style="color:${r.m<0?'':'var(--monzo)'}">${gbp0(r.m)}</span></div></div>`).join('');
+  $('cashNote').textContent = `Scheduled money only — your day-to-day spending comes off HSBC on top. ` + (OPENING.live ? `Starts from WPS balances ${fmtD(iso(OPENING.date))}: HSBC ${gbp(OPENING.hsbc)}, Monzo ${gbp(OPENING.monzo)}.` : `Opening balances are the plan’s projection for 29 Sep, not live.`);
+})();
+
+/* ---------- render: budget ---------- */
+(function(){
+  const wk = n => n*52/12, pay = wk(B.income.net_weekly), soM = wk(cardsSoWeekly);
+  const rows = [
+    [`Pay (£${B.income.net_weekly}/wk)`, pay, null],
+    ['→ Monzo: card minimums + Abound', -MIN_TOTAL, null],
+    ['→ Monzo: bills + BW Legal', -BILLS_MONZO, null],
+    ['→ Monzo: overpay', -(soM-MIN_TOTAL-BILLS_MONZO), null],
+    ...SO.hsbc_weekly_friday.filter(s=>s.ref!=='Cards').map(s=>[`→ ${s.ref} (${s.to})`, -wk(s.amount), null]),
+  ];
+  const free = rows.reduce((t,r)=>t+r[1],0);
+  const actCell = (v, cap) => v==null ? '<td></td>' : typeof v==='string' ? `<td class="num muted">${v}</td>` : `<td class="num ${v>cap+0.005?'up':'down'}">${gbp(v)}</td>`;
+  if(A){ const m=iso(A.month+'-01'); $('h-budget').textContent = `Budget · ${MON[m.getMonth()]} actual to ${iso(A.asof).getDate()} ${MON[iso(A.asof).getMonth()]}`; }
+  $('budget').innerHTML = `<thead><tr><th>Line</th><th>Monthly</th><th>Actual</th></tr></thead><tbody>` +
+    rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${gbp(r[1])}</td>${actCell(r[2], -r[1])}</tr>`).join('') +
+    `<tr class="total"><td>Free in HSBC</td><td class="num">${gbp(free)}</td><td></td></tr>` +
+    `<tr><td>Food + fuel ${FOOD_POT?'(Monzo pot)':'(from free)'}</td><td class="num">${gbp(-L.food_fuel)}</td>${actCell(A ? A.actual.food_fuel : '—', L.food_fuel)}</tr>` +
+    `<tr><td>Other living (from free)</td><td class="num">${gbp(-L.other_living)}</td>${actCell(A ? A.actual.other_living : '—', L.other_living)}</tr>` +
+    `<tr><td>New spend on cards</td><td class="num">£0.00</td>${actCell(A?A.actual.new_card_spend:'—', 0)}</tr>` +
+    `<tr><td>Card interest charged</td><td class="num muted">~${gbp0(D.monthly_interest_est)}</td>${actCell(A?A.actual.card_interest:'—', D.monthly_interest_est)}</tr></tbody>`;
+  const left = hsbcWeekly(B.income.net_weekly, cardsSoWeekly);
+  $('gap').innerHTML = `After Friday’s standing orders, <b>${gbp(left)}/wk</b> is free in HSBC ${FOOD_POT?'to spend on anything (food & fuel has its own Monzo pot)':'for food, fuel and living'} — the plan budgets <b>${gbp(LIVING_WK)}/wk</b>. If a week runs short, pause the Thailand payment first, never the cards.`;
+  // "Actual" needs the daily sync (phase 2)
+})();
+
+/* ---------- render: board ---------- */
+let sortKey = store.get('kde-sort','bal');
+function renderBoard(){
+  const cards = D.cards.filter(c=>(c.balance_live||0)>0);
+  const delta = c => c.balance_aug!=null ? c.balance_live-c.balance_aug : 0;
+  const dd = c => c.dd_day==null ? 99 : ((c.dd_day - TODAY.getDate() + 31) % 31);
+  const key = {bal:c=>live.killed[c.id]*1e6+c.balance_live, apr:c=>-(c.apr??0), dd, delta:c=>-delta(c)}[sortKey];
+  cards.sort((a,b)=>key(a)-key(b));
+  const target = [...cards].sort((a,b)=>live.killed[a.id]-live.killed[b.id])[0];
+  const routeChip = c => {
+    const r = routeFor(c, TODAY);
+    const s = c.status==='call_to_switch' ? '<span class="chip bad">call</span>' : c.status==='investigate' ? '<span class="chip warn">?</span>' : c.type==='loan' ? '<span class="chip">loan · interest fixed</span>' : '';
+    return `<span class="src ${r}">${r==='unknown'?'?':r}</span>${s}`;
+  };
+  let html = `<thead><tr><th>Card</th><th>Balance</th><th>APR</th><th>Min</th><th>Clears</th></tr></thead><tbody>`;
+  for(const c of cards){
+    const d=delta(c);
+    html += `<tr class="${c===target?'target':''}"><td><div class="cn">${esc(cardName(c))}</div><div class="cs">${c.dd_day?'DD '+ordinal(c.dd_day):'no DD known'} ${routeChip(c)}</div></td>
+      <td class="num">${gbp0(c.balance_live)}${c.limit?`<div class="small ${c.balance_live/c.limit>=0.9?'up':'muted'}">${Math.round(c.balance_live/c.limit*100)}% of ${gbp0(c.limit)}</div>`:''}${c.balance_aug!=null && Math.abs(d)>=1?`<div class="small ${d>0?'up':'down'}">${d>0?'+':''}${gbp0(d)}</div>`:''}</td>
+      <td class="num">${c.apr!=null?(c.apr*100).toFixed(1)+'%':'?'}</td>
+      <td class="num">${c.min!=null?gbp0(c.paying||c.min):'?'}${c.paying&&c.paying!==c.min?`<div class="small muted">min ${gbp0(c.min)}</div>`:''}</td>
+      <td class="num">${monthLabel(2026,10,live.killed[c.id]-1).replace(' 20',' ’')}</td></tr>`;
+    for(const p of (c.promo||[])){
+      const left=daysBetween(TODAY, iso(p.expires));
+      html += `<tr class="promo"><td colspan="5"><span class="chip ${left<=60?'bad':'warn'}">0% ${p.type==='balance_transfer'?'BT':'MT'}</span> <span class="num">${gbp(p.amount)}</span> · ends ${fmtLong(iso(p.expires))} · <b class="num">${left}d</b> · don’t overpay</td></tr>`;
+    }
+  }
+  html += `</tbody><tfoot><tr><td>${cards.length} cards</td><td class="num">${gbp0(cards.reduce((s,c)=>s+c.balance_live,0))}</td><td></td><td class="num">${gbp0(MIN_TOTAL)}</td><td></td></tr></tfoot>`;
+  $('board').innerHTML = html;
+  document.querySelectorAll('.sorts button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.sort===sortKey)));
+}
+function ordinal(n){ const s=['th','st','nd','rd'], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+document.querySelectorAll('.sorts button').forEach(b=>b.addEventListener('click',()=>{ sortKey=b.dataset.sort; store.set('kde-sort',sortKey); renderBoard(); }));
+renderBoard();
+(function(){
+  const nc = D.non_card.map(n=>`<div class="row"><span>${esc(n.name)}${n.in_plan===false?' <span class="chip">outside plan</span>':''}</span><span class="num muted">~${gbp0(n.balance_est)}${n.monthly_equiv?' · '+gbp0(n.monthly_equiv)+'/mo':''}</span></div>`);
+  for(const c of D.cards.filter(c=>c.status==='closed')) nc.push(`<div class="row"><span>${esc(cardName(c))} <span class="chip good">closed</span></span><span class="small muted">cleared</span></div>`);
+  const hal = D.cards.find(c=>c.id==='halifax');
+  if(hal) nc.push(`<div class="row"><span>Halifax 9728 <span class="chip good">cleared</span></span><span class="small muted">0% BT option vs Amex 33.2%</span></div>`);
+  $('noncard').innerHTML = nc.join('');
+})();
+
+/* ---------- render: pots ---------- */
+(function(){
+  const endMonzo = CF.length ? CF[CF.length-1].m : OPENING.monzo;
+  const pot = (name, bal, cap, note) => `<div class="pot"><div class="row"><b>${name}</b><span class="num">${bal==null?'<span class="muted">—</span>':gbp0(bal)} <span class="muted">/ ${gbp0(cap)}</span></span></div>
+    <div class="bar"><i style="width:${bal==null?0:Math.min(100,bal/cap*100)}%"></i></div><div class="small muted" style="margin-top:5px">${note}</div></div>`;
+  $('pots').innerHTML =
+    `<div class="pot"><div class="row"><b>Monzo · cards + bills</b><span class="num">${gbp0(endMonzo)}</span></div><div class="small muted">Projected in 14 days. The £${cardsSoWeekly}/wk SO leaves ~${gbp0(overpayFromSo(cardsSoWeekly))}/mo surplus → pay it to the snowball target.</div></div>` +
+    pot('Emergency Fund', A?A.pots.emergency_fund:null, B.pots.monzo_emergency_cap, A ? `From transaction history · plan +${gbp0(L.emergency_fund)}/mo, only round-ups seen` : `+${gbp0(L.emergency_fund)}/mo · balance needs sync`) +
+    (BUF ? pot('Monzo — Trip cover (unpaid weeks)', BAL&&BAL.monzo_trip_cover!=null?BAL.monzo_trip_cover:null, BUF.target, `£${BUF.weekly}/wk from ${fmtD(iso(BUF.first))} to ${fmtD(iso(BUF.last))} · covers bills for the 2 unpaid weeks`) : '') +
+    pot('Thailand flights — your half (Chase + Metro)', BAL?(B.pots.thailand_accounts||['metro']).reduce((t,k)=>t+(BAL[k]||0),0):null, B.pots.metro_bali_thailand_target, `£95/wk from 6 Nov (→ £25 once Rumbi confirms her half) · trip ${MON[iso(B.pots.thailand_trip+'-01').getMonth()]} ${B.pots.thailand_trip.slice(0,4)}${BAL?' · balance '+fmtD(iso(BAL.as_of.slice(0,10))):''}`);
+})();
+
+/* ---------- render: flags ---------- */
+(function(){
+  const F=[];
+  const left = hsbcWeekly(B.income.net_weekly, cardsSoWeekly);
+  if(left<LIVING_WK) F.push(['warn', `<b>Tight week money:</b> ${gbp(left)}/wk free in HSBC vs ${gbp(LIVING_WK)}/wk budgeted for food, fuel and living. Thailand £95/wk is the first thing to pause.`]);
+  if(BUF && TODAY>=iso('2027-04-01') && TODAY<=iso('2027-05-31')) F.push(['bad', `<b>Trip reminder:</b> ${esc(BUF.reminder)}`]);
+  if(B.emergency_fund_note) F.push(['info', `Emergency Fund paused — revisit when BW Legal clears (~Jan 2027).`]);
+  const in30 = cashflow(START, 30).flatMap(r=>r.ev.filter(e=>e.card && e.acct==='HSBC').map(e=>`${e.n} ${r.dt.getDate()} ${MON[r.dt.getMonth()]}`));
+  if(in30.length) F.push(['warn', `<b>${in30.length} card DDs pull from HSBC</b> in the next 30 days: ${in30.map(esc).join(', ')}.`]);
+  for(const c of D.cards){
+    if(c.status==='investigate' && !(A && A.last_paid[c.id])) F.push(['warn', `<b>${esc(cardName(c))} ${gbp(c.balance_live)}</b> — no APR, minimum or DD on record. If nothing’s paying it, it’s missing payments.`]);
+    if(c.balance_aug!=null && c.balance_live-c.balance_aug>=150) F.push(['warn', `<b>${esc(cardName(c))} up ${gbp0(c.balance_live-c.balance_aug)}</b> since the August statement — new spending or a fee?`]);
+    for(const p of (c.promo||[])){ const dl=daysBetween(TODAY, iso(p.expires)); if(dl<=60) F.push(['bad', `<b>0% ends in ${dl}d</b> on ${esc(cardName(c))} (${gbp0(p.amount)}) — it jumps to the front of the queue.`]); }
+  }
+  const maxed = D.cards.filter(c=>c.limit && c.type!=='loan' && c.balance_live/c.limit>=0.9).sort((a,b)=>b.balance_live/b.limit-a.balance_live/a.limit);
+  if(maxed.length) F.push(['warn', `<b>${maxed.length} cards at 90%+ of limit:</b> ${maxed.map(c=>`${esc(cardName(c))} ${Math.round(c.balance_live/c.limit*100)}% (${gbp0(c.limit-c.balance_live)} left)`).join(', ')}. Interest alone could push one over — over-limit fees.`]);
+  const promos = D.cards.flatMap(c=>(c.promo||[]).map(p=>({c,p,dl:daysBetween(TODAY,iso(p.expires))}))).filter(x=>x.dl>60).sort((a,b)=>a.dl-b.dl);
+  if(promos[0]) F.push(['info', `Next 0% expiry: ${esc(cardName(promos[0].c))} ${gbp0(promos[0].p.amount)} on ${fmtLong(iso(promos[0].p.expires))} (${promos[0].dl}d).`]);
+  if(TODAY<=iso('2026-10-20')) F.push(['info', `Allianz home emergency (AZP) renewed £54 on 13 Oct last year — cancelled; make sure it doesn’t fire.`]);
+  if(A){
+    const mon = A.month, monName = MON[iso(mon+'-01').getMonth()];
+    const ret = A.returned.filter(r=>r.date.startsWith(mon));
+    for(const r of ret){ const c=D.cards.find(c=>c.id===r.card);
+      if(c && (c.returned_resolved||[]).includes(r.date)) F.push(['good', `${esc(cardName(c))} ${gbp(r.amount)} DD returned ${fmtD(iso(r.date))} — paid manually.`]);
+      else F.push(['bad', `<b>Returned payment:</b> ${esc(c?cardName(c):r.account)} ${gbp(r.amount)} on ${fmtD(iso(r.date))}. Unpaid until you pay it by card.`]); }
+    if(!ret.length) F.push(['good', `No returned payments in ${monName}.`]);
+    const sb=A.last_paid.sainsburys;
+    if(sb && D.cards.find(c=>c.id==='sainsburys')?.status!=='closed' && daysBetween(iso(sb.date),TODAY)>45) F.push(['bad', `<b>Sainsbury’s Bank 4329:</b> last payment found ${fmtLong(iso(sb.date))} (${gbp0(sb.amount)} from ${esc(sb.from)}). Possibly ${Math.floor(daysBetween(iso(sb.date),TODAY)/30)} months unpaid.`]);
+    for(const l of A.unknown_loans.filter(l=>!knownLoan(l))) F.push(['warn', `<b>Loan not on the board:</b> ${esc(l.name)} — ${gbp(l.amount)} paid ${fmtD(iso(l.last))}.`]);
+    const cs=A.card_spend.filter(x=>x.amount>0);
+    if(cs.length) F.push(['warn', `<b>${gbp(A.actual.new_card_spend)} new on cards in ${monName}</b> (rule is £0): ${cs.map(x=>`${esc(x.what.split(/\s{2,}/)[0].slice(0,22))} ${gbp0(x.amount)}`).join(', ')}.`]);
+    if(A.travel.length) F.push(['warn', `<b>Travel-shaped:</b> ${A.travel.map(x=>`${esc(x.what.slice(0,24))} ${gbp0(x.amount)} (${esc(x.account)})`).join(', ')}.`]);
+    for(const x of A.big) F.push(['warn', `<b>${gbp0(x.amount)} unexplained:</b> ${esc(x.what)} (${esc(x.account)}, ${fmtD(iso(x.date))}).`]);
+  }
+  // Daily-pull watch findings (data/watch.json, trusted HTML written by the pull task)
+  if(S.watch) for(const [k,t] of S.watch.items) F.push([k, `${t} <span class="muted small">· watch ${fmtD(iso(S.watch.as_of))}</span>`]);
+  const order={bad:0,warn:1,info:2,good:3};
+  $('flags').innerHTML = F.sort((a,b)=>order[a[0]]-order[b[0]]).map(([k,t])=>`<div class="flag ${k}"><span class="dot"></span><div>${t}</div></div>`).join('');
+})();
+
+/* ---------- footer ---------- */
+$('foot').innerHTML = `
+  <div>Engine checks: plan re-run ${planOK?'matches':'<b class="neg">differs from</b>'} snowball.py (${S.checks.plan.label}, ${gbp0(S.checks.plan.interest)}) · live ${liveOK?'matches':'<b class="neg">differs from</b>'} live.py (${S.checks.live.label}).</div>
+  <ul>
+    <li>Card balances: aggregator app, ${fmtLong(SEED_DAY)}. APRs and minimums: August statements.</li>
+    <li>Projection starts Oct 2026 (minimums only), overpay from Nov. 0% balances accrue nothing until expiry; freed minimums roll.</li>
+    <li>Plan of record uses Aug balances, 11 cards (Barclaycard, Nationwide, Sainsbury’s left out) and freed minimums don’t roll.</li>
+    <li>Sainsbury’s APR assumed ${SAINSBURYS_APR_ASSUMED*100}%. DD dates as scheduled; weekend shifts ignored.</li>
+    <li>Built ${esc(S.built.replace('T',' '))}. ${A?`Transactions: ${esc(A.file)} (${A.new_rows??'?'} new rows). Emergency Fund summed from its transaction history.`:'No transaction export yet.'} Balances only change when debts.json is updated from screenshots.</li>
+  </ul>`;
+
+window.DE = {S, D, B, SO, A, BAL, runLive, bufferLumps, overpayFromSo, cardsSoWeekly, cardName, monthLabel,
+  live, gbp, gbp0, MON, iso, fmtD, fmtLong, esc, TODAY};
+renderToday();
+};
+
+</script>
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const cfg = window.HSS_MONEY || {};
+const sb = window.supabase.createClient(cfg.url, cfg.key, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' }
+});
+const here = location.origin + location.pathname;
+const store = { get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+                set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} } };
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const when = t => new Date(t).toLocaleString('en-GB', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+
+let session = null, snapshot = null, plan = null, pollTimer = null;
+
+/* ---------------- auth ---------------- */
+function msg(text, ok){ const m = $('authMsg'); m.hidden = !text; m.className = 'msg ' + (ok ? 'ok' : 'err'); m.textContent = text || ''; }
+function seg(up){
+  $('segIn').setAttribute('aria-pressed', String(!up)); $('segUp').setAttribute('aria-pressed', String(up));
+  $('fIn').hidden = up; $('fUp').hidden = !up; $('fNew').hidden = true; msg('');
+}
+$('segIn').onclick = () => seg(false);
+$('segUp').onclick = () => seg(true);
+$('fIn').onsubmit = async e => {
+  e.preventDefault(); msg('');
+  const { error } = await sb.auth.signInWithPassword({ email: $('inEmail').value.trim(), password: $('inPass').value });
+  if (error) msg(error.message);
+};
+$('btnMagic').onclick = async () => {
+  const email = $('inEmail').value.trim(); if (!email) return msg('Type your email first, then press the link again.');
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: here } });
+  msg(error ? error.message : 'Check your email: the sign-in link works once, on this device or another.', !error);
+};
+$('btnForgot').onclick = async () => {
+  const email = $('inEmail').value.trim(); if (!email) return msg('Type your email first.');
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: here });
+  msg(error ? error.message : 'If that email has an account, a reset link is on its way.', !error);
+};
+$('fUp').onsubmit = async e => {
+  e.preventDefault(); msg('');
+  const { data, error } = await sb.auth.signUp({ email: $('upEmail').value.trim(), password: $('upPass').value,
+    options: { data: { display_name: $('upName').value.trim() }, emailRedirectTo: here } });
+  if (error) return msg(error.message);
+  if (!data.session) msg('Account created. Check your email and press the confirmation link to finish.', true);
+};
+$('fNew').onsubmit = async e => {
+  e.preventDefault();
+  const { error } = await sb.auth.updateUser({ password: $('newPass').value });
+  if (error) return msg(error.message);
+  msg('Password saved.', true); $('fNew').hidden = true; start();
+};
+$('btnAcct').onclick = () => { const m = $('acctMenu'); m.hidden = !m.hidden; $('btnAcct').setAttribute('aria-expanded', String(!m.hidden)); };
+$('btnSignOut').onclick = async () => { await sb.auth.signOut(); location.replace(here); };
+
+sb.auth.onAuthStateChange((event, s) => {
+  session = s;
+  if (event === 'PASSWORD_RECOVERY') { showAuth(); $('fIn').hidden = $('fUp').hidden = true; $('fNew').hidden = false; msg('Choose a new password.', true); return; }
+  if (event === 'SIGNED_OUT') return showAuth();
+  if (s && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && $('appView').hidden) start();
+  if (!s && event === 'INITIAL_SESSION') showAuth();
+});
+
+function showAuth(){ $('authView').hidden = false; $('appView').hidden = true; $('tabbar').hidden = true; }
+
+/* ---------------- tabs ---------------- */
+const TAB_OF = { 'Today':'today', 'h-flags':'today', 'h-total':'debts', 'h-target':'debts', 'h-board':'debts',
+  'h-cash':'cash', 'h-pots':'cash', 'h-budget':'budget', 'h-roadmap':'whatif', 'h-free':'progress' };
+function setupTabs(){
+  document.querySelectorAll('#appView .wrap > section').forEach(s => {
+    if (!s.dataset.tab) s.dataset.tab = TAB_OF[s.getAttribute('aria-labelledby') || s.getAttribute('aria-label')] || 'today';
+  });
+  const foot = $('foot'); if (foot) foot.dataset.tab = 'progress';
+  document.querySelectorAll('#tabbar [data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+  go(store.get('hss-tab', 'today'));
+}
+function go(tab){
+  document.querySelectorAll('#appView [data-tab]').forEach(el => el.hidden = el.dataset.tab !== tab);
+  document.querySelectorAll('#tabbar [data-go]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.go === tab)));
+  store.set('hss-tab', tab); window.scrollTo(0, 0);
+}
+
+/* ---------------- data ---------------- */
+async function start(){
+  $('authView').hidden = true; $('appView').hidden = false; $('tabbar').hidden = false;
+  $('acctEmail').textContent = session?.user?.email || '';
+  await loadSnapshot(); await loadPlan();
+  setupTabs(); await checkRequest(true);
+}
+async function loadSnapshot(){
+  const { data, error } = await sb.from('snapshots').select('id,as_of,source,created_at,seed').order('created_at', { ascending:false }).limit(1).maybeSingle();
+  if (error) { status('Could not load your data: ' + error.message, true); return; }
+  const has = !!data;
+  $('emptyState').hidden = has;
+  document.querySelectorAll('#appView .wrap > section, #foot').forEach(s => s.style.display = has ? '' : 'none');
+  $('btnUpdate').hidden = false;
+  if (!has) { $('freshness').textContent = 'No data yet'; return; }
+  snapshot = data;
+  window.renderDashboard(data.seed);
+  $('freshness').textContent = 'Data ' + when(data.as_of);
+  $('freshness').title = 'Pulled ' + when(data.as_of) + (data.source ? ' · ' + data.source : '');
+  WI.render();
+}
+async function loadPlan(){
+  const { data } = await sb.from('plans').select('inputs,summary,made_at').order('made_at', { ascending:false }).limit(1).maybeSingle();
+  plan = data || null; if (snapshot) WI.render();
+}
+
+/* ---------------- Update button ---------------- */
+function status(text, bad){ const s = $('updStatus'); s.hidden = !text; s.textContent = text || ''; s.classList.toggle('bad', !!bad); }
+$('btnUpdate').onclick = async () => {
+  $('btnUpdate').disabled = true;
+  const { error } = await sb.from('update_requests').insert({ user_id: session.user.id });
+  if (error && error.code !== '23505') { status('Couldn’t ask for an update: ' + error.message, true); $('btnUpdate').disabled = false; return; }
+  await checkRequest(false);
+};
+async function checkRequest(first){
+  const { data: r } = await sb.from('update_requests').select('id,status,note,requested_at,started_at,finished_at').order('requested_at', { ascending:false }).limit(1).maybeSingle();
+  clearTimeout(pollTimer);
+  if (!r) { status(''); $('btnUpdate').disabled = false; return; }
+  if (r.status === 'pending' || r.status === 'running') {
+    $('btnUpdate').disabled = true;
+    status(r.status === 'pending' ? `Update requested ${when(r.requested_at)}. Waiting for the home lab to pick it up (it checks every 10 minutes)…`
+                                  : `Home lab is pulling your bank data now (started ${when(r.started_at)}). This usually takes 5–10 minutes…`);
+    pollTimer = setTimeout(() => checkRequest(false), 20000);
+    return;
+  }
+  $('btnUpdate').disabled = false;
+  const fresh = r.finished_at && (!first || Date.now() - Date.parse(r.finished_at) < 15 * 60e3);
+  if (r.status === 'done') { status(fresh ? `Updated ${when(r.finished_at)}.` : ''); if (!first) await loadSnapshot(); }
+  else status(fresh ? `The last update didn’t finish (${r.note || 'no reason given'}). Your data is from ${snapshot ? when(snapshot.as_of) : '—'}.` : '', true);
+  if (fresh) setTimeout(() => status(''), 30000);
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && session && !$('appView').hidden) checkRequest(false); });
+
+/* ---------------- What-if roadmap ---------------- */
+const WI = (() => {
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const mi = ym => { const [y, m] = ym.split('-').map(Number); return (y - 2026) * 12 + (m - 10) + 1; }; // 1 = Oct 2026, the engine's first month
+  const ymLabel = ym => { const [y, m] = ym.split('-').map(Number); return MONTHS[m - 1] + ' ' + y; };
+  const addMonths = (d, n) => { const x = new Date(d.getFullYear(), d.getMonth() + n, 1); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0'); };
+  const monthOpts = sel => { let h = ''; for (let i = 0; i < 37; i++) { const ym = addMonths(new Date(), i); h += `<option value="${ym}"${ym === sel ? ' selected' : ''}>${ymLabel(ym)}</option>`; } return h; };
+  let form = null;
+
+  function defaults(){
+    const DE = window.DE, inc = DE.B.income, hrs = inc.hours || 50, nm = addMonths(new Date(), 1);
+    return { hours: hrs, netPerHour: Math.round(inc.net_weekly / hrs * 100) / 100, payFrom: nm, costs: 0, costsFrom: nm,
+      disc: DE.B.lines_monthly.other_living, discFrom: nm, oneOff: 0, oneOffMonth: nm,
+      windfalls: DE.D.owed_to_kola.map((o, i) => ({ id: 'owed' + i, label: `${o.from} pays you back`, amount: o.amount_est, month: '2027-01', on: false })) };
+  }
+  function lumpsFor(inp){
+    const DE = window.DE, base = DE.B.income.net_weekly, L = { ...DE.bufferLumps() };
+    const add = (mo, v) => { if (mo >= 1 && Math.abs(v) > 0.004) L[mo] = (L[mo] || 0) + v; };
+    const payDelta = (inp.hours * inp.netPerHour - base) * 52 / 12;
+    for (let mo = 1; mo <= 240; mo++) {
+      let d = 0;
+      if (mo >= mi(inp.payFrom)) d += payDelta;
+      if (mo >= mi(inp.costsFrom)) d -= inp.costs;
+      if (mo >= mi(inp.discFrom)) d += DE.B.lines_monthly.other_living - inp.disc;
+      add(mo, d);
+    }
+    if (inp.oneOff > 0) add(mi(inp.oneOffMonth), inp.oneOff);
+    for (const w of inp.windfalls) if (w.on && w.amount > 0) add(mi(w.month), w.amount);
+    return { lumps: L, monthly: payDelta - inp.costs + (DE.B.lines_monthly.other_living - inp.disc) };
+  }
+  const run = inp => { const DE = window.DE, l = lumpsFor(inp); return { ...DE.runLive(DE.overpayFromSo(DE.cardsSoWeekly), { lumps: l.lumps }), monthly: l.monthly }; };
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const planInputs = () => { const d = defaults(); return plan?.inputs ? { ...d, ...plan.inputs, windfalls: d.windfalls.map(w => ({ ...w, ...(plan.inputs.windfalls || []).find(x => x.id === w.id) })) } : d; };
+
+  function field(label, id, val, hint, type = 'number', step = '1'){
+    return `<label>${label}<input id="${id}" type="${type}" inputmode="decimal" step="${step}" value="${esc(val)}">${hint ? `<span class="hint">${hint}</span>` : ''}</label>`;
+  }
+  function sel(label, id, val){ return `<label>${label}<select id="${id}">${monthOpts(val)}</select></label>`; }
+
+  function drawForm(){
+    const DE = window.DE, f = form;
+    $('wiForm').innerHTML =
+      field('Hours a week', 'wiHours', f.hours, `Now ${DE.B.income.hours || 50} h`) +
+      field('Take-home per hour, £', 'wiRate', f.netPerHour, `${DE.gbp(DE.B.income.net_weekly)}/wk now`, 'number', '0.01') +
+      sel('…starting with', 'wiPayFrom', f.payFrom) + '<div></div>' +
+      field('Extra monthly costs, £', 'wiCosts', f.costs, 'Fuel, EV charging, a new bill… (use minus for savings)') +
+      sel('…from', 'wiCostsFrom', f.costsFrom) +
+      field('Discretionary spending, £/month', 'wiDisc', f.disc, `${DE.gbp0(DE.B.lines_monthly.other_living)} now`) +
+      sel('…from', 'wiDiscFrom', f.discFrom) +
+      field('One-off extra payment, £', 'wiOne', f.oneOff, 'A bonus, a sale, a gift') +
+      sel('…paid in', 'wiOneMonth', f.oneOffMonth) +
+      f.windfalls.map((w, i) => `<label class="wi-check"><input type="checkbox" id="wiW${i}" ${w.on ? 'checked' : ''}>
+        <span><b>${esc(w.label)}</b><span class="row2"><input type="number" id="wiWA${i}" value="${w.amount}" aria-label="Amount">
+        <select id="wiWM${i}" aria-label="Month">${monthOpts(w.month)}</select></span></span></label>`).join('');
+    const read = () => {
+      const n = id => { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+      form = { hours: n('wiHours'), netPerHour: n('wiRate'), payFrom: $('wiPayFrom').value, costs: n('wiCosts'), costsFrom: $('wiCostsFrom').value,
+        disc: n('wiDisc'), discFrom: $('wiDiscFrom').value, oneOff: n('wiOne'), oneOffMonth: $('wiOneMonth').value,
+        windfalls: f.windfalls.map((w, i) => ({ ...w, on: $('wiW' + i).checked, amount: n('wiWA' + i), month: $('wiWM' + i).value })) };
+      drawResult();
+    };
+    $('wiForm').querySelectorAll('input,select').forEach(el => el.addEventListener('input', read));
+  }
+
+  function drawResult(){
+    const DE = window.DE, P = planInputs(), p = run(P), w = run(form);
+    const never = r => r.months >= 600;
+    const lab = r => never(r) ? 'never' : r.label;
+    const diffM = (never(p) || never(w)) ? null : w.months - p.months;
+    const chip = diffM === null ? '<span class="chip bad">check inputs</span>'
+      : same(form, P) ? '<span class="chip">same as plan</span>'
+      : diffM < 0 ? `<span class="chip good">${-diffM} month${diffM === -1 ? '' : 's'} sooner</span>`
+      : diffM > 0 ? `<span class="chip bad">${diffM} month${diffM === 1 ? '' : 's'} later</span>` : '<span class="chip acc">same month</span>';
+    const di = w.interest - p.interest;
+    const cards = DE.D.cards.filter(c => (c.balance_live || 0) > 0 && (c.id in p.killed || c.id in w.killed))
+      .sort((a, b) => (p.killed[a.id] || 999) - (p.killed[b.id] || 999));
+    const kl = k => k ? DE.monthLabel(2026, 10, k - 1) : '—';
+    const row = c => { const a = p.killed[c.id], b = w.killed[c.id], d = (a && b) ? b - a : null;
+      return `<tr><td>${esc(DE.cardName(c))}</td><td>${kl(a)}</td><td>${kl(b)}</td><td class="${d < 0 ? 'down' : d > 0 ? 'up' : 'muted'}">${d === null ? '?' : d === 0 ? 'same' : (d < 0 ? d : '+' + d) + ' mo'}</td></tr>`; };
+    $('wiResult').innerHTML = `
+      <div class="row"><h3>Result</h3>${chip}</div>
+      <div class="wi-res">
+        <div><div class="lbl">Cards &amp; loans gone</div><div class="v">${lab(w)}</div><div class="small muted">plan: ${lab(p)}</div></div>
+        <div><div class="lbl">Interest to the end</div><div class="v">${DE.gbp(w.interest)}</div><div class="small ${di < -0.5 ? 'down' : di > 0.5 ? 'up' : 'muted'}">${Math.abs(di) < 0.5 ? 'same as plan' : (di < 0 ? 'saves ' : 'costs ') + DE.gbp(Math.abs(di))}</div></div>
+        <div><div class="lbl">Extra to the cards</div><div class="v">${w.monthly >= 0 ? '+' : '−'}${DE.gbp0(Math.abs(w.monthly))}/mo</div><div class="small muted">plan: ${p.monthly >= 0 ? '+' : '−'}${DE.gbp0(Math.abs(p.monthly))}/mo on top of the £${DE.cardsSoWeekly}/wk SO</div></div>
+        <div><div class="lbl">Plan saved</div><div class="v" style="font-size:16px">${plan ? when(plan.made_at) : 'not yet'}</div><div class="small muted">${plan ? 'your inputs' : 'today’s setup'}</div></div>
+      </div>
+      <table class="wi-table"><thead><tr><th>Debt</th><th>Plan</th><th>What-if</th><th>Change</th></tr></thead><tbody>${cards.map(row).join('')}</tbody></table>
+      <div class="wi-btns"><button type="button" class="primary" id="wiMake" ${same(form, P) ? 'disabled' : ''}>Make this the plan</button><button type="button" class="ghost" id="wiReset">Reset to plan</button></div>
+      <p class="small muted" style="margin:0">Freed-up money and one-offs go to the cards in kill order (0% balances wait until their promo ends). Pay changes assume the extra still reaches the cards.</p>`;
+    $('wiReset').onclick = () => { form = planInputs(); drawForm(); drawResult(); };
+    $('wiMake').onclick = async () => {
+      $('wiMake').disabled = true;
+      const { data, error } = await sb.from('plans').insert({ user_id: session.user.id, inputs: form, summary: { label: lab(w), interest: Math.round(w.interest) } })
+        .select('inputs,summary,made_at').single();
+      if (error) { $('wiMake').disabled = false; return alert('Couldn’t save the plan: ' + error.message); }
+      plan = data; drawResult();
+    };
+  }
+
+  function drawStats(){
+    const DE = window.DE, D = DE.D, p = run(planInputs());
+    const cards = D.cards.filter(c => c.type !== 'loan' && (c.balance_live || 0) > 0).reduce((t, c) => t + c.balance_live, 0);
+    const loans = D.cards.filter(c => c.type === 'loan').reduce((t, c) => t + (c.balance_live || 0), 0);
+    const outside = D.non_card.filter(n => n.in_plan === false);
+    const tgt = D.cards.filter(c => c.id in p.killed).sort((a, b) => p.killed[a.id] - p.killed[b.id])[0];
+    $('rmAsOf').textContent = 'Balances as of ' + DE.fmtLong(DE.iso(D.as_of));
+    $('rmStats').innerHTML = `
+      <div><div class="lbl">Cards &amp; loans</div><div class="v">${DE.gbp0(cards + loans)}</div><div class="small muted">${D.cards.filter(c => (c.balance_live || 0) > 0).length} accounts</div></div>
+      <div><div class="lbl">Outside the plan</div><div class="v">${DE.gbp0(outside.reduce((t, n) => t + (n.balance_est || 0), 0))}</div><div class="small muted">${outside.map(n => esc(n.name.split(' (')[0])).join(', ')}</div></div>
+      <div><div class="lbl">Current target</div><div class="v" style="font-family:var(--f-display)">${tgt ? esc(DE.cardName(tgt)) : '—'}</div><div class="small muted">${tgt ? DE.gbp0(tgt.balance_live) : ''}</div></div>
+      <div><div class="lbl">Cards &amp; loans gone</div><div class="v">${p.months >= 600 ? 'never' : p.label}</div><div class="small muted">${plan ? 'your saved plan' : 'today’s setup'}</div></div>`;
+  }
+
+  return { render(){ if (!window.DE) return; form = planInputs(); drawStats(); drawForm(); drawResult(); } };
+})();
+})();
+
+</script>
+</body>
+</html>
