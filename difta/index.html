@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Do It For The Art Studio | Barbers in Bletchley, Milton Keynes</title>
+<meta name="description" content="Award-winning barbershop in Bletchley, Milton Keynes. Skin fades, tapers, beards, locs and braids. 465+ five-star reviews. Book online in seconds.">
+<meta name="theme-color" content="#0a0a0a">
+<meta property="og:title" content="Do It For The Art Studio · Bletchley barbers">
+<meta property="og:description" content="Award-winning barbers. Fades, beards, locs and braids. Book your chair online.">
+<meta property="og:image" content="img/hero.jpg">
+<link rel="icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BarberShop","name":"Do It For The Art Studio","image":"img/hero.jpg","telephone":"+447946683376","address":{"@type":"PostalAddress","streetAddress":"12 Wetherburn Court, Brunel Shopping Centre","addressLocality":"Bletchley, Milton Keynes","postalCode":"MK2 2UW","addressCountry":"GB"},"geo":{"@type":"GeoCoordinates","latitude":51.9946273,"longitude":-0.7328365},"openingHours":["Su 12:00-16:00","Mo 12:00-19:00","Tu-Sa 09:00-19:00"],"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.95","reviewCount":"465"}}</script>
+<style>
+/* hero */
+.hero{min-height:min(100svh,980px);display:grid;align-items:end;position:relative;overflow:hidden;padding:120px 0 64px}
+.hero-bg{position:absolute;inset:0;z-index:-2;background:url(img/hero.jpg) center/cover;transform:scale(1.08);animation:hz 18s ease-out forwards}
+@keyframes hz{to{transform:scale(1)}}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,.35) 35%,rgba(10,10,10,.92) 78%,#0a0a0a 100%)}
+.hero-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:end}
+.hero h1{font-size:clamp(54px,9.5vw,128px);font-weight:500;line-height:.92;margin:18px 0 22px;letter-spacing:-.01em}
+.hero h1 em{font-weight:400}
+.hero .lead{color:#d8d2c7;font-size:clamp(17px,2vw,20px)}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.hero-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.bubble{width:min(300px,70vw);aspect-ratio:1;border-radius:50%;background:#0a0a0a url(img/mark-white.png) center/cover;box-shadow:0 0 0 1px rgba(201,165,90,.5),0 0 0 14px rgba(10,10,10,.55),0 0 0 15px rgba(201,165,90,.25),var(--shadow);justify-self:end;animation:fl 7s ease-in-out infinite;position:relative}
+@keyframes fl{50%{transform:translateY(-12px)}}
+.open-now{display:inline-flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(95,191,138,.2)}
+.dot.closed{background:var(--bad);box-shadow:0 0 0 4px rgba(224,106,95,.2)}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}.bubble{display:none}.hero{padding-bottom:110px}.hero::after{background:linear-gradient(180deg,rgba(10,10,10,.5) 0%,rgba(10,10,10,.78) 30%,rgba(10,10,10,.93) 60%,#0a0a0a 100%)}.hero h1{font-size:clamp(50px,14vw,72px)}}
+/* marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);background:#0d0d0d;padding:22px 0}
+.marquee .track{display:flex;gap:48px;width:max-content;animation:mq 38s linear infinite;font:italic 400 clamp(28px,4vw,42px)/1 var(--display);color:var(--text)}
+.marquee .track span{display:flex;align-items:center;gap:48px;white-space:nowrap}
+.marquee .track span::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--gold)}
+@keyframes mq{to{transform:translateX(-50%)}}
+section.s{padding:clamp(80px,11vw,140px) 0}
+.s-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:48px}
+.s-head h2{margin-top:14px}
+/* about */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,90px);align-items:center}
+.about-img{position:relative}
+.about-img img{border-radius:220px 220px 24px 24px;aspect-ratio:4/5;object-fit:cover;width:100%;filter:contrast(1.05)}
+.about-img .tag{position:absolute;right:-14px;bottom:36px;width:150px;height:150px;border-radius:50%;background:#0a0a0a;border:1px solid rgba(201,165,90,.55);display:grid;place-items:center;text-align:center;font:italic 500 20px/1.1 var(--display);color:var(--gold2);padding:18px;box-shadow:var(--shadow)}
+.about p{color:#cfc9be;margin-top:18px;font-size:17px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:34px}
+.stat{padding:20px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+.stat b{display:block;font:500 42px/1 var(--display);color:var(--gold2)}
+.stat span{font-size:13px;color:var(--mute);letter-spacing:.06em}
+@media (max-width:860px){.about{grid-template-columns:1fr}.about-img .tag{right:10px;width:120px;height:120px;font-size:17px}}
+/* team */
+.team{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.barber{position:relative;border-radius:22px;overflow:hidden;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}
+.barber .ph{aspect-ratio:4/5;overflow:hidden;position:relative}
+.barber .ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s;filter:grayscale(.15)}
+.barber:hover .ph img{transform:scale(1.05);filter:none}
+.barber .ph::after{content:"";position:absolute;inset:auto 0 0;height:40%;background:linear-gradient(transparent,rgba(10,10,10,.9))}
+.barber .alias{position:absolute;left:16px;bottom:14px;z-index:1;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold2)}
+.barber .body{padding:20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.barber h3{font-size:34px}
+.barber .role{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.barber p{font-size:14.5px;color:#c9c3b8;flex:1}
+.barber .btn{margin-top:10px}
+@media (max-width:1000px){.team{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.team{grid-template-columns:1fr}.barber .ph{aspect-ratio:1/1}}
+/* prices */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:26px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:12px 20px;border-radius:999px;border:1px solid var(--line2);background:transparent;cursor:pointer;font-size:14px;letter-spacing:.06em;transition:.2s}
+.tab.on{background:var(--text);color:#0a0a0a;border-color:var(--text)}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:6px 48px}
+.menu h4{grid-column:1/-1;font:500 13px/1 var(--ui);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin:22px 0 6px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:18px 0;border-bottom:1px dashed var(--line2);align-items:baseline}
+.item .n{font:500 24px/1.15 var(--display)}
+.item .p{font:500 24px/1 var(--display);color:var(--gold2)}
+.item .d{grid-column:1/-1;font-size:13.5px;color:var(--mute);display:flex;justify-content:space-between;gap:12px;align-items:center}
+.item .d a{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--text);border-bottom:1px solid var(--gold);padding-bottom:2px;flex:none}
+@media (max-width:760px){.menu{grid-template-columns:1fr}}
+.note{margin-top:22px;font-size:13px;color:var(--mute)}
+/* gallery */
+.gallery{columns:4 220px;column-gap:12px}
+.gallery button{display:block;width:100%;margin-bottom:12px;border:0;padding:0;border-radius:16px;overflow:hidden;cursor:zoom-in;background:#111;break-inside:avoid}
+.gallery img{width:100%;transition:transform .6s}
+.gallery button:hover img{transform:scale(1.04)}
+.gallery button:nth-child(3n) img{aspect-ratio:4/5;object-fit:cover}
+.gallery button:nth-child(3n+1) img{aspect-ratio:1/1;object-fit:cover}
+.lb{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.94);display:none;place-items:center;padding:20px}
+.lb.on{display:grid}
+.lb img{max-height:86vh;border-radius:14px}
+.lb .x{position:absolute;top:16px;right:16px}
+/* reviews */
+.rating-row{display:flex;gap:16px;flex-wrap:wrap}
+.rating{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:18px;border:1px solid var(--line);background:var(--panel)}
+.rating b{font:500 44px/1 var(--display);color:var(--gold2)}
+.rating small{display:block;color:var(--mute);font-size:13px}
+.reviews{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 18px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.rv{flex:0 0 min(380px,84vw);scroll-snap-align:start;padding:28px;border-radius:22px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
+.rv q{font:italic 400 22px/1.35 var(--display);color:#ece6da;quotes:"“" "”";flex:1}
+.rv .who{display:flex;align-items:center;gap:12px;font-size:14px}
+.rv .av{width:40px;height:40px;border-radius:50%;background:#0a0a0a;border:1px solid rgba(201,165,90,.5);display:grid;place-items:center;font:500 18px var(--display);color:var(--gold2)}
+.rv .src{margin-left:auto;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+/* visit */
+.visit{display:grid;grid-template-columns:1fr 1.1fr;gap:28px}
+.hours{width:100%;border-collapse:collapse;margin-top:10px}
+.hours td{padding:13px 0;border-bottom:1px solid var(--line);font-size:16px}
+.hours td:last-child{text-align:right;color:#d9d3c8}
+.hours tr.today td{color:var(--gold2)}
+.map{border-radius:24px;overflow:hidden;border:1px solid var(--line);min-height:420px;background:#111}
+.map iframe{width:100%;height:100%;min-height:420px;border:0;filter:invert(.92) hue-rotate(180deg) grayscale(.6) contrast(.9)}
+.contact{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+@media (max-width:860px){.visit{grid-template-columns:1fr}}
+/* cta */
+.cta{text-align:center;padding:clamp(90px,12vw,150px) 0;background:#0d0d0d;border-top:1px solid var(--line)}
+.cta h2{font-size:clamp(46px,8vw,96px)}
+.cta .btn{margin-top:30px}
+/* mobile book bar */
+.mbar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:60;display:none;gap:10px;transform:translateY(180%);transition:transform .35s}
+.mbar.on{transform:none}
+.mbar .btn{flex:1;box-shadow:var(--shadow)}
+@media (max-width:760px){.mbar{display:flex}}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav"><div class="wrap">
+  <a class="brand" href="#top" aria-label="Do It For The Art Studio home"><img src="img/logo-white.png" alt="Do It For The Art Studio"></a>
+  <div class="nav-links"><a href="#team">Team</a><a href="#prices">Prices</a><a href="#work">Work</a><a href="#reviews">Reviews</a><a href="#visit">Visit</a></div>
+  <a class="btn gold sm" href="book.html">Book now</a>
+</div></nav>
+
+<header class="hero marble" id="top">
+  <div class="hero-bg" role="img" aria-label="Inside the studio: black marble floors, oval mirrors and ring lights"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Bletchley · Milton Keynes · Est. DIFTA</div>
+      <h1>Every cut is a<br>work of <em>art.</em></h1>
+      <p class="lead">Award-winning barbers in the Brunel Centre. Skin fades, tapers, beards, locs and braids, for every age and every hair type. Traditional meets modern, all under one roof.</p>
+      <div class="hero-ctas">
+        <a class="btn gold" href="book.html">Book your chair</a>
+        <a class="btn" href="#work">See the work</a>
+      </div>
+      <div class="hero-pills">
+        <span class="pill"><span class="stars">★★★★★</span> 4.95 · 465 Booksy reviews</span>
+        <span class="pill"><span class="stars">★★★★★</span> 5.0 · 116 Google reviews</span>
+        <span class="pill open-now" id="openNow"><span class="dot"></span><span>Open today</span></span>
+      </div>
+    </div>
+    <div class="bubble" aria-hidden="true"></div>
+  </div>
+</header>
+
+<div class="check" aria-hidden="true"></div>
+<div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+
+<section class="s marble" id="about">
+  <div class="wrap about">
+    <div class="about-img fade-up">
+      <img src="img/about.jpg" alt="Charles lining up a client in front of the studio's black and gold marble wall" loading="lazy">
+      <div class="tag">2026<br>award-winning<br>studio</div>
+    </div>
+    <div class="fade-up">
+      <div class="eyebrow">The studio</div>
+      <h2>Traditional meets <em>modern.</em></h2>
+      <p>Do It For The Art is a grooming studio for men, women and kids, from first cuts to senior citizens. Black marble, sharp lines and a team that takes its time. Every client leaves feeling like the best version of themselves.</p>
+      <p>We're proud to run the first barber apprenticeship in Milton Keynes with MK College, training the next generation to do it for the art.</p>
+      <div class="stats">
+        <div class="stat"><b>465+</b><span>five-star reviews</span></div>
+        <div class="stat"><b>4</b><span>specialist barbers</span></div>
+        <div class="stat"><b>7</b><span>days a week</span></div>
+        <div class="stat"><b>All</b><span>hair types &amp; ages</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="team" style="background:#0d0d0d">
+  <div class="wrap">
+    <div class="s-head fade-up"><div><div class="eyebrow">The artists</div><h2>Meet the <em>team.</em></h2></div><p class="lead">Pick your barber, see their prices and book a time that suits you. No app download, no account.</p></div>
+    <div class="team" id="teamGrid"></div>
+  </div>
+</section>
+
+<section class="s marble" id="prices">
+  <div class="wrap">
+    <div class="s-head fade-up"><div><div class="eyebrow">Prices</div><h2>The <em>menu.</em></h2></div><p class="lead">Each barber sets their own prices. Tap a name to see their menu.</p></div>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="menu" id="menu"><div class="spin"></div></div>
+    <p class="note">Services before 9am or after 6pm may carry an out-of-hours charge. Final prices for braids and locs are confirmed at consultation.</p>
+  </div>
+</section>
+
+<div class="check" aria-hidden="true"></div>
+
+<section class="s" id="work">
+  <div class="wrap">
+    <div class="s-head fade-up"><div><div class="eyebrow">Fresh from the chair</div><h2>The <em>work.</em></h2></div><a class="btn" href="https://www.instagram.com/doitfortheart__studio/" target="_blank" rel="noopener">@doitfortheart__studio</a></div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</section>
+
+<section class="s marble" id="reviews" style="background:#0d0d0d">
+  <div class="wrap">
+    <div class="s-head fade-up"><div><div class="eyebrow">Word of mouth</div><h2>Don't take our <em>word</em> for it.</h2></div>
+      <div class="rating-row">
+        <div class="rating"><b>4.95</b><div><span class="stars">★★★★★</span><small>465 reviews on Booksy</small></div></div>
+        <div class="rating"><b>5.0</b><div><span class="stars">★★★★★</span><small>116 reviews on Google</small></div></div>
+      </div>
+    </div>
+    <div class="reviews" id="reviewsRow"></div>
+  </div>
+</section>
+
+<section class="s" id="visit">
+  <div class="wrap visit">
+    <div class="fade-up">
+      <div class="eyebrow">Visit</div>
+      <h2>Find the <em>studio.</em></h2>
+      <p class="lead" style="margin-top:16px">12 Wetherburn Court, Brunel Shopping Centre, Bletchley, Milton Keynes MK2 2UW. Parking nearby, step-free access, Wi-Fi and kids welcome.</p>
+      <table class="hours" id="hours"></table>
+      <div class="contact">
+        <a class="btn gold sm" href="book.html">Book online</a>
+        <a class="btn sm" href="tel:+447946683376">Call 07946 683376</a>
+        <a class="btn sm" id="waBtn" href="https://wa.me/447946683376" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn sm" href="https://www.google.com/maps/dir/?api=1&destination=51.9946273,-0.7328365" target="_blank" rel="noopener">Directions</a>
+      </div>
+    </div>
+    <div class="map fade-up"><iframe title="Map to Do It For The Art Studio" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=DOITFORTHEART+STUDIO,+12+Wetherburn+Court,+Bletchley+MK2+2UW&z=16&output=embed"></iframe></div>
+  </div>
+</section>
+
+<section class="cta marble">
+  <div class="wrap fade-up">
+    <div class="eyebrow">Your chair is waiting</div>
+    <h2>Do it for <em>the art.</em></h2>
+    <a class="btn gold" href="book.html">Book in 60 seconds</a>
+  </div>
+</section>
+
+<footer class="foot"><div class="wrap">
+  <img src="img/logo-white.png" alt="Do It For The Art Studio" style="height:40px">
+  <span>© <span id="yr"></span> Do It For The Art Studio · Bletchley, Milton Keynes</span>
+  <span><a href="https://www.instagram.com/doitfortheart__studio/" target="_blank" rel="noopener">Instagram</a> · <a href="admin.html">Staff</a></span>
+</div></footer>
+
+<div class="mbar" id="mbar"><a class="btn gold" href="book.html">Book now</a><a class="btn white" href="tel:+447946683376" style="flex:0 0 auto">Call</a></div>
+<div class="lb" id="lb" role="dialog" aria-label="Photo"><button class="btn sm x" id="lbx">Close</button><img alt=""></div>
+
+<script src="assets/common.js"></script>
+<script>
+(() => {
+  const D = DIFTA, $ = (s) => document.querySelector(s);
+  $("#yr").textContent = new Date().getFullYear();
+  // nav + mobile bar
+  const onScroll = () => { $("#nav").classList.toggle("solid", scrollY > 40); $("#mbar").classList.toggle("on", scrollY > innerHeight * .7); };
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  // marquee
+  const words = ["Skin fades", "Tapers", "Beard sculpting", "Shape-ups", "Locs & retwists", "Cornrows", "Box braids", "Kids' cuts", "Scissor cuts"];
+  $("#mq").innerHTML = [...words, ...words].map((w) => `<span>${w}</span>`).join("");
+  // reveal on scroll
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in-view"); io.unobserve(e.target); } }), { threshold: .12 });
+  document.querySelectorAll(".fade-up").forEach((el) => io.observe(el));
+
+  // gallery + lightbox
+  const g = $("#gallery");
+  const alts = ["Mid taper with textured top", "Low taper and beard", "Cornrows with fade", "Waves and line-up", "Afro with taper", "Crop with skin fade", "Skin fade and beard", "Kid's taper"];
+  for (let i = 1; i <= 20; i++) {
+    const n = String(i).padStart(2, "0"), b = document.createElement("button");
+    b.innerHTML = `<img src="img/g${n}.jpg" alt="${alts[(i - 1) % alts.length]} at Do It For The Art Studio" loading="lazy">`;
+    b.onclick = () => { $("#lb img").src = `img/g${n}.jpg`; $("#lb").classList.add("on"); };
+    g.appendChild(b);
+  }
+  $("#lb").onclick = (e) => { if (e.target.id === "lb" || e.target.id === "lbx") $("#lb").classList.remove("on"); };
+  addEventListener("keydown", (e) => { if (e.key === "Escape") $("#lb").classList.remove("on"); });
+
+  // reviews
+  fetch("reviews.json").then((r) => r.json()).then((rs) => {
+    $("#reviewsRow").innerHTML = rs.map((r) => `<article class="rv"><span class="stars">★★★★★</span><q>${D.esc(r.text.replace(/\s*\n+\s*/g, " "))}</q><div class="who"><span class="av">${D.esc(r.name[0])}</span><span><b>${D.esc(r.name)}</b><br><span class="muted">${D.esc(r.when)}</span></span><span class="src">${r.src}</span></div></article>`).join("");
+  }).catch(() => {});
+
+  // hours + open now (static fallback, replaced by live config)
+  const KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"], NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const fallbackHours = { sun: [["12:00", "16:00"]], mon: [["12:00", "19:00"]], tue: [["09:00", "19:00"]], wed: [["09:00", "19:00"]], thu: [["09:00", "19:00"]], fri: [["09:00", "19:00"]], sat: [["09:00", "19:00"]] };
+  const t12 = (hm) => { let [h, m] = hm.split(":").map(Number); const ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return h + (m ? ":" + String(m).padStart(2, "0") : "") + ap; };
+  function renderHours(H) {
+    const nowL = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/London" })), di = nowL.getDay();
+    const order = [1, 2, 3, 4, 5, 6, 0];
+    $("#hours").innerHTML = order.map((i) => { const h = H[KEYS[i]] || []; return `<tr class="${i === di ? "today" : ""}"><td>${NAMES[i]}${i === di ? " · today" : ""}</td><td>${h.length ? h.map(([a, b]) => t12(a) + " – " + t12(b)).join(", ") : "Closed"}</td></tr>`; }).join("");
+    const hm = nowL.getHours() * 60 + nowL.getMinutes(), today = H[KEYS[di]] || [];
+    const toM = (s) => { const [a, b] = s.split(":").map(Number); return a * 60 + b; };
+    const open = today.find(([a, b]) => hm >= toM(a) && hm < toM(b));
+    const later = today.find(([a]) => hm < toM(a));
+    const el = $("#openNow");
+    el.innerHTML = open ? `<span class="dot"></span><span>Open now · until ${t12(open[1])}</span>` : later ? `<span class="dot closed"></span><span>Opens today at ${t12(later[0])}</span>` : `<span class="dot closed"></span><span>Closed now · book for tomorrow</span>`;
+  }
+  renderHours(fallbackHours);
+
+  // team + prices from the live booking system
+  const PHOTO_ALT = { Charles: "Charles, founder of Do It For The Art Studio, cutting hair", Nathan: "Nathan of Cutz by NS", Jai: "Jai, barber and braider, at work", Jayme: "Jayme of JM Fades" };
+  D.config().then((c) => {
+    if (c.hours) renderHours(c.hours);
+    if (c.business?.whatsapp) $("#waBtn").href = D.wa(c.business.whatsapp, "Hi DIFTA Studio, ");
+    $("#teamGrid").innerHTML = c.staff.map((s) => `
+      <article class="barber fade-up in-view">
+        <div class="ph"><img src="${D.esc(s.photo)}" alt="${D.esc(PHOTO_ALT[s.name] || s.name)}" loading="lazy"><span class="alias">${D.esc(s.instagram || "")}</span></div>
+        <div class="body"><span class="role">${D.esc(s.role || "")}</span><h3>${D.esc(s.name)}</h3><p>${D.esc(s.bio || "")}</p>
+        <a class="btn gold sm" href="book.html?barber=${s.id}">Book with ${D.esc(s.name)}</a></div>
+      </article>`).join("");
+    const tabs = $("#tabs");
+    let cur = c.staff[0]?.id;
+    const drawMenu = () => {
+      tabs.querySelectorAll(".tab").forEach((t) => t.classList.toggle("on", t.dataset.id === cur));
+      const svcs = c.services.filter((s) => !s.staff_ids?.length || s.staff_ids.includes(cur));
+      const cats = [...new Set(svcs.map((s) => s.category || "Services"))];
+      $("#menu").innerHTML = cats.map((cat) => `<h4>${D.esc(cat)}</h4>` + svcs.filter((s) => (s.category || "Services") === cat).map((s) => `
+        <div class="item"><span class="n">${D.esc(s.name)}</span><span class="p">${s.price_from ? "from " : ""}${D.gbp(s.price_pence)}</span>
+        <span class="d"><span>${D.mins(s.duration_min)}${s.description ? " · " + D.esc(s.description) : ""}</span><a href="book.html?barber=${cur}&service=${s.id}">Book</a></span></div>`).join("")).join("");
+    };
+    tabs.innerHTML = c.staff.map((s) => `<button class="tab" role="tab" data-id="${s.id}">${D.esc(s.name)}</button>`).join("");
+    tabs.onclick = (e) => { const b = e.target.closest(".tab"); if (b) { cur = b.dataset.id; drawMenu(); } };
+    drawMenu();
+  }).catch(() => { $("#menu").innerHTML = `<p class="muted">Prices are loading slowly. <a class="gold" href="book.html">Open the booking page</a>.</p>`; });
+})();
+</script>
+</body>
+</html>
