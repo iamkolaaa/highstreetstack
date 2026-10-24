@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0a0a">
+<title>DIFTA Staff</title>
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+[hidden]{display:none!important}
+.hdr{position:sticky;top:0;z-index:40;background:rgba(10,10,10,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:10px}
+.hdr img{height:34px;width:auto}
+main{width:min(760px,100% - 24px);margin:14px auto 0}
+h3{font-size:26px;margin:22px 0 8px}
+h3 small{font:400 13px var(--ui);color:var(--mute);letter-spacing:.04em}
+/* lock */
+#lock{position:fixed;inset:0;z-index:100;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:auto}
+#lock img{width:min(280px,70%);margin-bottom:18px}
+.dots{display:flex;gap:12px;margin:14px 0 20px;min-height:16px}
+.dots i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);transition:.15s}
+.dots i.on{background:var(--gold)}
+.pad{display:grid;grid-template-columns:repeat(3,76px);gap:14px;margin-bottom:22px}
+.pad button{width:76px;height:76px;border-radius:50%;border:1px solid var(--line2);background:radial-gradient(circle at 35% 30%,#2b2b2b,#050505 70%);box-shadow:inset 0 2px 6px rgba(255,255,255,.08),0 8px 18px rgba(0,0,0,.6);font:500 28px var(--ui);cursor:pointer}
+.pad button:active{transform:scale(.93);border-color:var(--gold)}
+.pad button.s{font-size:15px;color:var(--mute)}
+#lock .btn{width:min(264px,100%)}
+.err{color:var(--bad);min-height:24px;font-size:14px;margin-bottom:6px}
+/* tab bar */
+.tabs{position:fixed;inset:auto 0 0;z-index:45;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(10,10,10,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{min-height:64px;background:none;border:0;color:var(--mute);font:500 12px var(--ui);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.tabs button b{font-size:20px;line-height:1}
+.tabs button.on{color:var(--gold2)}
+/* strip, chips */
+.strip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.strip::-webkit-scrollbar{display:none}
+.dbtn{flex:none;width:56px;min-height:64px;border-radius:16px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:var(--mute)}
+.dbtn b{font:500 20px var(--ui);color:var(--text)}
+.dbtn.on{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111;border:0}
+.dbtn.on b{color:#111}
+.nav2{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.nav2 .grow{flex:1;text-align:center;font:500 22px var(--display)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:transparent;cursor:pointer;font-size:14px}
+.chip.on{background:var(--text);color:#0a0a0a;border-color:var(--text)}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.sum div{padding:12px 8px;text-align:center}
+.sum b{display:block;font:500 24px var(--display);color:var(--gold2)}
+.sum span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+/* booking cards */
+.bk{display:block;width:100%;text-align:left;padding:14px;margin-bottom:10px;cursor:pointer;border:1px solid var(--line);background:var(--panel);border-radius:var(--r);border-left:4px solid var(--gold)}
+.bk.st-completed{border-left-color:var(--ok)}.bk.st-no_show,.bk.st-cancelled,.bk.st-expired{border-left-color:var(--bad);opacity:.7}.bk.st-pending{border-left-color:var(--warn)}
+.bk .t{font:500 18px var(--ui)}.bk .n{font-size:17px;margin-top:2px}.bk .m{color:var(--mute);font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;border:1px solid var(--line2);color:var(--mute)}
+.tag.ok{color:var(--ok);border-color:var(--ok)}.tag.warn{color:var(--warn);border-color:var(--warn)}.tag.bad{color:var(--bad);border-color:var(--bad)}.tag.gold{color:var(--gold2);border-color:var(--gold)}
+.grp{font:500 12px var(--ui);letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+.empty{padding:30px 10px;text-align:center;color:var(--mute)}
+.fab{position:fixed;right:14px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:44;box-shadow:0 10px 30px rgba(0,0,0,.7)}
+/* sheet */
+#bd{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:opacity .25s}
+#bd.open{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:90;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--char);border:1px solid var(--line2);border-bottom:0;border-radius:24px 24px 0 0;padding:10px 16px calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .28s ease;max-width:760px;margin:0 auto}
+#sheet.open{transform:none}
+#sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 12px}
+#sheet h3{margin:4px 0 4px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.acts .btn{padding:0 10px;letter-spacing:.08em;font-size:13px}
+.acts .full{grid-column:1/-1}
+.btn.bad{color:var(--bad);border-color:var(--bad)}
+.btn.wa{background:#1f6b46;border-color:#1f6b46;color:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line)}
+.hrow b{width:40px;font-weight:500}.hrow .cl{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mute);min-height:44px;margin-right:auto}
+.hrow .cl input,.cb input{width:22px;height:22px;accent-color:var(--gold)}
+.hrow .in{width:auto;flex:1;min-width:100px}.hrow.shut .in{opacity:.3}
+.cb{display:flex;gap:10px;align-items:center;min-height:44px;color:var(--text);font-size:15px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;margin-bottom:8px;width:100%;text-align:left;cursor:pointer;color:inherit}
+.item .l{min-width:0}.item .l div{overflow:hidden;text-overflow:ellipsis}
+.item.off{opacity:.5}
+.hint{font-size:13px;color:var(--mute);margin-top:6px}
+.note{padding:12px 14px;border:1px solid var(--line2);border-radius:14px;margin:10px 0;font-size:14px}
+.hist{font-size:14px;padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.sec{padding:16px;margin-bottom:14px}.sec h3{margin-top:0}
+.radio{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px;cursor:pointer}
+.radio input{width:22px;height:22px;accent-color:var(--gold);flex:none}
+.sp{display:flex;justify-content:center;padding:30px}
+</style>
+</head>
+<body>
+<div id="lock" hidden>
+  <img src="img/logo-white.png" alt="Do It For The Art Studio">
+  <div class="eyebrow">Staff only</div>
+  <div class="dots" id="dots"></div>
+  <div class="err" id="lerr"></div>
+  <div class="pad" id="pad"></div>
+  <button class="btn gold" id="enter">Enter</button>
+</div>
+
+<div id="app" hidden>
+  <header class="hdr marble"><div class="wrap">
+    <img src="img/logo-white.png" alt="DIFTA Studio">
+    <button class="btn sm" data-act="lock">Lock</button>
+  </div></header>
+  <main id="main"></main>
+  <button class="btn gold fab" id="fab" data-act="walkin">+ Walk-in / phone booking</button>
+  <nav class="tabs">
+    <button data-act="tab" data-t="diary"><b>&#9986;</b>Diary</button>
+    <button data-act="tab" data-t="clients"><b>&#9786;</b>Clients</button>
+    <button data-act="tab" data-t="menu"><b>&#9776;</b>Menu &amp; team</button>
+    <button data-act="tab" data-t="settings"><b>&#9881;</b>Settings</button>
+  </nav>
+</div>
+<div id="bd" data-act="close"></div>
+<div id="sheet" role="dialog" aria-modal="true"></div>
+
+<script src="assets/common.js"></script>
+<script>
+(() => {
+const D = DIFTA, esc = D.esc;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const S = { pin: "", all: null, tab: "diary", day: D.ymd(), strip: D.ymd(), staff: "all", bk: [], tom: [], showX: false, mode: "barber",
+  cust: null, csort: "last", cq: "", due: false, loading: false };
+const ST = { pending: ["Awaiting payment", "warn"], confirmed: ["Confirmed", "gold"], completed: ["Completed", "ok"], no_show: ["No-show", "bad"], cancelled: ["Cancelled", "bad"], expired: ["Expired", "bad"] };
+const DAYS = [["mon", "Mon"], ["tue", "Tue"], ["wed", "Wed"], ["thu", "Thu"], ["fri", "Fri"], ["sat", "Sat"], ["sun", "Sun"]];
+const lsGet = () => { try { return localStorage.getItem("difta_pin") || ""; } catch { return ""; } };
+const lsSet = (v) => { try { v ? localStorage.setItem("difta_pin", v) : localStorage.removeItem("difta_pin"); } catch {} };
+const call = async (path, o = {}) => {
+  try { return await D.api(path, { ...o, pin: S.pin }); }
+  catch (e) { if (e.status === 401) lock("Wrong PIN"); throw e; }
+};
+const busy = async (btn, fn) => {
+  if (btn) btn.disabled = true;
+  try { return await fn(); } catch (e) { D.toast(e.message, true); } finally { if (btn) btn.disabled = false; }
+};
+const staffName = (id) => (S.all.staff.find((s) => s.id === id) || {}).name || "Barber";
+const pounds = (v) => Math.round(parseFloat(String(v).replace(/[£,\s]/g, "")) * 100) || 0;
+const penceIn = (p) => (p / 100).toFixed(2).replace(/\.00$/, "");
+const first = (n) => String(n || "").trim().split(/\s+/)[0];
+const fmtDT = (iso) => new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+const ago = (iso) => { const d = Math.floor((Date.now() - new Date(iso)) / 864e5); return d < 1 ? "today" : d < 14 ? d + " days ago" : d < 60 ? Math.floor(d / 7) + " weeks ago" : Math.floor(d / 30) + " months ago"; };
+const spin = '<div class="sp"><span class="spin"></span></div>';
+
+/* ---------- sheet ---------- */
+const openSheet = (html) => { const s = $("#sheet"); s.innerHTML = '<div class="grab"></div>' + html; s.scrollTop = 0; s.classList.add("open"); $("#bd").classList.add("open"); };
+const closeSheet = () => { $("#sheet").classList.remove("open"); $("#bd").classList.remove("open"); };
+const sheetOpen = () => $("#sheet").classList.contains("open");
+
+/* ---------- lock ---------- */
+let entry = "";
+const drawDots = () => { $("#dots").innerHTML = Array.from({ length: Math.max(6, entry.length) }, (_, i) => `<i class="${i < entry.length ? "on" : ""}"></i>`).join(""); };
+$("#pad").innerHTML = ["1","2","3","4","5","6","7","8","9","C","0","&#9003;"].map((k) => `<button class="${/\d/.test(k) ? "" : "s"}" data-k="${k}" aria-label="${k}">${k}</button>`).join("");
+$("#pad").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return; const k = b.dataset.k;
+  if (k === "C") entry = ""; else if (k === "⌫" || k === "&#9003;" || !/\d/.test(k)) entry = k === "C" ? "" : entry.slice(0, -1);
+  else if (entry.length < 8) entry += k;
+  $("#lerr").textContent = ""; drawDots();
+});
+document.addEventListener("keydown", (e) => {
+  if ($("#lock").hidden) { if (e.key === "Escape") closeSheet(); return; }
+  if (/^\d$/.test(e.key) && entry.length < 8) entry += e.key; else if (e.key === "Backspace") entry = entry.slice(0, -1); else if (e.key === "Enter") return tryLogin();
+  drawDots();
+});
+$("#enter").onclick = () => tryLogin();
+async function tryLogin(pin, silent) {
+  pin = pin || entry; if (pin.length < 4) { $("#lerr").textContent = "Enter your PIN"; return; }
+  const btn = $("#enter"); btn.disabled = true; S.pin = pin;
+  try {
+    await D.api("/admin/login", { method: "POST", body: {}, pin });
+    lsSet(pin); await loadAll(); $("#lock").hidden = true; $("#app").hidden = false; entry = ""; go(S.tab || "diary");
+  } catch (e) { S.pin = ""; if (e.status === 401) lsSet(""); if (!silent || e.status !== 401) $("#lerr").textContent = e.status === 401 ? "Wrong PIN" : e.message; entry = ""; drawDots(); }
+  finally { btn.disabled = false; }
+}
+function lock(msg) { S.pin = ""; lsSet(""); entry = ""; drawDots(); closeSheet(); $("#app").hidden = true; $("#lock").hidden = false; $("#lerr").textContent = msg || ""; }
+const loadAll = async () => { S.all = await call("/admin/all"); };
+
+/* ---------- navigation ---------- */
+function go(t) {
+  S.tab = t; closeSheet();
+  $$(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.t === t));
+  $("#fab").hidden = t !== "diary";
+  window.scrollTo(0, 0);
+  if (t === "diary") { drawDiary(); loadDay(); }
+  if (t === "clients") loadClients();
+  if (t === "menu") drawMenu();
+  if (t === "settings") drawSettings();
+}
+
+/* ---------- diary ---------- */
+async function loadDay(silent) {
+  const day = S.day;
+  if (!silent) $("#dlist") && ($("#dlist").innerHTML = spin);
+  try { const r = await call(`/admin/bookings?from=${day}&to=${day}`); if (day === S.day) { S.bk = r.bookings; drawList(); } }
+  catch (e) { if (!silent) D.toast(e.message, true); }
+}
+function drawDiary() {
+  const days = Array.from({ length: 14 }, (_, i) => D.addDays(S.strip, i));
+  const today = D.ymd();
+  $("#main").innerHTML = `
+    <div class="nav2"><button class="btn sm" data-act="week" data-n="-7" aria-label="Previous week">&larr;</button>
+      <div class="grow">${esc(D.niceDate(S.day))}</div>
+      <button class="btn sm" data-act="today">Today</button><button class="btn sm" data-act="week" data-n="7" aria-label="Next week">&rarr;</button></div>
+    <div class="strip">${days.map((d) => `<button class="dbtn ${d === S.day ? "on" : ""}" data-act="day" data-d="${d}">${D.dayName(d).slice(0, 3)}<b>${+d.slice(8)}</b>${d === today ? "today" : "&nbsp;"}</button>`).join("")}</div>
+    <div class="chips"><button class="chip ${S.staff === "all" ? "on" : ""}" data-act="staff" data-id="all">All</button>${S.all.staff.filter((s) => s.active).map((s) => `<button class="chip ${S.staff === s.id ? "on" : ""}" data-act="staff" data-id="${s.id}">${esc(s.name)}</button>`).join("")}</div>
+    <div id="dsum"></div>
+    <div class="chips"><button class="chip ${S.mode === "barber" ? "on" : ""}" data-act="mode" data-m="barber">By barber</button><button class="chip ${S.mode === "time" ? "on" : ""}" data-act="mode" data-m="time">By time</button>
+      <button class="chip ${S.showX ? "on" : ""}" data-act="showx">Show cancelled</button></div>
+    <button class="btn block" data-act="tomorrow">Remind tomorrow's clients</button>
+    <div id="dlist" style="margin-top:12px">${spin}</div>`;
+  const a = $(".dbtn.on"); if (a) a.scrollIntoView({ inline: "center", block: "nearest" });
+}
+const isDead = (b) => b.status === "cancelled" || b.status === "expired";
+function payBadge(b) {
+  if (b.pay_mode === "deposit" && b.paid_pence > 0) return `<span class="tag ok">Deposit ${D.gbp(b.paid_pence)}</span>`;
+  if (b.paid_pence > 0) return `<span class="tag ok">Paid ${D.gbp(b.paid_pence)}</span>`;
+  if (b.pay_mode === "deposit") return `<span class="tag warn">Deposit due</span>`;
+  return `<span class="tag">Pay in studio</span>`;
+}
+function card(b) {
+  const [lab, cls] = ST[b.status] || [b.status, ""];
+  const c = b.customer || {};
+  return `<button class="bk st-${b.status}" data-act="open" data-id="${b.id}">
+    <div class="t">${esc(b.time)}&ndash;${esc(fmtT(b.end_at))} <span class="m">&middot; ${D.gbp(b.price_pence)}</span></div>
+    <div class="n">${esc(c.name || "Customer")}</div>
+    <div class="m">${esc(b.service_name)} &middot; ${esc(staffName(b.staff_id))}</div>
+    <div class="row"><span class="tag ${cls}">${lab}</span>${payBadge(b)}${b.reminded_at ? '<span class="tag ok">Reminded &#10003;</span>' : ""}${b.source && b.source !== "web" ? `<span class="tag">${esc(b.source)}</span>` : ""}</div></button>`;
+}
+const fmtT = (iso) => new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+function drawList() {
+  if (S.tab !== "diary" || !$("#dlist")) return;
+  let list = S.bk.filter((b) => S.staff === "all" || b.staff_id === S.staff);
+  const live = list.filter((b) => !isDead(b));
+  const hidden = list.length - live.length;
+  if (!S.showX) list = live;
+  list.sort((a, b) => a.time.localeCompare(b.time));
+  $("#dsum").innerHTML = `<div class="sum"><div class="card"><b>${live.length}</b><span>Bookings</span></div><div class="card"><b>${D.gbp(live.reduce((s, b) => s + (b.price_pence || 0), 0)) || "£0"}</b><span>Expected</span></div><div class="card"><b>${D.gbp(live.reduce((s, b) => s + (b.paid_pence || 0), 0)) || "£0"}</b><span>Paid online</span></div></div>`;
+  let h = "";
+  if (!list.length) h = `<div class="empty">No bookings for this day.${hidden ? ` ${hidden} cancelled hidden.` : ""}</div>`;
+  else if (S.mode === "time") h = list.map(card).join("");
+  else {
+    const ids = [...new Set(list.map((b) => b.staff_id))];
+    h = ids.map((id) => `<div class="grp">${esc(staffName(id))} &middot; ${list.filter((b) => b.staff_id === id && !isDead(b)).length}</div>${list.filter((b) => b.staff_id === id).map(card).join("")}`).join("");
+  }
+  $("#dlist").innerHTML = h;
+}
+const findB = (id) => S.bk.concat(S.tom).find((b) => b.id === id);
+const bMsg = (b, key) => D.fill((S.all.settings.messages || {})[key], { name: first((b.customer || {}).name), service: b.service_name, barber: staffName(b.staff_id), day: D.niceDate(b.date), time: b.time, ref: b.ref });
+function bookingSheet(id) {
+  const b = findB(id); if (!b) return;
+  const c = b.customer || {}, [lab, cls] = ST[b.status] || [b.status, ""], ph = c.phone || "";
+  openSheet(`<h3>${esc(c.name || "Customer")}</h3>
+    <div class="m muted">${esc(D.niceDate(b.date))}, ${esc(b.time)}&ndash;${esc(fmtT(b.end_at))} &middot; ${esc(b.service_name)} &middot; ${esc(staffName(b.staff_id))}</div>
+    <div class="row"><span class="tag ${cls}">${lab}</span>${payBadge(b)}<span class="tag">${D.gbp(b.price_pence)}</span>${b.reminded_at ? '<span class="tag ok">Reminded &#10003;</span>' : ""}<span class="tag">#${esc(b.ref)}</span></div>
+    ${c.notes ? `<div class="note"><span class="muted">Client notes:</span> ${esc(c.notes)}</div>` : ""}
+    <div class="acts">
+      ${ph ? `<a class="btn" href="tel:${esc(ph)}">Call</a><a class="btn wa" target="_blank" rel="noopener" href="${esc(D.wa(ph, bMsg(b, "confirm")))}">WhatsApp confirm</a>
+      <a class="btn wa full" target="_blank" rel="noopener" data-act="remind" data-id="${b.id}" href="${esc(D.wa(ph, bMsg(b, "reminder")))}">WhatsApp reminder</a>` : '<div class="hint full">No phone number on this booking.</div>'}
+      <button class="btn gold" data-act="status" data-s="completed" data-id="${b.id}">Mark completed</button>
+      <button class="btn" data-act="status" data-s="no_show" data-id="${b.id}">No-show</button>
+      ${b.paid_pence < b.price_pence ? `<button class="btn full" data-act="paid" data-id="${b.id}">Mark paid in studio (${D.gbp(b.price_pence)})</button>` : ""}
+      <button class="btn bad full" data-act="cancelbk" data-id="${b.id}">Cancel booking</button>
+    </div>
+    <label class="f">Reschedule</label><div class="two"><input class="in" type="date" id="rd" value="${b.date}"><input class="in" type="time" step="300" id="rt" value="${b.time}"></div>
+    <button class="btn block" style="margin-top:10px" data-act="resched" data-id="${b.id}">Move booking</button>
+    <label class="f">Change barber</label><div class="two"><select class="in" id="rs">${S.all.staff.filter((s) => s.active || s.id === b.staff_id).map((s) => `<option value="${s.id}" ${s.id === b.staff_id ? "selected" : ""}>${esc(s.name)}</option>`).join("")}</select>
+    <button class="btn" data-act="chstaff" data-id="${b.id}">Change</button></div>
+    <label class="f">Booking notes</label><textarea class="in" id="rn" placeholder="e.g. skin fade #1 on sides">${esc(b.notes)}</textarea>
+    <button class="btn block" style="margin-top:10px" data-act="savenote" data-id="${b.id}">Save notes</button>`);
+}
+async function upd(btn, body, msg, keep) {
+  await busy(btn, async () => { await call("/admin/booking", { method: "POST", body }); D.toast(msg || "Saved"); if (!keep) closeSheet(); await loadDay(true); });
+}
+function walkinSheet() {
+  const act = S.all.staff.filter((s) => s.active);
+  openSheet(`<h3>Walk-in / phone booking</h3>
+    <label class="f">Barber</label><select class="in" id="wb">${act.map((s) => `<option value="${s.id}" ${s.id === S.staff ? "selected" : ""}>${esc(s.name)}</option>`).join("")}</select>
+    <label class="f">Service</label><select class="in" id="ws"></select>
+    <div class="two"><div><label class="f">Date</label><input class="in" type="date" id="wd" value="${S.day}"></div><div><label class="f">Time</label><input class="in" type="time" step="300" id="wt" value="${new Date().toLocaleTimeString("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" })}"></div></div>
+    <label class="f">Name</label><input class="in" id="wn" autocomplete="off" placeholder="Customer name">
+    <label class="f">Phone</label><input class="in" id="wp" type="tel" placeholder="07...">
+    <label class="f">Notes</label><textarea class="in" id="wx"></textarea>
+    <button class="btn gold block" style="margin-top:16px" data-act="savewalk">Save booking</button>`);
+  fillWalkSvc();
+}
+function fillWalkSvc() {
+  const b = $("#wb").value;
+  const sv = S.all.services.filter((s) => s.active && (s.staff_ids || []).includes(b));
+  $("#ws").innerHTML = sv.map((s) => `<option value="${s.id}">${esc(s.name)} &middot; ${D.gbp(s.price_pence)} &middot; ${D.mins(s.duration_min)}</option>`).join("") || "<option value=''>No services for this barber</option>";
+}
+async function tomorrowSheet(btn) {
+  const t = D.addDays(D.ymd(), 1);
+  await busy(btn, async () => {
+    const r = await call(`/admin/bookings?from=${t}&to=${t}`);
+    S.tom = r.bookings.filter((b) => b.status === "confirmed").sort((a, b) => a.time.localeCompare(b.time));
+    openSheet(`<h3>Tomorrow <small>${esc(D.niceDate(t))}</small></h3><div class="hint">Tap each WhatsApp button, then send. ${S.tom.length} confirmed.</div><div style="margin-top:12px">${
+      S.tom.map((b) => { const c = b.customer || {}; return `<div class="card item" style="cursor:default"><div class="l"><div><b>${esc(b.time)}</b> ${esc(c.name)}</div><div class="muted" style="font-size:13px">${esc(b.service_name)} &middot; ${esc(staffName(b.staff_id))}</div></div>
+      ${c.phone ? `<a class="btn sm wa" id="r${b.id}" target="_blank" rel="noopener" data-act="remind" data-id="${b.id}" href="${esc(D.wa(c.phone, bMsg(b, "reminder")))}">${b.reminded_at ? "Sent &#10003; again" : "Remind"}</a>` : '<span class="muted">no phone</span>'}</div>`; }).join("") || '<div class="empty">No confirmed bookings tomorrow.</div>'}</div>`);
+  });
+}
+
+/* ---------- clients ---------- */
+async function loadClients() {
+  $("#main").innerHTML = spin;
+  try { S.cust = (await call("/admin/customers")).customers; } catch (e) { D.toast(e.message, true); S.cust = []; }
+  $("#main").innerHTML = `<h3 id="ccount" style="margin-top:6px"></h3>
+    <input class="in" id="cq" type="search" placeholder="Search name or phone" value="${esc(S.cq)}">
+    <div class="two" style="margin-top:10px"><select class="in" id="cs">${[["last", "Last visit"], ["visits", "Most visits"], ["spend", "Top spend"], ["az", "A–Z"]].map(([v, l]) => `<option value="${v}" ${S.csort === v ? "selected" : ""}>${l}</option>`).join("")}</select>
+    <button class="btn" data-act="csv">Export CSV</button></div>
+    <div class="chips"><button class="chip ${S.due ? "on" : ""}" id="duechip" data-act="due">Due a cut</button></div>
+    <div id="clist"></div>`;
+  drawClients();
+}
+const isDue = (c) => c.last && !c.next && Date.now() - new Date(c.last) > 28 * 864e5;
+function drawClients() {
+  const q = S.cq.trim().toLowerCase(), qd = q.replace(/\D/g, "");
+  let l = S.cust.filter((c) => (!q || (c.name || "").toLowerCase().includes(q) || (qd && (c.phone || "").replace(/\D/g, "").includes(qd))) && (!S.due || isDue(c)));
+  const k = { last: (a, b) => (b.last || "").localeCompare(a.last || ""), visits: (a, b) => b.visits - a.visits, spend: (a, b) => b.spend - a.spend, az: (a, b) => (a.name || "").localeCompare(b.name || "") };
+  l.sort(k[S.csort]);
+  $("#ccount").innerHTML = `${l.length} client${l.length === 1 ? "" : "s"} <small>${S.due ? "due a cut" : "of " + S.cust.length}</small>`;
+  $("#clist").innerHTML = l.slice(0, 300).map((c) => `<button class="card item" data-act="cust" data-id="${c.id}"><div class="l"><div><b>${esc(c.name || "No name")}</b></div><div class="muted" style="font-size:13px">${esc(c.phone || "no phone")} &middot; ${c.visits} visit${c.visits === 1 ? "" : "s"} &middot; ${D.gbp(c.spend) || "£0"}</div><div class="muted" style="font-size:13px">${c.last ? "Last: " + ago(c.last) : "Never visited"}${c.next ? " &middot; next " + esc(fmtDT(c.next)) : ""}</div></div>${isDue(c) ? '<span class="tag warn">Due a cut</span>' : ""}</button>`).join("") || '<div class="empty">No clients found.</div>';
+}
+function custSheet(id) {
+  const c = S.cust.find((x) => x.id === id); if (!c) return;
+  const link = (S.all.settings.site_url || "").replace(/\/$/, "") + "/book.html";
+  const rebook = D.fill((S.all.settings.messages || {}).rebook, { name: first(c.name), link });
+  openSheet(`<h3>${esc(c.name)}</h3><div class="muted">${esc(c.phone || "no phone")}${c.email ? " &middot; " + esc(c.email) : ""}</div>
+    <div class="row">${isDue(c) ? '<span class="tag warn">Due a cut</span>' : ""}<span class="tag">${c.visits} visits</span><span class="tag">${D.gbp(c.spend) || "£0"}</span>${c.no_shows ? `<span class="tag bad">${c.no_shows} no-show${c.no_shows > 1 ? "s" : ""}</span>` : ""}</div>
+    ${c.phone ? `<div class="acts"><a class="btn" href="tel:${esc(c.phone)}">Call</a><a class="btn wa" target="_blank" rel="noopener" href="${esc(D.wa(c.phone, "Hi " + first(c.name) + ", "))}">WhatsApp</a><a class="btn gold full" target="_blank" rel="noopener" href="${esc(D.wa(c.phone, rebook))}">Rebook (WhatsApp)</a></div>` : ""}
+    <label class="f">Client notes</label><textarea class="in" id="cn" placeholder="skin fade #1 on sides, likes beard lined">${esc(c.notes)}</textarea>
+    <button class="btn block" style="margin-top:10px" data-act="savecust" data-id="${c.id}">Save notes</button>
+    <label class="f">History</label>${(c.history || []).slice().sort((a, b) => b.start_at.localeCompare(a.start_at)).map((h) => `<div class="hist"><span>${esc(fmtDT(h.start_at))}<br><span class="muted">${esc(h.service)} &middot; ${esc(staffName(h.staff_id))}</span></span><span>${esc((ST[h.status] || [h.status])[0])}<br><span class="muted">${D.gbp(h.price_pence)}</span></span></div>`).join("") || '<div class="muted">No bookings yet.</div>'}`);
+}
+function csv() {
+  const q = (v) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+  const rows = [["Name", "Phone", "Email", "Visits", "Spend GBP", "No-shows", "Last visit", "Next booking", "Marketing OK", "Notes"]].concat(S.cust.map((c) => [c.name, c.phone, c.email, c.visits, (c.spend / 100).toFixed(2), c.no_shows, c.last || "", c.next || "", c.marketing_ok ? "yes" : "no", c.notes]));
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([rows.map((r) => r.map(q).join(",")).join("\n")], { type: "text/csv" }));
+  a.download = "difta-clients-" + D.ymd() + ".csv"; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- hours editor ---------- */
+function hoursEd(h) {
+  return DAYS.map(([k, l]) => { const rs = (h && h[k]) || [], r = rs[0];
+    return `<div class="hrow ${r ? "" : "shut"}" data-d="${k}" data-x="${esc(JSON.stringify(rs.slice(1)))}"><b>${l}</b><label class="cl"><input type="checkbox" class="hc" ${r ? "" : "checked"}> Closed</label>
+    <input type="time" class="in ho" value="${r ? r[0] : "10:00"}"><input type="time" class="in hx" value="${r ? r[1] : "18:00"}"></div>`; }).join("");
+}
+const readHours = (root) => { const o = {}; $$(".hrow", root).forEach((r) => { o[r.dataset.d] = $(".hc", r).checked ? [] : [[$(".ho", r).value, $(".hx", r).value]].concat(JSON.parse(r.dataset.x || "[]")); }); return o; };
+document.addEventListener("change", (e) => { if (e.target.classList.contains("hc")) e.target.closest(".hrow").classList.toggle("shut", e.target.checked); });
+
+/* ---------- menu & team ---------- */
+function drawMenu() {
+  const { staff, services } = S.all;
+  let h = `<h3 style="margin-top:6px">Services</h3><button class="btn gold block" data-act="svc" data-id="">+ Add service</button>`;
+  staff.forEach((s) => {
+    const sv = services.filter((x) => (x.staff_ids || []).includes(s.id)); if (!sv.length) return;
+    h += `<div class="grp">${esc(s.name)}${s.active ? "" : " (hidden)"}</div>`;
+    [...new Set(sv.map((x) => x.category || "Other"))].forEach((cat) => {
+      h += `<div class="muted" style="font-size:13px;margin:8px 0 4px">${esc(cat)}</div>` + sv.filter((x) => (x.category || "Other") === cat).map(svcRow).join("");
+    });
+  });
+  const none = services.filter((x) => !(x.staff_ids || []).length);
+  if (none.length) h += `<div class="grp">No barber assigned</div>` + none.map(svcRow).join("");
+  h += `<h3>Barbers</h3><button class="btn gold block" data-act="stf" data-id="">+ Add barber</button><div style="margin-top:10px">` +
+    staff.map((s) => `<button class="card item ${s.active ? "" : "off"}" data-act="stf" data-id="${s.id}"><div class="l"><div><b>${esc(s.name)}</b></div><div class="muted" style="font-size:13px">${esc(s.role)} &middot; ${s.hours ? "own hours" : "studio hours"}${s.active ? "" : " &middot; hidden"}</div></div><span class="tag">Edit</span></button>`).join("") + `</div>
+    <h3>Time off <small>holidays &amp; blocks</small></h3><div id="blocks"></div>
+    <div class="card sec"><b>Add time off</b>
+      <label class="f">Who</label><select class="in" id="bs"><option value="">Whole studio</option>${staff.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join("")}</select>
+      <div class="two"><div><label class="f">Date</label><input class="in" type="date" id="bd1" value="${D.ymd()}"></div><div><label class="f">To date (optional)</label><input class="in" type="date" id="bd2"></div></div>
+      <div class="two"><div><label class="f">From time</label><input class="in" type="time" id="bf"></div><div><label class="f">To time</label><input class="in" type="time" id="bt"></div></div>
+      <div class="hint">Leave times empty to block the whole day.</div>
+      <label class="f">Reason</label><input class="in" id="br" placeholder="Holiday, training...">
+      <button class="btn gold block" style="margin-top:14px" data-act="addblock">Add time off</button></div>`;
+  $("#main").innerHTML = h; drawBlocks();
+}
+const svcRow = (x) => `<button class="card item ${x.active ? "" : "off"}" data-act="svc" data-id="${x.id}"><div class="l"><div><b>${esc(x.name)}</b></div><div class="muted" style="font-size:13px">${x.price_from ? "from " : ""}${D.gbp(x.price_pence)} &middot; ${D.mins(x.duration_min)}${x.active ? "" : " &middot; hidden"}</div></div><span class="tag">Edit</span></button>`;
+function drawBlocks() {
+  const now = new Date().toISOString(), bl = S.all.blocks.filter((b) => b.end_at >= now).sort((a, b) => a.start_at.localeCompare(b.start_at));
+  $("#blocks").innerHTML = bl.map((b) => `<div class="card item" style="cursor:default"><div class="l"><div><b>${b.staff_id ? esc(staffName(b.staff_id)) : "Whole studio"}</b> ${esc(b.reason)}</div><div class="muted" style="font-size:13px">${esc(fmtDT(b.start_at))} &rarr; ${esc(fmtDT(b.end_at))}</div></div><button class="btn sm bad" data-act="delblock" data-id="${b.id}">Delete</button></div>`).join("") || '<div class="muted">No upcoming time off.</div>';
+}
+function svcSheet(id) {
+  const x = S.all.services.find((s) => s.id === id) || { name: "", category: "", description: "", price_pence: 0, price_from: false, duration_min: 30, staff_ids: [], active: true, sort: S.all.services.length };
+  const cats = [...new Set(S.all.services.map((s) => s.category).filter(Boolean))];
+  openSheet(`<h3>${id ? "Edit service" : "Add service"}</h3>
+    <label class="f">Name</label><input class="in" id="sn" value="${esc(x.name)}">
+    <div class="two"><div><label class="f">Price &pound;</label><input class="in" id="sp" inputmode="decimal" value="${penceIn(x.price_pence)}"></div><div><label class="f">Minutes</label><input class="in" id="sd" type="number" inputmode="numeric" step="5" value="${x.duration_min}"></div></div>
+    <label class="f">Category</label><input class="in" id="sc" list="cats" value="${esc(x.category)}"><datalist id="cats">${cats.map((c) => `<option value="${esc(c)}">`).join("")}</datalist>
+    <label class="f">Description</label><textarea class="in" id="sx">${esc(x.description)}</textarea>
+    <label class="cb"><input type="checkbox" id="sf" ${x.price_from ? "checked" : ""}> Show as "from" price</label>
+    <label class="cb"><input type="checkbox" id="sa" ${x.active ? "checked" : ""}> Active (bookable)</label>
+    <label class="f">Barbers who do this</label>${S.all.staff.map((s) => `<label class="cb"><input type="checkbox" class="sb" value="${s.id}" ${(x.staff_ids || []).includes(s.id) ? "checked" : ""}> ${esc(s.name)}</label>`).join("")}
+    <label class="f">Sort order</label><input class="in" id="so" type="number" value="${x.sort ?? 0}">
+    <button class="btn gold block" style="margin-top:16px" data-act="savesvc" data-id="${id || ""}">Save service</button>`);
+}
+function stfSheet(id) {
+  const x = S.all.staff.find((s) => s.id === id) || { name: "", role: "Barber", bio: "", photo: "", instagram: "", hours: null, active: true, sort: S.all.staff.length };
+  openSheet(`<h3>${id ? "Edit barber" : "Add barber"}</h3>
+    <label class="f">Name</label><input class="in" id="tn" value="${esc(x.name)}">
+    <label class="f">Role</label><input class="in" id="tr" value="${esc(x.role)}">
+    <label class="f">Bio</label><textarea class="in" id="tb">${esc(x.bio)}</textarea>
+    <label class="f">Photo (path or URL)</label><input class="in" id="tp" value="${esc(x.photo)}" placeholder="img/staff-name.jpg">
+    <label class="f">Instagram</label><input class="in" id="ti" value="${esc(x.instagram)}">
+    <label class="cb"><input type="checkbox" id="ta" ${x.active ? "checked" : ""}> Active (shown and bookable)</label>
+    <label class="f">Sort order</label><input class="in" id="ts" type="number" value="${x.sort ?? 0}">
+    <label class="f">Working hours</label><label class="cb"><input type="checkbox" id="tsame" ${x.hours ? "" : "checked"}> Same as studio</label>
+    <div id="th" ${x.hours ? "" : "hidden"}>${hoursEd(x.hours || S.all.settings.hours)}</div>
+    <button class="btn gold block" style="margin-top:16px" data-act="savestf" data-id="${id || ""}">Save barber</button>`);
+}
+
+/* ---------- settings ---------- */
+function drawSettings() {
+  const s = S.all.settings, p = s.payment || {}, bz = s.business || {}, m = s.messages || {};
+  const mode = (v, t, extra) => `<label class="radio"><input type="radio" name="pm" value="${v}" ${p.mode === v ? "checked" : ""}><span>${t}${extra || ""}</span></label>`;
+  const msgs = (k, l) => `<label class="f">${l}</label><textarea class="in" id="m_${k}" rows="4">${esc(m[k])}</textarea>`;
+  $("#main").innerHTML = `
+  <div class="card sec"><h3>Opening hours</h3><div id="sh">${hoursEd(s.hours)}</div><button class="btn gold block" style="margin-top:14px" data-act="saveset" data-k="hours">Save hours</button></div>
+  <div class="card sec"><h3>Payments</h3>
+    ${!S.all.stripe_enabled ? '<div class="note">Card payments are switched off until the Stripe key is added. Customers can still book and pay in studio.</div>' : ""}
+    ${S.all.stripe_enabled && S.all.stripe_test ? '<div class="note">Stripe is in TEST mode: use card 4242 4242 4242 4242.</div>' : ""}
+    ${mode("full", "Full payment online at booking <span class='tag gold'>recommended</span>")}
+    ${mode("deposit", "Deposit online, rest in studio", `<div style="margin-top:8px"><input class="in" id="dep" inputmode="decimal" placeholder="Deposit &pound;" value="${p.deposit_pence ? penceIn(p.deposit_pence) : ""}"></div>`)}
+    ${mode("optional", "Customer chooses (pay now or in studio)")}
+    ${mode("none", "No online payment, pay in studio")}
+    <button class="btn gold block" style="margin-top:10px" data-act="saveset" data-k="payment">Save payments</button></div>
+  <div class="card sec"><h3>Booking rules</h3>
+    <label class="f">Minimum notice (minutes)</label><input class="in" id="lead" type="number" inputmode="numeric" value="${s.lead_min ?? 60}">
+    <label class="f">Slot step</label><select class="in" id="step"><option value="15" ${s.slot_step == 15 ? "selected" : ""}>Every 15 minutes</option><option value="30" ${s.slot_step == 30 ? "selected" : ""}>Every 30 minutes</option></select>
+    <label class="f">How far ahead (days)</label><input class="in" id="win" type="number" inputmode="numeric" value="${s.window_days ?? 30}">
+    <button class="btn gold block" style="margin-top:14px" data-act="saveset" data-k="rules">Save rules</button></div>
+  <div class="card sec"><h3>Business details</h3>
+    <label class="f">Phone</label><input class="in" id="b_phone" type="tel" value="${esc(bz.phone)}">
+    <label class="f">WhatsApp number</label><input class="in" id="b_whatsapp" type="tel" value="${esc(bz.whatsapp)}">
+    <label class="f">Address</label><textarea class="in" id="b_address">${esc(bz.address)}</textarea>
+    <label class="f">Instagram</label><input class="in" id="b_instagram" value="${esc(bz.instagram)}">
+    <label class="f">Website address</label><input class="in" id="siteurl" type="url" value="${esc(s.site_url)}">
+    <button class="btn gold block" style="margin-top:14px" data-act="saveset" data-k="business">Save details</button></div>
+  <div class="card sec"><h3>WhatsApp messages</h3>${msgs("confirm", "Confirmation")}${msgs("reminder", "Reminder")}${msgs("rebook", "Rebook nudge")}
+    <div class="hint">Placeholders: {name} {service} {barber} {day} {time} {ref} {link}</div>
+    <button class="btn gold block" style="margin-top:14px" data-act="saveset" data-k="messages">Save messages</button></div>
+  <div class="card sec"><h3>Cancellation policy</h3><textarea class="in" id="pol" rows="4">${esc(s.policy)}</textarea>
+    <button class="btn gold block" style="margin-top:14px" data-act="saveset" data-k="policy">Save policy</button></div>
+  <div class="card sec"><h3>Change PIN</h3><label class="f">New PIN (4 to 8 digits)</label><input class="in" id="np" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password">
+    <button class="btn gold block" style="margin-top:14px" data-act="chpin">Change PIN</button></div>
+  <div class="card sec"><h3>Links</h3><div class="acts"><a class="btn" href="index.html" target="_blank">Open public site</a><a class="btn" href="book.html" target="_blank">Booking page</a></div></div>`;
+}
+async function saveSet(btn, k) {
+  const s = S.all.settings, v = (id) => $("#" + id).value;
+  const save = (key, value) => call("/admin/settings", { method: "POST", body: { key, value } }).then(() => { s[key] = value; });
+  await busy(btn, async () => {
+    if (k === "hours") await save("hours", readHours($("#sh")));
+    else if (k === "payment") { const r = $('input[name="pm"]:checked'); if (!r) throw new Error("Pick a payment option"); const dep = pounds(v("dep")); if (r.value === "deposit" && !dep) throw new Error("Enter a deposit amount"); await save("payment", { mode: r.value, deposit_pence: r.value === "deposit" ? dep : (s.payment || {}).deposit_pence || 0 }); }
+    else if (k === "rules") { await save("lead_min", +v("lead") || 0); await save("slot_step", +v("step")); await save("window_days", +v("win") || 1); }
+    else if (k === "business") { await save("business", { ...s.business, phone: v("b_phone"), whatsapp: v("b_whatsapp"), address: v("b_address"), instagram: v("b_instagram") }); await save("site_url", v("siteurl").trim()); }
+    else if (k === "messages") await save("messages", { ...s.messages, confirm: v("m_confirm"), reminder: v("m_reminder"), rebook: v("m_rebook") });
+    else if (k === "policy") await save("policy", v("pol"));
+    D.toast("Saved");
+  });
+}
+
+/* ---------- clicks ---------- */
+const reload = async (draw) => { await loadAll(); draw(); };
+const A = {
+  lock: () => lock(),
+  close: () => closeSheet(),
+  tab: (el) => go(el.dataset.t),
+  day: (el) => { S.day = el.dataset.d; drawDiary(); loadDay(); },
+  today: () => { S.day = S.strip = D.ymd(); drawDiary(); loadDay(); },
+  week: (el) => { const n = +el.dataset.n; S.strip = D.addDays(S.strip, n); S.day = D.addDays(S.day, n); drawDiary(); loadDay(); },
+  staff: (el) => { S.staff = el.dataset.id; drawDiary(); drawList(); },
+  mode: (el) => { S.mode = el.dataset.m; drawDiary(); drawList(); },
+  showx: () => { S.showX = !S.showX; drawDiary(); drawList(); },
+  open: (el) => bookingSheet(el.dataset.id),
+  walkin: () => walkinSheet(),
+  tomorrow: (el) => tomorrowSheet(el),
+  remind: (el) => { call("/admin/booking", { method: "POST", body: { id: el.dataset.id, reminded: true } }).then(() => { el.innerHTML = "Sent &#10003;"; loadDay(true); }).catch((e) => D.toast(e.message, true)); },
+  status: (el) => upd(el, { id: el.dataset.id, status: el.dataset.s }, "Marked " + el.dataset.s.replace("_", "-")),
+  cancelbk: (el) => { if (confirm("Cancel this booking?")) upd(el, { id: el.dataset.id, status: "cancelled" }, "Booking cancelled"); },
+  paid: (el) => { const b = findB(el.dataset.id); upd(el, { id: b.id, paid_pence: b.price_pence }, "Marked paid"); },
+  resched: (el) => upd(el, { id: el.dataset.id, date: $("#rd").value, time: $("#rt").value }, "Rescheduled").then(() => { if ($("#rd") === null && S.tab === "diary") loadDay(true); }),
+  chstaff: (el) => upd(el, { id: el.dataset.id, staff_id: $("#rs").value }, "Barber changed"),
+  savenote: (el) => upd(el, { id: el.dataset.id, notes: $("#rn").value }, "Notes saved", true),
+  savewalk: (el) => {
+    const v = (i) => $("#" + i).value.trim();
+    if (!v("ws") || !v("wn") || !v("wd") || !v("wt")) return D.toast("Barber, service, date, time and name are needed", true);
+    const body = { service_id: v("ws"), staff_id: v("wb"), date: v("wd"), time: v("wt"), name: v("wn") };
+    if (v("wp")) body.phone = v("wp"); if (v("wx")) body.notes = v("wx");
+    busy(el, async () => { await call("/admin/booking", { method: "POST", body }); D.toast("Booking saved"); closeSheet(); S.day = body.date; if (D.addDays(S.strip, 13) < S.day || S.day < S.strip) S.strip = S.day; drawDiary(); loadDay(); });
+  },
+  cust: (el) => custSheet(el.dataset.id),
+  due: () => { S.due = !S.due; $("#duechip").classList.toggle("on", S.due); drawClients(); },
+  csv: () => csv(),
+  savecust: (el) => busy(el, async () => { await call("/admin/customer", { method: "POST", body: { id: el.dataset.id, notes: $("#cn").value } }); S.cust.find((c) => c.id === el.dataset.id).notes = $("#cn").value; D.toast("Notes saved"); }),
+  svc: (el) => svcSheet(el.dataset.id),
+  stf: (el) => stfSheet(el.dataset.id),
+  savesvc: (el) => {
+    const v = (i) => $("#" + i).value.trim(), id = el.dataset.id;
+    if (!v("sn")) return D.toast("Name needed", true);
+    const body = { name: v("sn"), category: v("sc"), description: v("sx"), price_pence: pounds(v("sp")), price_from: $("#sf").checked, duration_min: +v("sd") || 30, staff_ids: $$(".sb:checked").map((c) => c.value), active: $("#sa").checked, sort: +v("so") || 0 };
+    if (id) body.id = id;
+    busy(el, async () => { await call("/admin/service", { method: "POST", body }); D.toast("Service saved"); closeSheet(); await reload(drawMenu); });
+  },
+  savestf: (el) => {
+    const v = (i) => $("#" + i).value.trim(), id = el.dataset.id;
+    if (!v("tn")) return D.toast("Name needed", true);
+    const body = { name: v("tn"), role: v("tr"), bio: $("#tb").value, photo: v("tp"), instagram: v("ti"), active: $("#ta").checked, sort: +v("ts") || 0, hours: $("#tsame").checked ? null : readHours($("#th")) };
+    if (id) body.id = id;
+    busy(el, async () => { await call("/admin/staff", { method: "POST", body }); D.toast("Barber saved"); closeSheet(); await reload(drawMenu); });
+  },
+  addblock: (el) => {
+    const v = (i) => $("#" + i).value, body = { date: v("bd1"), reason: v("br").trim() || "Time off" };
+    if (!body.date) return D.toast("Pick a date", true);
+    if (v("bs")) body.staff_id = v("bs"); if (v("bd2")) body.to_date = v("bd2"); if (v("bf")) body.from = v("bf"); if (v("bt")) body.to = v("bt");
+    busy(el, async () => { await call("/admin/block", { method: "POST", body }); D.toast("Time off added"); await reload(drawMenu); });
+  },
+  delblock: (el) => { if (confirm("Delete this time off?")) busy(el, async () => { await call("/admin/block", { method: "POST", body: { delete: el.dataset.id } }); D.toast("Deleted"); await reload(drawMenu); }); },
+  saveset: (el) => saveSet(el, el.dataset.k),
+  chpin: (el) => {
+    const p = $("#np").value.trim(); if (!/^\d{4,8}$/.test(p)) return D.toast("PIN must be 4 to 8 digits", true);
+    busy(el, async () => { await call("/admin/pin", { method: "POST", body: { pin: p } }); S.pin = p; lsSet(p); $("#np").value = ""; D.toast("PIN changed"); });
+  },
+};
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-act]"); if (!el || el.disabled) return;
+  const f = A[el.dataset.act]; if (f) f(el);
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id === "cq") { S.cq = e.target.value; drawClients(); }
+});
+document.addEventListener("change", (e) => {
+  const id = e.target.id;
+  if (id === "cs") { S.csort = e.target.value; drawClients(); }
+  if (id === "wb") fillWalkSvc();
+  if (id === "tsame") $("#th").hidden = e.target.checked;
+});
+
+/* ---------- boot ---------- */
+setInterval(() => { if (!document.hidden && S.pin && S.tab === "diary" && !sheetOpen()) loadDay(true); }, 60000);
+drawDots(); $("#lock").hidden = false;
+const saved = lsGet(); if (saved) tryLogin(saved, true);
+})();
+</script>
+</body>
+</html>
