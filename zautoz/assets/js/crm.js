@@ -98,7 +98,7 @@
   }
   function showLogin(msg) {
     $('#app').innerHTML = `<div class="login"><div class="card">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">${LOGO}<h2 style="margin:0;font-style:italic">Z Autoz Workshop</h2></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">${LOGO.replace('height:30px', 'height:52px')}<h2 style="margin:0;font-style:italic">Z Autoz Workshop</h2></div>
       <form id="lf">
         <div class="field"><label for="le">Email</label><input class="input" id="le" type="email" autocomplete="username" required></div>
         <div class="field"><label for="lp">Password</label><input class="input" id="lp" type="password" autocomplete="current-password"></div>
@@ -141,7 +141,7 @@
           <div class="content" id="view"></div>
         </div>
       </div>
-      <nav class="mobile-nav">${NAV.filter(([k]) => ['today', 'diary', 'customers', 'mot', 'import'].includes(k)).map(([k, t]) => `<a data-nav="${k}" href="#/${k}">${ICONS[k]}<span>${t.split(' ')[0]}</span></a>`).join('')}</nav>`;
+      <nav class="mobile-nav">${NAV.map(([k, t]) => `<a data-nav="${k}" href="#/${k}">${ICONS[k]}<span>${{ import: 'Add', mot: 'MOT', settings: 'Setup' }[k] || t.split(' ')[0]}</span></a>`).join('')}</nav>`;
     $('#signout').onclick = async () => { await staff.signOut(); location.hash = ''; showLogin(); };
     $('#newb').onclick = () => crm.newBooking();
     $('#scrim').onclick = () => { crm.closeModal(); crm.closeDrawer(); };
@@ -160,6 +160,7 @@
   }
 
   function render() {
+    const gs = $('#gs'); if (gs) { gs.value = ''; $('#gr').classList.remove('open'); }
     const parts = (location.hash.replace(/^#\/?/, '') || 'today').split('/');
     const name = parts[0]; const v = crm.views[name] || crm.views.today;
     crm.route = name; crm.onLive = null;
@@ -249,7 +250,7 @@
           <div class="t">${crm.plate(b.reg_display || b.vehicle_reg)}<b>${fmt.time(b.starts_at)}</b></div>
           <div class="who">${esc(fmt.name(b))}</div>
           <div class="svc">${esc(b.service_name)}${b.bay ? ' · ' + esc(bayLabel(b)) : ''}</div>
-          <div class="meta">${b.make ? `<span class="tag">${esc([b.make, b.model].filter(Boolean).join(' '))}</span>` : ''}${crm.loc === 'all' ? `<span class="tag ${b.location_id === 'mot' ? 'green' : 'orange'}">${b.location_id === 'mot' ? 'MOT centre' : 'Garage'}</span>` : ''}${late ? '<span class="tag red">Late</span>' : ''}${b.source === 'online' ? '<span class="tag">Online</span>' : ''}${fmt.isoDay(new Date(b.starts_at)) !== fmt.today() ? '<span class="tag">Since ' + fmt.day(b.starts_at, { weekday: undefined }) + '</span>' : ''}</div>
+          <div class="meta">${b.make ? `<span class="tag">${esc([b.make, b.model].filter(Boolean).join(' '))}</span>` : ''}${crm.loc === 'all' ? `<span class="tag ${b.location_id === 'mot' ? 'green' : 'orange'}">${b.location_id === 'mot' ? 'MOT centre' : 'Garage'}</span>` : ''}${late ? '<span class="tag red">Late</span>' : ''}${b.source === 'online' ? '<span class="tag">Online</span>' : ''}${fmt.isoDay(new Date(b.starts_at)) !== fmt.today() ? '<span class="tag">Since ' + fmt.day(b.starts_at, { day: 'numeric', month: 'short' }) + '</span>' : ''}</div>
         </div>`;
       }
       function bayLabel(b) { const l = crm.locations.find(x => x.id === b.location_id); const bay = l && l.bays.find(x => x.id === b.bay); return bay ? bay.label : b.bay; }
@@ -282,7 +283,7 @@
             const b = rows.find(r => r.id === id);
             if (b && zone.dataset.loc !== b.location_id) return crm.toast('That car is booked at the other site.', true);
             const taken = rows.find(r => r.bay === zone.dataset.bay && zone.dataset.bay && r.id !== id && r.location_id === zone.dataset.loc && ['arrived', 'in_progress', 'ready'].includes(r.status));
-            if (taken) await staff.updateBooking(taken.id, { bay: b.bay || null }); // swap
+            if (taken) { await staff.updateBooking(taken.id, { bay: b.bay || null }); taken.bay = b.bay || null; } // swap
             return move(id, { bay: zone.dataset.bay || null });
           }, '[draggable]');
         } else {
@@ -413,7 +414,7 @@
             <div class="field"><label>Mileage</label><input class="input" id="mileage" inputmode="numeric" value="${b.mileage || ''}" placeholder="e.g. 64,210"></div>
           </div>
           ${isMot ? `<div class="field"><label>MOT result</label><div class="seg" id="motres">${[['', '—'], ['pass', 'Pass'], ['pass_advisories', 'Pass + advisories'], ['fail', 'Fail']].map(([v, t]) => `<button type="button" data-v="${v}" class="${(b.mot_result || '') === v ? 'on' : ''}">${t}</button>`).join('')}</div>
-            <div id="newexp" style="margin-top:8px;${b.mot_result && b.mot_result !== 'fail' ? '' : 'display:none'}"><label class="small">New MOT expiry</label><input type="date" class="input" id="newmot" style="max-width:200px" value="${b.mot_expiry || ''}"></div></div>` : ''}
+            <div id="newexp" style="margin-top:8px;${b.mot_result && b.mot_result !== 'fail' ? '' : 'display:none'}"><label class="small">New MOT expiry</label><input type="date" class="input" id="newmot" style="max-width:200px" value=""></div></div>` : ''}
           <div class="field"><label>Staff notes</label><textarea class="input" id="snotes" rows="3" placeholder="What was found, advisories, parts ordered…">${esc(b.staff_notes || '')}</textarea></div>
         </div>
         <div class="box"><h4>Parts & labour</h4>
@@ -457,7 +458,7 @@
       const x = e.target.closest('button'); if (!x || x.dataset.s === b.status) return;
       try { await staff.setStatus(id, x.dataset.s); b.status = x.dataset.s; $$('#sf button', d).forEach(y => y.classList.toggle('on', y === x)); events = await staff.events(id); drawTl(); crm.toast('Status: ' + STATUS_LABEL[b.status]); after && after(); } catch (er) { crm.fail(er); }
     });
-    if (isMot) $('#motres', d).addEventListener('click', e => { const x = e.target.closest('button'); if (!x) return; $$('#motres button', d).forEach(y => y.classList.toggle('on', y === x)); b.mot_result = x.dataset.v || null; $('#newexp', d).style.display = b.mot_result && b.mot_result !== 'fail' ? '' : 'none'; if (b.mot_result && b.mot_result !== 'fail' && !$('#newmot', d).value) { const base = b.mot_expiry && fmt.daysUntil(b.mot_expiry) >= 0 && fmt.daysUntil(b.mot_expiry) <= 31 ? b.mot_expiry : fmt.today(); const dt = new Date(base + 'T12:00:00Z'); dt.setUTCFullYear(dt.getUTCFullYear() + 1); if (base === fmt.today()) dt.setUTCDate(dt.getUTCDate() - 1); $('#newmot', d).value = dt.toISOString().slice(0, 10); } });
+    if (isMot) $('#motres', d).addEventListener('click', e => { const x = e.target.closest('button'); if (!x) return; $$('#motres button', d).forEach(y => y.classList.toggle('on', y === x)); b.mot_result = x.dataset.v || null; $('#newexp', d).style.display = b.mot_result && b.mot_result !== 'fail' ? '' : 'none'; if (b.mot_result && b.mot_result !== 'fail') { const tested = fmt.isoDay(new Date(b.starts_at)); const early = b.mot_expiry && fmt.daysUntil(b.mot_expiry) - fmt.daysUntil(tested) >= 0 && fmt.daysUntil(b.mot_expiry) - fmt.daysUntil(tested) <= 31; const base = early ? b.mot_expiry : tested; const dt = new Date(base + 'T12:00:00Z'); dt.setUTCFullYear(dt.getUTCFullYear() + 1); if (!early) dt.setUTCDate(dt.getUTCDate() - 1); $('#newmot', d).value = dt.toISOString().slice(0, 10); } });
     $('#note', d).addEventListener('keydown', async e => {
       if (e.key !== 'Enter' || !e.target.value.trim()) return;
       try { const n = await staff.addNote({ booking_id: id, customer_id: b.customer_id, vehicle_id: b.vehicle_id, body: e.target.value.trim(), kind: $('#notek', d).value, created_by: (await staff.session()).user.id }); notes.unshift(n); e.target.value = ''; drawTl(); } catch (er) { crm.fail(er); }
@@ -596,6 +597,7 @@
     };
   };
 
-  boot().catch(e => { console.error(e); showLogin(e.message); });
+  const start = () => boot().catch(e => { console.error(e); showLogin(e.message); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else setTimeout(start);
   sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_IN' && !crm.me) boot(); });
 })();

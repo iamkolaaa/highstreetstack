@@ -160,8 +160,9 @@ input, select, textarea { font: inherit; }
 .notice.bad { background: #fdecef; border-color: #f4bcc6; }
 
 /* booking wizard */
-.wizard { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
-@media (max-width: 960px) { .wizard { grid-template-columns: 1fr; } .summary { order: -1; } }
+.wizard { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; align-items: start; }
+.wizard > * { min-width: 0; }
+@media (max-width: 960px) { .wizard { grid-template-columns: minmax(0, 1fr); } .summary { order: -1; } }
 .steps { display: flex; gap: 6px; margin-bottom: 22px; flex-wrap: wrap; }
 .steps span { flex: 1; min-width: 70px; height: 5px; border-radius: 99px; background: var(--line); }
 .steps span.done { background: var(--crimson); }
@@ -180,7 +181,7 @@ input, select, textarea { font: inherit; }
 .cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
 .cat-tabs button { border: 1.5px solid var(--line); background: #fff; border-radius: 999px; padding: 8px 14px; font: 600 .9rem var(--font); cursor: pointer; }
 .cat-tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
-.days { display: grid; grid-auto-flow: column; grid-auto-columns: 78px; gap: 8px; overflow-x: auto; padding: 4px 2px 12px; scroll-snap-type: x mandatory; }
+.days { max-width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 78px; gap: 8px; overflow-x: auto; padding: 4px 2px 12px; scroll-snap-type: x mandatory; }
 .day { scroll-snap-align: start; border: 2px solid var(--line); border-radius: 12px; background: #fff; padding: 10px 4px; text-align: center; cursor: pointer; font: inherit; color: inherit; }
 .day small { display: block; font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
 .day b { display: block; font-family: var(--display); font-size: 1.6rem; line-height: 1.1; }
@@ -191,7 +192,7 @@ input, select, textarea { font: inherit; }
 .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
 .slot { border: 2px solid var(--line); background: #fff; border-radius: 10px; padding: 11px 4px; font: 600 1rem var(--font); cursor: pointer; }
 .slot:hover:not([disabled]) { border-color: #ffb48a; }
-.slot.on { background: var(--crimson); border-color: var(--crimson); color: #fff; }
+.slot.on { background: var(--ink); border-color: var(--ink); color: #fff; }
 .slot[disabled] { color: #b5bac4; text-decoration: line-through; background: var(--paper-2); cursor: not-allowed; }
 .summary { position: sticky; top: 90px; }
 .summary .card { padding: 20px; }

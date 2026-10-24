@@ -203,7 +203,8 @@
     $('#done-when').textContent = fmt.longDay(r.starts_at) + ' at ' + fmt.time(r.starts_at);
     $('#done-where').textContent = `${r.service} · ${r.location}, ${r.address}`;
     $('#directions').href = `https://www.google.com/maps/dir/?api=1&destination=${st.loc.lat},${st.loc.lng}`;
-    $('#manage').href = `manage.html?ref=${encodeURIComponent(r.ref)}&phone=${encodeURIComponent($('#phone').value.trim())}`;
+    $('#manage').href = `manage.html?ref=${encodeURIComponent(r.ref)}`;
+    try { sessionStorage.setItem('za-manage', JSON.stringify({ ref: r.ref, phone: $('#phone').value.trim() })); } catch (_) {}
     go(5);
     try { localStorage.setItem('za-last-booking', JSON.stringify({ ref: r.ref, at: r.starts_at })); } catch (_) {}
   }

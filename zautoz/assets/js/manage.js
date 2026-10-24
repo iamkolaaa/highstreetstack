@@ -13,6 +13,7 @@
   const sp = new URLSearchParams(location.search);
   if (sp.get('ref')) refEl.value = sp.get('ref');
   if (sp.get('phone')) phEl.value = sp.get('phone');
+  try { const m = JSON.parse(sessionStorage.getItem('za-manage') || 'null'); if (m && (!sp.get('ref') || m.ref === sp.get('ref'))) { if (!refEl.value) refEl.value = m.ref; if (!phEl.value) phEl.value = m.phone; } } catch (_) {}
   if (refEl.value && phEl.value) lookup();
 
   form.addEventListener('submit', e => { e.preventDefault(); lookup(); });

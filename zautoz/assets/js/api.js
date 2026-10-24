@@ -33,7 +33,7 @@
     today() { return fmt.isoDay(new Date()); },
     addDays(iso, n) { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); },
     time(ts) { return new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' }).format(new Date(ts)); },
-    day(ts, opts) { return new Intl.DateTimeFormat('en-GB', Object.assign({ timeZone: TZ, weekday: 'short', day: 'numeric', month: 'short' }, opts || {})).format(new Date(ts)); },
+    day(ts, opts) { return new Intl.DateTimeFormat('en-GB', Object.assign({ timeZone: TZ }, opts || { weekday: 'short', day: 'numeric', month: 'short' })).format(new Date(ts)); },
     longDay(ts) { return fmt.day(ts, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); },
     dayOfIso(iso, opts) { return fmt.day(iso + 'T12:00:00Z', opts); },
     date(d) { if (!d) return '—'; return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(String(d).length === 10 ? d + 'T12:00:00Z' : d)); },

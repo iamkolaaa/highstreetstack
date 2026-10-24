@@ -550,7 +550,7 @@
     if (regOk) {
       const fills = {}; if (nz(e.make)) fills.make = e.make.trim(); if (nz(e.model)) fills.model = e.model.trim(); if (e.mot_expiry) fills.mot_expiry = e.mot_expiry;
       if (veh) {
-        const patch = {}; Object.keys(fills).forEach(k => { if (!veh[k]) patch[k] = fills[k]; });
+        const patch = {}; Object.keys(fills).forEach(k => { if (!veh[k] || (k === 'mot_expiry' && fills[k] > veh[k])) patch[k] = fills[k]; });
         if (cust && veh.customer_id !== cust.id) {
           const prev = owner ? fmt.name(owner) : 'nobody'; patch.customer_id = cust.id;
           out.relink = { id: veh.id, prev: veh.customer_id || null };
