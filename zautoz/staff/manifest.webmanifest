@@ -1,0 +1,2 @@
+{ "name": "Z Autoz Workshop", "short_name": "Workshop", "start_url": "./", "display": "standalone", "background_color": "#111318", "theme_color": "#111318",
+  "icons": [{ "src": "../assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml" }] }

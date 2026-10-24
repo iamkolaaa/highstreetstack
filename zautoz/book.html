@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<title>Book online · Z Autoz Bletchley</title>
+<meta name="description" content="Book an MOT, service, tyres, tracking or diagnostics at Z Autoz and Pam's MOT Centre, Bletchley, Milton Keynes.">
+<link rel="icon" href="assets/img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="alt" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:20px">
+      <span class="eyebrow">Book online</span>
+      <h1 style="font-size:clamp(2rem,5vw,3.2rem)">Book your car in</h1>
+      <p class="muted">Takes about a minute. You'll get a booking reference straight away.</p>
+    </div>
+
+    <div class="wizard">
+      <div>
+        <div class="steps" id="steps"><span></span><span></span><span></span><span></span></div>
+        <div class="card" style="padding:26px">
+
+          <!-- 1 vehicle -->
+          <div class="step on" data-step="1">
+            <h3>Your vehicle</h3>
+            <p class="muted small">Enter the registration. We match it to your records, so next time is even quicker.</p>
+            <div class="field">
+              <label for="reg">Registration</label>
+              <div class="plate"><div class="gb"><i>★</i>UK</div><input id="reg" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AB12 CDE" maxlength="10" aria-describedby="reg-hint"></div>
+              <div id="reg-hint" class="small muted" style="margin-top:6px"></div>
+            </div>
+            <div class="row">
+              <div class="field"><label for="make">Make</label><input class="input" id="make" list="makes" placeholder="e.g. Ford" autocomplete="off"></div>
+              <div class="field"><label for="model">Model <span class="muted small">(optional)</span></label><input class="input" id="model" placeholder="e.g. Focus" autocomplete="off"></div>
+            </div>
+            <datalist id="makes"></datalist>
+            <details class="small" style="margin-top:4px"><summary style="cursor:pointer;font-weight:600">Know your MOT expiry date? <span class="muted">(optional)</span></summary>
+              <div class="field" style="margin-top:10px;max-width:260px"><input class="input" type="date" id="mot_expiry"></div>
+              <p class="muted small">Not sure? <a href="https://www.gov.uk/check-mot-history" target="_blank" rel="noopener">Check on GOV.UK</a>.</p>
+            </details>
+          </div>
+
+          <!-- 2 service -->
+          <div class="step" data-step="2">
+            <h3>What do you need?</h3>
+            <div class="cat-tabs" id="cats"></div>
+            <div class="choice-grid" id="services"><div class="skeleton" style="height:96px"></div><div class="skeleton" style="height:96px"></div><div class="skeleton" style="height:96px"></div></div>
+            <div id="site-pick" style="display:none;margin-top:22px">
+              <h3 style="font-size:1.2rem">Which site?</h3>
+              <div class="choice-grid" id="sites"></div>
+            </div>
+          </div>
+
+          <!-- 3 time -->
+          <div class="step" data-step="3">
+            <h3>Pick a day and time</h3>
+            <p class="muted small" id="time-help"></p>
+            <div class="days" id="days"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0 12px;gap:10px;flex-wrap:wrap">
+              <b id="day-label"></b>
+              <span class="small muted" id="slot-legend"></span>
+            </div>
+            <div class="slots" id="slots"></div>
+            <p class="small muted" style="margin-top:14px">Need it today or can't see a time? Walk-ins are welcome, or call <a id="call-site" href="#"></a>.</p>
+          </div>
+
+          <!-- 4 details -->
+          <div class="step" data-step="4">
+            <h3>Your details</h3>
+            <form id="details" novalidate>
+              <div class="row">
+                <div class="field"><label for="first_name">First name</label><input class="input" id="first_name" autocomplete="given-name" required></div>
+                <div class="field"><label for="last_name">Last name</label><input class="input" id="last_name" autocomplete="family-name"></div>
+              </div>
+              <div class="row">
+                <div class="field"><label for="phone">Mobile number</label><input class="input" id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="07..." required></div>
+                <div class="field"><label for="email">Email <span class="muted small">(optional)</span></label><input class="input" id="email" type="email" autocomplete="email"></div>
+              </div>
+              <div class="field"><label for="notes">Anything we should know? <span class="muted small">(optional)</span></label>
+                <textarea class="input" id="notes" rows="3" maxlength="1000" placeholder="e.g. tyre size 205/55 R16, knocking noise from front left, I'll wait for it…"></textarea></div>
+              <label class="check"><input type="checkbox" id="marketing"> Text me a reminder when my MOT or service is next due.</label>
+              <p class="small muted" style="margin-top:12px">We use your details to manage this booking. See our <a href="privacy.html">privacy notice</a>.</p>
+              <div id="book-error" class="notice bad" style="display:none;margin-top:10px"></div>
+            </form>
+          </div>
+
+          <!-- 5 done -->
+          <div class="step" data-step="5">
+            <div class="done-card">
+              <div class="tick">✓</div>
+              <h2 style="margin-bottom:4px" id="done-title">You're booked in</h2>
+              <p class="muted">Your booking reference</p>
+              <div class="ref" id="done-ref"></div>
+              <p id="done-when" style="font-weight:600;margin-top:10px"></p>
+              <p class="muted" id="done-where"></p>
+              <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+                <button class="btn btn-dark" id="ics">Add to calendar</button>
+                <a class="btn btn-ghost" id="directions" target="_blank" rel="noopener">Directions</a>
+                <a class="btn btn-ghost" id="manage">Manage booking</a>
+              </div>
+              <p class="small muted" style="margin-top:20px">Keep your reference and phone number. You'll need them to change or cancel.</p>
+            </div>
+          </div>
+
+          <div class="wiz-nav" id="wiz-nav">
+            <button class="btn btn-ghost" id="back" type="button">Back</button>
+            <button class="btn btn-primary" id="next" type="button">Continue</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="summary">
+        <div class="card">
+          <h3 style="font-size:1.2rem">Your booking</h3>
+          <dl>
+            <dt>Vehicle</dt><dd id="s-reg">—</dd>
+            <dt>Service</dt><dd id="s-svc">—</dd>
+            <dt>Where</dt><dd id="s-loc">—</dd>
+            <dt>When</dt><dd id="s-when">—</dd>
+            <dt>Price</dt><dd id="s-price">—</dd>
+          </dl>
+          <p class="small muted" id="s-note" style="margin:14px 0 0">Pay on collection by card, contactless or cash. Nothing to pay now.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/book.js"></script>
+</body>
+</html>

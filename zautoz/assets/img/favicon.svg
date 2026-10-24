@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Z Autoz">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#ff7a1a"/><stop offset="1" stop-color="#d4213d"/></linearGradient></defs>
+  <g transform="translate(32 32)">
+    <g fill="#c9ced8">
+      <circle r="21"/>
+      <g id="t"><rect x="-4" y="-29" width="8" height="10" rx="1.5"/></g>
+      <use href="#t" transform="rotate(45)"/><use href="#t" transform="rotate(90)"/><use href="#t" transform="rotate(135)"/>
+      <use href="#t" transform="rotate(180)"/><use href="#t" transform="rotate(225)"/><use href="#t" transform="rotate(270)"/><use href="#t" transform="rotate(315)"/>
+    </g>
+    <circle r="15" fill="#111318"/>
+    <path d="M-9 -9 H9 L-3 5 H9 V9 H-9 L3 -5 H-9 Z" fill="url(#g)"/>
+  </g>
+</svg>

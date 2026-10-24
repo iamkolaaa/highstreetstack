@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<title>Z Autoz — MOTs, tyres &amp; repairs in Bletchley, Milton Keynes</title>
+<meta name="description" content="Book an MOT, service, tyres or repair online with Z Autoz and Pam's MOT Centre in Bletchley, Milton Keynes. Walk-ins welcome.">
+<link rel="icon" href="assets/img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+  .chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1.5px solid var(--line);background:#fff;border-radius:999px;font:600 .92rem var(--font);cursor:pointer;color:var(--text)}
+  .chip svg{width:18px;height:18px}
+  .chip:hover{border-color:#ffb48a}
+  .chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .hint{font-size:.85rem;min-height:1.3em;margin:8px 0 0;color:var(--muted)}
+  .hint.warn{color:#8a5a00}
+  .hero-card .btn{width:100%;margin-top:12px;min-height:50px}
+  .hero-card .plate{max-width:none}
+  .hero .wrap>*{min-width:0}
+  .plate input{width:100%}
+  @media (max-width:420px){.plate input{font-size:1.8rem;letter-spacing:2px}}
+  .hero-stats div b{font-size:1.8rem}
+  .hero-stats b .stars{color:#ffc531;font-size:1.3rem;vertical-align:2px;letter-spacing:0}
+  .cat-block{margin-bottom:34px}
+  .cat-block>h3{display:flex;align-items:center;gap:10px;text-transform:uppercase;margin-bottom:14px}
+  .svc-card h4{font-family:var(--font);font-size:1.05rem;text-transform:none;margin:0;font-weight:700;line-height:1.25}
+  .svc-card p{margin:0;font-size:.92rem;color:var(--muted)}
+  .svc-card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .svc-card .go{font-weight:600;font-size:.9rem;color:var(--crimson);display:inline-flex;gap:6px;align-items:center}
+  .mot-check label{color:#fff}
+  .mot-check .input{background:#fff;color:var(--text)}
+  .mot-result.ok{border-color:#2bbf63;background:rgba(43,191,99,.12)}
+  .mot-result.warn{border-color:#f0b429;background:rgba(240,180,41,.14)}
+  .mot-result.bad{border-color:#ff5d73;background:rgba(255,93,115,.14)}
+  .mot-result .big{font-family:var(--display);font-size:2.4rem;line-height:1;margin:0 0 6px}
+  .mot-result p{margin:0 0 8px;color:#e6e8ee}
+  .mot-result .btn{margin-top:6px}
+  .map-wrap{position:relative;margin-top:22px;isolation:isolate;z-index:0}
+  .loc-card .hrs{margin:0 22px 14px;font-size:.9rem}
+  .loc-card .hrs summary{cursor:pointer;font-weight:600;min-height:32px;display:flex;align-items:center}
+  .loc-card .hrs>div:not(:first-child){padding:2px 0}
+  .loc-card h3{margin:0 0 4px}
+  .marker-pin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .btn,.btn-sm{min-height:44px}
+  .map-toggle button{min-height:40px}
+  @media (max-width:640px){#map{height:360px}.cta-band{padding:28px 22px}.hero-card{padding:20px}}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="hero" style="padding:0">
+  <div class="wrap">
+    <div>
+      <span class="kicker">Bletchley · Milton Keynes</span>
+      <h1>MOTs, tyres &amp; repairs — <span class="grad-text">booked in 60 seconds</span></h1>
+      <p class="lead">Two friendly sites in MK1: Pam's MOT Centre for MOTs, servicing and brakes, and the Z Autoz garage for tyres, tracking, diagnostics and repairs. Book online, or just turn up.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a class="btn btn-primary" href="book.html">Book online</a>
+        <a class="btn btn-ghost" href="#locations" style="color:#fff">Call or find us</a>
+      </div>
+      <div class="hero-stats">
+        <div><b><span class="stars">★</span> 4.4</b><span>321 Google reviews<br>(MOT centre)</span></div>
+        <div><b><span class="stars">★</span> 4.2</b><span>63 Google reviews<br>(garage)</span></div>
+        <div><b>2</b><span>sites in MK1</span></div>
+        <div><b>Walk-ins</b><span>welcome</span></div>
+      </div>
+    </div>
+
+    <form class="hero-card" id="quick" novalidate>
+      <h3>Find a slot</h3>
+      <p class="muted small" style="margin-bottom:14px">Type your registration and pick what you need.</p>
+      <label for="reg">Your registration</label>
+      <div class="plate"><div class="gb"><i>★</i>UK</div><input id="reg" name="reg" placeholder="AB12 CDE" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" aria-describedby="reghint"></div>
+      <p class="hint" id="reghint" aria-live="polite"></p>
+      <div class="small" style="font-weight:600;margin-top:6px" id="chiplabel">What do you need?</div>
+      <div class="chips" role="group" aria-labelledby="chiplabel" id="chips"></div>
+      <button class="btn btn-primary" type="submit">Find a slot</button>
+    </form>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">What we do</span><h2>Services &amp; guide prices</h2>
+      <p class="muted">Pick a service to book it. Not sure what you need? <a href="tel:01908365050">Call us</a> and we'll point you right.</p></div>
+    <div id="svc-list" class="grid g3"><div class="skeleton" style="height:150px"></div><div class="skeleton" style="height:150px"></div><div class="skeleton" style="height:150px"></div></div>
+    <p class="muted small" id="price-note" hidden style="margin-top:18px">Prices are guide prices — we always confirm before starting work.</p>
+    <p style="margin-top:18px"><a class="btn btn-dark btn-sm" href="services.html">See the full price list</a></p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">How it works</span><h2>Booked before the kettle boils</h2></div>
+    <div class="grid g3 steps-row" style="margin-top:24px">
+      <div class="card"><h3>Enter your reg</h3><p class="muted" style="margin:0">Tell us the car and what it needs. No account, no password.</p></div>
+      <div class="card"><h3>Pick a time</h3><p class="muted" style="margin:0">See real free slots at the site that does the job, and choose one that suits you.</p></div>
+      <div class="card"><h3>Drop the car in</h3><p class="muted" style="margin:0">Bring it along. We'll keep you posted, and you can wait or head off while we work.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="dark" id="mot">
+  <div class="wrap mot-check">
+    <div>
+      <span class="eyebrow" style="color:#ffb48a;font-weight:700;font-size:.8rem;letter-spacing:2px;text-transform:uppercase">MOT due-date checker</span>
+      <h2>When does your MOT run out?</h2>
+      <p style="color:#c9cdd6">You can MOT up to a month (minus a day) early and keep the same renewal date. Enter the expiry date from your last certificate and we'll work it out.</p>
+      <div class="field" style="max-width:320px"><label for="motdate">MOT expiry date</label><input class="input" type="date" id="motdate"></div>
+      <p class="small" style="color:#aab0bc">Don't know it? <a href="https://www.gov.uk/check-mot-history" target="_blank" rel="noopener" style="color:#ffb48a">Check it on GOV.UK</a>.</p>
+    </div>
+    <div class="mot-result" id="motresult" aria-live="polite"><p style="margin:0;color:#aab0bc">Pick a date and your result appears here.</p></div>
+  </div>
+</section>
+
+<section id="locations">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Find us</span><h2>Two sites in Bletchley</h2>
+      <p class="muted">About 2 km between them, both in Bletchley. Services say which site does the job.</p></div>
+    <div id="loc-list" class="grid g2"><div class="skeleton" style="height:300px"></div><div class="skeleton" style="height:300px"></div></div>
+    <div class="map-wrap">
+      <div id="map" role="region" aria-label="Map of both sites"></div>
+      <div class="map-toggle" role="group" aria-label="Map style"><button type="button" class="on" data-s="map">Map</button><button type="button" data-s="sat">Satellite</button></div>
+    </div>
+    <p class="muted small" style="margin-top:10px">The garage is in the Sinclair Court trade yard off Watling Street. Parking is tight, so booking guarantees your space.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap" style="max-width:820px">
+    <div class="sec-head"><span class="eyebrow">Questions</span><h2>Good to know</h2></div>
+    <details class="faq"><summary>Can I wait while you work on the car?</summary><p>Yes for most MOTs, punctures and tyre fits. An MOT takes 45–60 minutes. For longer jobs such as servicing or repairs, tell us when you book and we'll give you a realistic time.</p></details>
+    <details class="faq"><summary>Do you take walk-ins?</summary><p>Yes, walk-ins are welcome at both sites. The garage yard is small though, so booking guarantees you a slot and a parking space.</p></details>
+    <details class="faq"><summary>How early can I get my MOT?</summary><p>Up to one month (minus a day) before it expires, and you keep the same renewal date. Use the checker above to see your earliest date. New cars need their first MOT at 3 years.</p></details>
+    <details class="faq"><summary>What if my car fails its MOT?</summary><p>If the car stays with us and is retested within 10 working days, the retest is a free partial retest. We'll explain what failed and quote before doing any repair work.</p></details>
+    <details class="faq"><summary>Do you fit part-worn tyres?</summary><p>Yes. The garage stocks new tyres and quality part-worn ones, fitted and balanced, from brands such as Michelin, Hankook, Pirelli, Continental, Yokohama and Goodyear.</p></details>
+    <details class="faq"><summary>Can I bring my own tyres?</summary><p>Please call the garage on <a href="tel:01908365050">01908 365050</a> first so we can check what's possible.</p></details>
+    <details class="faq"><summary>How do I pay?</summary><p>Cards and contactless are accepted at both sites.</p></details>
+    <details class="faq"><summary>How do I change or cancel a booking?</summary><p>Use <a href="manage.html">My booking</a> with your reference and phone number. To change a time, cancel and rebook, or call the site.</p></details>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-band"><div><h2>Ready when you are</h2><p style="margin:6px 0 0;opacity:.92">Pick a service and a time. It takes about a minute.</p></div>
+      <a class="btn btn-light" href="book.html">Book online</a></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/pub.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/js/home.js"></script>
+</body>
+</html>

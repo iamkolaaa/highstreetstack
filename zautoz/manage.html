@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<title>My booking — Z Autoz</title>
+<link rel="icon" href="assets/img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+  .page-head{background:var(--ink);color:#fff;padding:48px 0 40px}
+  .page-head p{color:#c9cdd6;margin:0;max-width:40em}
+  .narrow{max-width:640px}
+  .btn{min-height:44px}
+  .bk-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .bk-when{font-family:var(--display);font-size:2rem;line-height:1.1;margin:12px 0 2px}
+  .bk-card dl{display:grid;grid-template-columns:96px 1fr;gap:8px 12px;margin:16px 0;font-size:.95rem}
+  .bk-card dt{color:var(--muted)} .bk-card dd{margin:0;font-weight:500}
+  .bk-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .confirm{margin-top:16px}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+<div class="page-head"><div class="wrap"><h1>My booking</h1><p>Look up a booking with your reference and the phone number you booked with.</p></div></div>
+
+<section style="padding-top:36px">
+  <div class="wrap narrow">
+    <form class="card" id="find" novalidate>
+      <div class="field"><label for="ref">Booking reference</label>
+        <input class="input" id="ref" name="ref" placeholder="ZA-AB12C" autocomplete="off" autocapitalize="characters" spellcheck="false" required></div>
+      <div class="field"><label for="phone">Phone number</label>
+        <input class="input" id="phone" name="phone" type="tel" placeholder="07123 456789" autocomplete="tel" required></div>
+      <p class="error" id="ferr" role="alert" hidden></p>
+      <button class="btn btn-primary" type="submit" id="fbtn">Find my booking</button>
+    </form>
+    <div id="result" style="margin-top:22px" aria-live="polite"></div>
+    <p class="muted small" style="margin-top:22px">To change the time, cancel and rebook, or call the site:
+      garage <a href="tel:01908365050">01908 365050</a> · MOT centre <a href="tel:01908644514">01908 644514</a>.</p>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/pub.js"></script>
+<script src="assets/js/manage.js"></script>
+</body>
+</html>
