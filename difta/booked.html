@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <style>
-body{min-height:100svh;display:grid;place-items:center;padding:40px 0}
+body{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 0}
 .box{width:min(560px,100% - 32px);text-align:center}
 .mark{width:120px;height:120px;border-radius:50%;margin:0 auto 26px;background:#0a0a0a url(img/mark-white.png) center/cover;box-shadow:0 0 0 1px rgba(201,165,90,.6),0 0 0 10px rgba(10,10,10,.6),0 0 0 11px rgba(201,165,90,.25)}
 h1{font-size:clamp(44px,9vw,64px)}
@@ -63,7 +63,7 @@ h1 em{font-style:italic;color:var(--gold2)}
       <div class="row"><span>Service</span><span>${D.esc(b.service)}</span></div>
       <div class="row"><span>Barber</span><span>${D.esc(b.barber)}</span></div>
       <div class="row"><span>When</span><span>${D.niceDate(b.date)}, ${fmtT(b.time)}</span></div>
-      <div class="row"><span>${paid ? "Paid" : "Pay in studio"}</span><span>${paid ? D.gbp(b.paid_pence) + (bal > 0 ? ` <small class="muted">(${D.gbp(bal)} in studio)</small>` : " ✓") : D.gbp(b.price_pence)}</span></div>
+      <div class="row"><span>${paid ? (b.pay_mode === "demo" ? "Paid (demo)" : "Paid") : "Pay in studio"}</span><span>${paid ? D.gbp(b.paid_pence) + (bal > 0 ? ` <small class="muted">(${D.gbp(bal)} in studio)</small>` : " ✓") : D.gbp(b.price_pence)}</span></div>
       <div class="row"><span>Reference</span><span class="ref">${D.esc(b.ref)}</span></div>
     </div>
     <div class="acts">
@@ -72,7 +72,14 @@ h1 em{font-style:italic;color:var(--gold2)}
       <a class="btn" href="${D.wa("447946683376", waMsg)}" target="_blank" rel="noopener">WhatsApp us</a>
       <a class="btn" href="index.html">Back to the studio</a>
     </div>
+    ${D.DEMO ? `<button class="btn block" id="seeWa" style="margin-top:10px;border-color:#25d366;color:#9ff0bd">See the WhatsApp confirmation you'd get</button>` : ""}
     <p class="muted" style="font-size:13px;margin-top:22px">12 Wetherburn Court, Brunel Shopping Centre, Bletchley MK2 2UW.<br>Need to change? Message us at least 24 hours before.</p>`;
+  if (D.DEMO) {
+    const conf = `Hi ${(b.customer_first || "there")}, you're booked in at Do It For The Art Studio ✂️\n${b.service} with ${b.barber}\n${D.niceDate(b.date)} at ${fmtT(b.time)}\nRef ${b.ref}\n12 Wetherburn Court, Bletchley MK2 2UW\nSee you then!`;
+    const show = () => D.waPreview(conf, "DIFTA Studio", true);
+    document.getElementById("seeWa").onclick = show;
+    setTimeout(show, 1200);
+  }
 })();
 </script>
 </body>

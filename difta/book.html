@@ -6,6 +6,7 @@
 <title>Book | Do It For The Art Studio</title>
 <meta name="description" content="Book your barber at Do It For The Art Studio, Bletchley. Pick your barber, service and time.">
 <meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="noindex">
 <link rel="icon" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -266,7 +267,7 @@ h1 em{font-style:italic;color:var(--gold2)}
     const pr = price();
     $("#submit").textContent = pr.online && pr.now ? `Pay ${D.gbp(pr.now)} & confirm` : "Confirm booking";
     $("#secure").innerHTML = pr.online && pr.now ? `🔒 Secure payment by Stripe · Apple Pay · Google Pay · cards` : `No payment needed now. Pay in the studio.`;
-    $("#testnote").innerHTML = S.cfg.stripe_test && pr.online ? `<div class="testnote">Demo mode: no real money moves. Pay with card <b>4242 4242 4242 4242</b>, any future expiry, any CVC.</div>` : "";
+    $("#testnote").innerHTML = S.cfg.demo_pay && pr.online ? `<div class="testnote">Demo: you'll see what the secure payment screen looks like. No card is charged.</div>` : S.cfg.stripe_test && pr.online ? `<div class="testnote">Demo mode: no real money moves. Pay with card <b>4242 4242 4242 4242</b>, any future expiry, any CVC.</div>` : "";
     try { const saved = JSON.parse(localStorage.getItem("difta_me") || "{}"); for (const k of ["name", "phone", "email"]) if (saved[k] && !$("#" + k).value) $("#" + k).value = saved[k]; } catch (_) {}
   }
   $("#form").onsubmit = async (e) => {
@@ -277,6 +278,12 @@ h1 em{font-style:italic;color:var(--gold2)}
     if (body.phone.replace(/\D/g, "").length < 10) return ($("#err").textContent = "Please add a valid mobile number.");
     if (body.email && !/^\S+@\S+\.\S+$/.test(body.email)) return ($("#err").textContent = "That email doesn't look right.");
     try { localStorage.setItem("difta_me", JSON.stringify({ name: body.name, phone: body.phone, email: body.email })); } catch (_) {}
+    const pr = price();
+    if (S.cfg.demo_pay && pr.online && pr.now) {
+      const ok = await D.demoPay(pr.now, `${S.service.name} with ${S.barber.name} · ${D.niceDate(S.date)} ${fmtT(S.time)}`);
+      if (!ok) return;
+      body.pay = "demo";
+    }
     const btn = $("#submit"); btn.disabled = true; const old = btn.textContent; btn.innerHTML = `<span class="spin"></span>`;
     try {
       const r = await D.api("/book", { method: "POST", body });
@@ -290,6 +297,7 @@ h1 em{font-style:italic;color:var(--gold2)}
 
   // ---------- boot ----------
   D.config().then((c) => {
+    if (D.DEMO && (!c.payment || c.payment.mode === "none")) { c.payment = { mode: "full" }; c.demo_pay = true; }
     S.cfg = c; renderBarbers();
     const b = qs.get("barber"), sv = qs.get("service");
     if (b && c.staff.some((x) => x.id === b)) {
