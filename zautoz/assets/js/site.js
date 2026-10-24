@@ -44,7 +44,7 @@
         © ${new Date().getFullYear()} Z Autoz. MOT tests are carried out at Pam's MOT Centre, a DVSA-approved test station.
       </div>
     </div></footer>
-    <a class="btn btn-primary fab" href="book.html">Book now</a>`;
+    ${here === 'book.html' ? '' : '<a class="btn btn-primary fab" href="book.html">Book now</a>'}`;
 
   document.addEventListener('DOMContentLoaded', () => {
     const h = document.getElementById('site-header'); if (h) h.outerHTML = header;
