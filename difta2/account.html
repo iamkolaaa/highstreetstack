@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My account | Do It For The Art Studio 2</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/v2.css">
+<style>
+main{padding:96px 0 40px}
+h1{font-size:clamp(46px,11vw,72px)}
+.bk{display:flex;gap:14px;align-items:center;padding:16px;border-radius:20px;background:var(--panel);border:1px solid var(--line);margin-bottom:10px;animation:pop .4s both}
+.bk .d{width:62px;flex:none;text-align:center;border-radius:16px;padding:8px 0;background:#0a0a0a;border:1px solid rgba(201,165,90,.45)}
+.bk .d small{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.bk .d b{font:500 28px/1 var(--display)}
+.bk .t{flex:1;min-width:0}
+.bk .t b{font:500 21px var(--display);display:block}
+.bk .t small{color:var(--mute)}
+.pillst{font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:999px;border:1px solid var(--line2)}
+.pillst.ok{color:var(--ok);border-color:rgba(95,191,138,.4)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.empty{padding:30px;border-radius:22px;border:1px dashed var(--line2);text-align:center;color:var(--mute)}
+</style>
+</head>
+<body class="marble has-bn">
+<nav class="nav solid"><div class="wrap"><a class="brand" href="index.html"><img src="img/logo-white.png" alt="Do It For The Art Studio"></a><a class="btn gold sm" href="book.html">Book</a></div></nav>
+<main><div class="wrap" id="app"><span class="spin"></span></div></main>
+
+<nav class="bn glass" aria-label="Main">
+  <a href="index.html"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="index.html#work"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>Work</a>
+  <a href="book.html" class="mid"><span class="big">BOOK</span><em>Book</em></a>
+  <a href="#" data-chat><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.8 7L4 20l1.1-4.8A8 8 0 1 1 21 12z"/></svg>WhatsApp</a>
+  <a href="account.html" class="on"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Account</a>
+</nav>
+
+<script src="assets/common.js"></script>
+<script src="assets/v2.js"></script>
+<script>
+(async () => {
+  const D = DIFTA, app = document.getElementById("app"), a = V2.acct.get();
+  const wa = `<button class="watag" data-chat style="margin-top:18px"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg></span><span><b>Book on WhatsApp</b><small>Text “BOOK” to 07946 683376</small></span><span class="go">›</span></button>`;
+  if (!a) {
+    app.innerHTML = `<div class="eyebrow">DIFTA Club</div><h1>Your <em>account.</em></h1>
+      <p class="muted" style="margin:14px 0 22px">Accounts are created automatically the first time you book. No password, no app: we send a sign-in link to your WhatsApp.</p>
+      <div class="loyal"><h3 style="font-size:28px">Every <em class="shimmer">10th cut</em> is free.</h3><div class="stamps">${[...Array(10)].map((_, i) => `<i class="${i === 9 ? "free" : ""}">${i === 9 ? "FREE" : ""}</i>`).join("")}</div></div>
+      <a class="btn gold block" href="book.html" style="margin-top:20px">Make my first booking</a>${wa}`;
+    app.querySelectorAll("[data-chat]").forEach((b) => (b.onclick = (e) => { e.preventDefault(); V2.chat(); }));
+    return;
+  }
+  const first = String(a.name || "").split(" ")[0];
+  const [cfg, ...bs] = await Promise.all([D.config(), ...a.bookings.map((b) => D.api("/booking?id=" + b.id).then((r) => ({ ...r.booking, ...b })).catch(() => null))]);
+  const list = bs.filter(Boolean).filter((b) => !["cancelled", "expired"].includes(b.status));
+  const now = Date.now(), up = list.filter((b) => Date.parse(b.end_at) > now).sort((x, y) => x.start_at.localeCompare(y.start_at)), past = list.filter((b) => Date.parse(b.end_at) <= now);
+  const n = Math.min(10, list.length), last = list[list.length - 1];
+  const M = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const card = (b) => { const d = new Date(b.date + "T12:00:00Z"); return `<div class="bk"><div class="d"><small>${M[d.getUTCMonth()]}</small><b>${d.getUTCDate()}</b></div><div class="t"><b>${D.esc(b.service)}</b><small>${D.esc(b.barber)} · ${D.dayName(b.date).slice(0, 3)} ${V2.fmtT(b.time)} · Ref ${D.esc(b.ref)}</small></div><span class="pillst ok">${b.paid_pence ? "Paid" : "Booked"}</span></div>`; };
+  app.innerHTML = `<div class="eyebrow">DIFTA Club member</div><h1>Hey, <em>${D.esc(first)}.</em></h1>
+    <p class="muted" style="margin:10px 0 22px">${D.esc(a.phone || "")} · signed in on this phone</p>
+    <div class="loyal"><div class="eyebrow">Loyalty card</div><h3 style="font-size:28px;margin-top:6px">${n >= 10 ? "Your next cut is <em class='shimmer'>free.</em>" : `${10 - n} more until a <em class="shimmer">free cut.</em>`}</h3><div class="stamps" id="st">${[...Array(10)].map((_, i) => `<i class="${i === 9 ? "free" : ""}">${i === 9 ? "FREE" : ""}</i>`).join("")}</div></div>
+    <h2 style="font-size:34px;margin:30px 0 12px">Upcoming</h2>
+    ${up.length ? up.map(card).join("") : `<div class="empty">Nothing booked yet.</div>`}
+    <div class="grid2">${last ? `<a class="btn gold" href="book.html?barber=${last.barber_id}&service=${last.service_id}">Rebook last cut</a>` : ""}<a class="btn" href="book.html">New booking</a></div>
+    ${up[0] ? `<div class="grid2"><a class="btn sm" href="${D.wa("447946683376", "Hi, I need to change my booking " + up[0].ref)}">Change</a><a class="btn sm" href="${D.wa("447946683376", "Hi, I need to cancel my booking " + up[0].ref)}">Cancel</a></div>` : ""}
+    ${past.length ? `<h2 style="font-size:34px;margin:30px 0 12px">History</h2>${past.map(card).join("")}` : ""}
+    ${wa}
+    <button class="btn sm" id="out" style="margin-top:26px">Sign out of this phone</button>`;
+  [...document.querySelectorAll("#st i")].slice(0, n).forEach((s, i) => setTimeout(() => s.classList.add("on"), 300 + 200 * i));
+  app.querySelectorAll("[data-chat]").forEach((b) => (b.onclick = (e) => { e.preventDefault(); V2.chat(); }));
+  document.getElementById("out").onclick = () => { V2.acct.clear(); location.reload(); };
+})();
+</script>
+</body>
+</html>

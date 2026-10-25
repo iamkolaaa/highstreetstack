@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Book | Do It For The Art Studio 2</title>
+<meta name="description" content="Book your barber at Do It For The Art Studio, Bletchley. Pick your barber, service and time.">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="noindex">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/v2.css">
+<style>
+body{min-height:100svh}
+.top{position:sticky;top:0;z-index:20;background:rgba(10,10,10,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+.top img{height:36px}
+.back{width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:transparent;display:grid;place-items:center;cursor:pointer;font-size:20px}
+.back[hidden]{visibility:hidden;display:grid}
+.steps{display:flex;gap:6px;justify-content:center;padding:14px 0 0}
+.steps i{height:3px;flex:1;max-width:70px;border-radius:3px;background:var(--line2);transition:background .3s}
+.steps i.on{background:var(--gold)}
+main{padding:22px 0 150px}
+.layout{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start}
+.layout>*{min-width:0}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.side{display:none}}
+h1{font-size:clamp(40px,7vw,58px);margin:6px 0 6px}
+h1 em{font-style:italic;color:var(--gold2)}
+.sub{color:var(--mute);margin-bottom:26px}
+.pane{display:none;animation:in .35s ease}
+.pane.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+/* barbers */
+.barbers{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.bcard{display:flex;gap:16px;align-items:center;padding:14px;border-radius:20px;border:1px solid var(--line);background:var(--panel);cursor:pointer;text-align:left;transition:border-color .2s,transform .15s}
+.bcard:hover{border-color:var(--gold)}
+.bcard:active{transform:scale(.99)}
+.bcard img{width:84px;height:84px;border-radius:50%;object-fit:cover;flex:none;border:2px solid #0a0a0a;box-shadow:0 0 0 1px rgba(201,165,90,.55)}
+.bcard b{font:500 28px/1 var(--display);display:block}
+.bcard small{color:var(--mute);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.bcard .from{display:block;margin-top:6px;color:var(--gold2);font-size:14px}
+@media (max-width:600px){.barbers{grid-template-columns:1fr}}
+/* services */
+.cat{font:500 12px/1 var(--ui);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin:22px 0 10px}
+.svc{display:grid;grid-template-columns:1fr auto;gap:4px 14px;width:100%;padding:18px;border-radius:18px;border:1px solid var(--line);background:var(--panel);margin-bottom:10px;cursor:pointer;text-align:left;transition:border-color .2s}
+.svc:hover,.svc.sel{border-color:var(--gold)}
+.svc b{font:500 23px/1.15 var(--display)}
+.svc .p{font:500 23px/1 var(--display);color:var(--gold2);text-align:right}
+.svc .m{grid-column:1/-1;color:var(--mute);font-size:13.5px}
+/* dates */
+.dates{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity;scrollbar-width:none}
+.dates::-webkit-scrollbar{display:none}
+.day{flex:0 0 74px;scroll-snap-align:start;padding:12px 0;border-radius:18px;border:1px solid var(--line);background:var(--panel);cursor:pointer;text-align:center;transition:.2s}
+.day small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.day b{display:block;font:500 30px/1.1 var(--display)}
+.day .av{display:block;font-size:11px;color:var(--ok);margin-top:2px;min-height:14px}
+.day.none{opacity:.38}
+.day.none .av{color:var(--mute)}
+.day.sel{background:var(--text);color:#0a0a0a;border-color:var(--text)}
+.day.sel small,.day.sel .av{color:#333}
+.month{font-size:13px;color:var(--mute);margin:6px 0 6px;letter-spacing:.1em;text-transform:uppercase}
+.slots-h{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);margin:20px 0 10px}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px}
+.slot{min-height:48px;border-radius:14px;border:1px solid var(--line2);background:transparent;cursor:pointer;font-size:15px;transition:.15s}
+.slot:hover{border-color:var(--gold)}
+.slot.sel{background:var(--gold);color:#111;border-color:var(--gold);font-weight:600}
+.empty{padding:26px;border-radius:18px;border:1px dashed var(--line2);color:var(--mute);text-align:center}
+/* summary */
+.sum{padding:22px;border-radius:22px;background:var(--panel);border:1px solid var(--line);position:sticky;top:90px}
+.sum h3{font-size:28px;margin-bottom:12px}
+.sum .row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.sum .row span:first-child{color:var(--mute)}
+.sum .tot{font:500 30px/1 var(--display);color:var(--gold2)}
+.sum .who{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.sum .who img{width:52px;height:52px;border-radius:50%;object-fit:cover}
+.paybox{display:grid;gap:10px;margin-top:8px}
+.opt{display:flex;gap:12px;align-items:center;padding:16px;border-radius:16px;border:1px solid var(--line2);cursor:pointer}
+.opt input{accent-color:var(--gold);width:20px;height:20px}
+.opt.sel{border-color:var(--gold)}
+.secure{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--mute);font-size:13px;margin-top:12px}
+.testnote{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(226,176,74,.1);border:1px solid rgba(226,176,74,.35);color:#f0d9a6;font-size:13px}
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(10,10,10,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform .3s}
+.bar.on{transform:none}
+.bar .wrap{display:flex;align-items:center;gap:14px;justify-content:space-between}
+.bar .info{font-size:14px;line-height:1.35;min-width:0}
+.bar .info b{font:500 20px var(--display);color:var(--gold2)}
+.bar .info span{display:block;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.err{color:var(--bad);font-size:14px;margin-top:10px;min-height:20px}
+</style>
+</head>
+<body class="marble">
+<div class="top"><div class="wrap">
+  <button class="back" id="back" aria-label="Back" hidden>←</button>
+  <a href="index.html"><img src="img/logo-white.png" alt="Do It For The Art Studio"></a>
+  <a class="back" href="tel:+447946683376" aria-label="Call the studio" style="font-size:16px">☎</a>
+</div><div class="wrap steps" id="steps"><i></i><i></i><i></i><i></i></div></div>
+
+<main><div class="wrap layout">
+  <div>
+    <section class="pane" id="p1">
+      <div class="eyebrow">Step 1 of 4</div>
+      <h1>Choose your <em>barber.</em></h1>
+      <p class="sub">Every artist has their own specialities and prices.</p>
+      <button class="watag" data-chat style="margin-bottom:18px"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg></span><span><b>Rather book on WhatsApp?</b><small>Text “BOOK” to 07946 683376, our assistant does the rest.</small></span><span class="go">›</span></button>
+      <div class="barbers" id="barbers"><div class="spin"></div></div>
+    </section>
+    <section class="pane" id="p2">
+      <div class="eyebrow">Step 2 of 4</div>
+      <h1>What are we <em>doing?</em></h1>
+      <p class="sub" id="p2sub"></p>
+      <div id="services"></div>
+    </section>
+    <section class="pane" id="p3">
+      <div class="eyebrow">Step 3 of 4</div>
+      <h1>Pick a <em>time.</em></h1>
+      <p class="sub" id="p3sub"></p>
+      <div class="month" id="month"></div>
+      <div class="dates" id="dates"></div>
+      <div id="slots"></div>
+    </section>
+    <section class="pane" id="p4">
+      <div class="eyebrow">Step 4 of 4</div>
+      <h1>Your <em>details.</em></h1>
+      <p class="sub">We'll send your confirmation and reminders on WhatsApp. Your DIFTA account is created automatically: no password, no app.</p>
+      <form id="form" novalidate>
+        <label class="f" for="name">Full name</label><input class="in" id="name" autocomplete="name" required>
+        <label class="f" for="phone">Mobile number</label><input class="in" id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="07..." required>
+        <label class="f" for="email">Email <span style="text-transform:none;letter-spacing:0">(for your receipt, optional)</span></label><input class="in" id="email" type="email" autocomplete="email">
+        <label class="f" for="notes">Anything we should know? <span style="text-transform:none;letter-spacing:0">(optional)</span></label><textarea class="in" id="notes" placeholder="e.g. skin fade, keep the length on top"></textarea>
+        <label class="check-row"><input type="checkbox" id="mk"> Send me the occasional offer and a nudge when I'm due a cut.</label>
+        <div class="paybox" id="paybox"></div>
+        <p class="muted" style="font-size:13px;margin-top:16px" id="policy"></p>
+        <div class="err" id="err"></div>
+        <button class="btn gold block" id="submit" type="submit" style="margin-top:8px">Confirm booking</button>
+        <div class="secure" id="secure"></div>
+        <div id="testnote"></div>
+      </form>
+    </section>
+  </div>
+  <aside class="side"><div class="sum" id="sum"></div></aside>
+</div></main>
+
+<div class="bar" id="bar"><div class="wrap"><div class="info" id="barInfo"></div><button class="btn gold sm" id="barBtn">Continue</button></div></div>
+
+<script src="assets/common.js"></script>
+<script src="assets/v2.js"></script>
+<script>
+(() => {
+  const D = DIFTA, $ = (s) => document.querySelector(s), qs = new URLSearchParams(location.search);
+  const S = { step: 1, barber: null, service: null, date: null, time: null, pay: "online", cfg: null, days: {}, start: D.ymd() };
+  const fmtT = (hm) => { let [h, m] = hm.split(":").map(Number); const ap = h >= 12 ? "pm" : "am"; return (h % 12 || 12) + ":" + String(m).padStart(2, "0") + ap; };
+
+  if (qs.get("cancelled")) { D.api("/release", { method: "POST", body: { id: qs.get("cancelled") } }).catch(() => {}); setTimeout(() => D.toast("Payment cancelled. Your slot has been released, pick again any time."), 300); }
+
+  function go(n) {
+    S.step = n;
+    document.querySelectorAll(".pane").forEach((p, i) => p.classList.toggle("on", i + 1 === n));
+    document.querySelectorAll("#steps i").forEach((p, i) => p.classList.toggle("on", i < n));
+    $("#back").hidden = n === 1;
+    scrollTo({ top: 0, behavior: "smooth" });
+    if (n === 3) loadDays();
+    if (n === 4) renderPay();
+    summary();
+  }
+  $("#back").onclick = () => go(Math.max(1, S.step - 1));
+
+  function price() {
+    const s = S.service, P = S.cfg?.payment || { mode: "none" };
+    if (!s) return { now: 0, label: "" };
+    const online = P.mode === "full" || P.mode === "deposit" || (P.mode === "optional" && S.pay === "online");
+    const now = !online ? 0 : P.mode === "deposit" ? Math.min(P.deposit_pence || 1000, s.price_pence) : s.price_pence;
+    return { now, online, mode: P.mode };
+  }
+
+  function summary() {
+    const b = S.barber, s = S.service, pr = price();
+    $("#sum").innerHTML = `<h3>Your booking</h3>
+      ${b ? `<div class="who"><img src="${D.esc(b.photo)}" alt=""><div><b style="font:500 22px var(--display)">${D.esc(b.name)}</b><br><small class="muted">${D.esc(b.role || "")}</small></div></div>` : `<p class="muted">Choose a barber to start.</p>`}
+      ${s ? `<div class="row"><span>Service</span><span>${D.esc(s.name)}</span></div><div class="row"><span>Time needed</span><span>${D.mins(s.duration_min)}</span></div>` : ""}
+      ${S.date ? `<div class="row"><span>When</span><span>${D.niceDate(S.date)}${S.time ? ", " + fmtT(S.time) : ""}</span></div>` : ""}
+      ${s ? `<div class="row" style="border:0;align-items:center"><span>Price</span><span class="tot">${s.price_from ? "from " : ""}${D.gbp(s.price_pence)}</span></div>` : ""}
+      ${s && pr.online && pr.mode === "deposit" ? `<p class="muted" style="font-size:13px">${D.gbp(pr.now)} deposit today, the rest in the studio.</p>` : ""}
+      <p class="muted" style="font-size:13px;margin-top:14px">12 Wetherburn Court, Brunel Centre, Bletchley MK2 2UW</p>`;
+    // mobile bar
+    const ready = (S.step === 2 && s) || (S.step === 3 && S.time);
+    $("#bar").classList.toggle("on", S.step > 1 && S.step < 4 && !!s);
+    $("#barInfo").innerHTML = s ? `<b>${s.price_from ? "from " : ""}${D.gbp(s.price_pence)}</b><span>${D.esc(s.name)} · ${D.esc(b?.name || "")}${S.time ? " · " + D.niceDate(S.date) + " " + fmtT(S.time) : ""}</span>` : "";
+    $("#barBtn").disabled = !ready;
+    $("#barBtn").textContent = S.step === 3 ? "Continue" : "Choose a time";
+  }
+  $("#barBtn").onclick = () => { if (S.step === 2 && S.service) go(3); else if (S.step === 3 && S.time) go(4); };
+
+  // ---------- step 1: barbers ----------
+  function renderBarbers() {
+    const c = S.cfg;
+    $("#barbers").innerHTML = c.staff.map((b) => {
+      const sv = c.services.filter((s) => !s.staff_ids?.length || s.staff_ids.includes(b.id));
+      const min = Math.min(...sv.map((s) => s.price_pence));
+      return `<button class="bcard" data-id="${b.id}"><img src="${D.esc(b.photo)}" alt=""><span><small>${D.esc(b.role || "")}</small><b>${D.esc(b.name)}</b><span class="muted" style="font-size:13px">${D.esc(b.instagram || "")}</span><span class="from">${sv.length} services · from ${D.gbp(min)}</span></span></button>`;
+    }).join("");
+    $("#barbers").onclick = (e) => { const el = e.target.closest(".bcard"); if (el) pickBarber(el.dataset.id); };
+  }
+  function pickBarber(id, then) {
+    S.barber = S.cfg.staff.find((b) => b.id === id); if (!S.barber) return;
+    S.service = null; S.date = null; S.time = null; S.days = {};
+    renderServices(); if (then) then(); else go(2);
+  }
+
+  // ---------- step 2: services ----------
+  function renderServices() {
+    const sv = S.cfg.services.filter((s) => !s.staff_ids?.length || s.staff_ids.includes(S.barber.id));
+    $("#p2sub").textContent = `${S.barber.name}'s menu. Prices are set by each barber.`;
+    const cats = [...new Set(sv.map((s) => s.category || "Services"))];
+    $("#services").innerHTML = cats.map((c) => `<div class="cat">${D.esc(c)}</div>` + sv.filter((s) => (s.category || "Services") === c).map((s) =>
+      `<button class="svc" data-id="${s.id}"><b>${D.esc(s.name)}</b><span class="p">${s.price_from ? "from " : ""}${D.gbp(s.price_pence)}</span><span class="m">${D.mins(s.duration_min)}${s.description ? " · " + D.esc(s.description) : ""}</span></button>`).join("")).join("");
+    $("#services").onclick = (e) => { const el = e.target.closest(".svc"); if (el) { S.service = S.cfg.services.find((s) => s.id === el.dataset.id); S.date = null; S.time = null; S.days = {}; go(3); } };
+  }
+
+  // ---------- step 3: dates + times ----------
+  const N = 21;
+  async function loadDays() {
+    $("#p3sub").textContent = `${S.service.name} with ${S.barber.name} · ${D.mins(S.service.duration_min)}`;
+    const dates = [...Array(N)].map((_, i) => D.addDays(S.start, i));
+    drawDates(dates);
+    try {
+      const r = await D.api(`/days?service=${S.service.id}&staff=${S.barber.id}&from=${S.start}&n=${N}`);
+      S.days = r.days; drawDates(dates);
+      if (!S.date) { const first = dates.find((d) => S.days[d] > 0); if (first) pickDate(first); else $("#slots").innerHTML = `<div class="empty">No times free in the next three weeks. Call or WhatsApp the studio and we'll fit you in.</div>`; }
+    } catch (e) { $("#slots").innerHTML = `<div class="empty">Couldn't load times. ${D.esc(e.message)}</div>`; }
+  }
+  function drawDates(dates) {
+    const M = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    $("#dates").innerHTML = dates.map((d) => {
+      const dt = new Date(d + "T12:00:00Z"), n = S.days[d];
+      const lbl = d === S.start ? "Today" : d === D.addDays(S.start, 1) ? "Tmrw" : D.dayName(d).slice(0, 3);
+      return `<button class="day ${n === 0 ? "none" : ""} ${d === S.date ? "sel" : ""}" data-d="${d}"><small>${lbl}</small><b>${dt.getUTCDate()}</b><span class="av">${n == null ? "" : n === 0 ? "Full" : n + " free"}</span></button>`;
+    }).join("");
+    const f = new Date((S.date || dates[0]) + "T12:00:00Z"); $("#month").textContent = M[f.getUTCMonth()] + " " + f.getUTCFullYear();
+    $("#dates").onclick = (e) => { const el = e.target.closest(".day"); if (el) pickDate(el.dataset.d); };
+  }
+  async function pickDate(d) {
+    S.date = d; S.time = null;
+    document.querySelectorAll(".day").forEach((x) => x.classList.toggle("sel", x.dataset.d === d));
+    const M = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const f = new Date(d + "T12:00:00Z"); $("#month").textContent = M[f.getUTCMonth()] + " " + f.getUTCFullYear();
+    $("#slots").innerHTML = `<div style="padding:24px"><span class="spin"></span></div>`; summary();
+    try {
+      const r = await D.api(`/availability?service=${S.service.id}&staff=${S.barber.id}&date=${d}`);
+      if (S.date !== d) return;
+      if (!r.slots.length) { $("#slots").innerHTML = `<div class="empty">${S.barber.name} is fully booked on ${D.niceDate(d)}. Try another day.</div>`; return; }
+      const groups = [["Morning", (h) => h < 12], ["Afternoon", (h) => h >= 12 && h < 17], ["Evening", (h) => h >= 17]];
+      $("#slots").innerHTML = groups.map(([g, f]) => { const ss = r.slots.filter((s) => f(+s.t.slice(0, 2))); return ss.length ? `<div class="slots-h">${g}</div><div class="slots">${ss.map((s) => `<button class="slot" data-t="${s.t}">${fmtT(s.t)}</button>`).join("")}</div>` : ""; }).join("");
+      $("#slots").onclick = (e) => { const el = e.target.closest(".slot"); if (!el) return; S.time = el.dataset.t; document.querySelectorAll(".slot").forEach((x) => x.classList.toggle("sel", x === el)); summary(); V2.buzz(); setTimeout(() => go(4), 380); };
+    } catch (e) { $("#slots").innerHTML = `<div class="empty">Couldn't load times. ${D.esc(e.message)}</div>`; }
+  }
+
+  // ---------- step 4: details + pay ----------
+  function renderPay() {
+    const P = S.cfg.payment || { mode: "none" }, s = S.service;
+    $("#policy").textContent = S.cfg.policy || "";
+    if (P.mode === "optional") {
+      $("#paybox").innerHTML = `<label class="f">How would you like to pay?</label>
+        <label class="opt ${S.pay === "online" ? "sel" : ""}"><input type="radio" name="pay" value="online" ${S.pay === "online" ? "checked" : ""}><span><b>Pay now</b> · ${D.gbp(s.price_pence)}<br><small class="muted">Card, Apple Pay or Google Pay. Walk in and walk out.</small></span></label>
+        <label class="opt ${S.pay === "studio" ? "sel" : ""}"><input type="radio" name="pay" value="studio" ${S.pay === "studio" ? "checked" : ""}><span><b>Pay in the studio</b><br><small class="muted">Card or cash on the day.</small></span></label>`;
+      $("#paybox").onchange = (e) => { S.pay = e.target.value; renderPay(); summary(); };
+    } else $("#paybox").innerHTML = "";
+    const pr = price();
+    $("#submit").textContent = pr.online && pr.now ? `Pay ${D.gbp(pr.now)} & confirm` : "Confirm booking";
+    $("#secure").innerHTML = pr.online && pr.now ? `🔒 Secure payment by Stripe · Apple Pay · Google Pay · cards` : `No payment needed now. Pay in the studio.`;
+    $("#testnote").innerHTML = S.cfg.demo_pay && pr.online ? `<div class="testnote">Demo: you'll see what the secure payment screen looks like. No card is charged.</div>` : S.cfg.stripe_test && pr.online ? `<div class="testnote">Demo mode: no real money moves. Pay with card <b>4242 4242 4242 4242</b>, any future expiry, any CVC.</div>` : "";
+    try { const a = V2.acct.get(); if (a && !$("#name").value) { $("#name").value = a.name || ""; $("#phone").value = a.phone || ""; } } catch (_) {}
+    try { const saved = JSON.parse(localStorage.getItem("difta_me") || "{}"); for (const k of ["name", "phone", "email"]) if (saved[k] && !$("#" + k).value) $("#" + k).value = saved[k]; } catch (_) {}
+  }
+  $("#form").onsubmit = async (e) => {
+    e.preventDefault();
+    const body = { service_id: S.service.id, staff_id: S.barber.id, date: S.date, time: S.time, name: $("#name").value.trim(), phone: $("#phone").value.trim(), email: $("#email").value.trim(), notes: $("#notes").value.trim(), marketing_ok: $("#mk").checked, pay: S.pay, return_base: location.href.replace(/\/[^/]*$/, "") };
+    $("#err").textContent = "";
+    if (body.name.length < 2) return ($("#err").textContent = "Please add your name.");
+    if (body.phone.replace(/\D/g, "").length < 10) return ($("#err").textContent = "Please add a valid mobile number.");
+    if (body.email && !/^\S+@\S+\.\S+$/.test(body.email)) return ($("#err").textContent = "That email doesn't look right.");
+    try { localStorage.setItem("difta_me", JSON.stringify({ name: body.name, phone: body.phone, email: body.email })); } catch (_) {}
+    const pr = price();
+    if (S.cfg.demo_pay && pr.online && pr.now) {
+      const ok = await D.demoPay(pr.now, `${S.service.name} with ${S.barber.name} · ${D.niceDate(S.date)} ${fmtT(S.time)}`);
+      if (!ok) return;
+      body.pay = "demo";
+    }
+    const btn = $("#submit"); btn.disabled = true; const old = btn.textContent; btn.innerHTML = `<span class="spin"></span>`;
+    try {
+      const r = await D.api("/book", { method: "POST", body });
+      const isNew = V2.acct.addBooking({ id: r.booking.id, barber_id: S.barber.id, service_id: S.service.id }, body.name, body.phone);
+      if (r.checkout_url) location.href = r.checkout_url;
+      else location.href = "booked.html?id=" + r.booking.id + (isNew ? "&new=1" : "");
+    } catch (err) {
+      $("#err").textContent = err.message; btn.disabled = false; btn.textContent = old;
+      if (err.status === 409) { S.time = null; go(3); pickDate(S.date); D.toast(err.message, true); }
+    }
+  };
+
+  // ---------- boot ----------
+  D.config().then((c) => {
+    if (D.DEMO && (!c.payment || c.payment.mode === "none")) { c.payment = { mode: "full" }; c.demo_pay = true; }
+    S.cfg = c; renderBarbers();
+    const b = qs.get("barber"), sv = qs.get("service");
+    if (b && c.staff.some((x) => x.id === b)) {
+      pickBarber(b, () => {
+        const s = sv && c.services.find((x) => x.id === sv && (!x.staff_ids?.length || x.staff_ids.includes(b)));
+        if (s) { S.service = s; go(3); } else go(2);
+      });
+    } else go(1);
+  }).catch((e) => { $("#barbers").innerHTML = `<div class="empty">Booking is temporarily unavailable (${D.esc(e.message)}). Please call 07946 683376.</div>`; go(1); });
+})();
+</script>
+</body>
+</html>

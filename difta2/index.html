@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Do It For The Art Studio 2 | Barbers in Bletchley</title>
+<meta name="description" content="Award-winning barbers in Bletchley, Milton Keynes. Book online or on WhatsApp in seconds.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="img/favicon.png"><link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/v2.css">
+<style>
+section.s{padding:clamp(70px,10vw,130px) 0;position:relative}
+.s-head{margin-bottom:28px}
+.s-head h2{margin-top:12px}
+.marquee{overflow:hidden;border-block:1px solid var(--line);background:#0d0d0d;padding:18px 0}
+.marquee .track{display:flex;gap:40px;width:max-content;animation:mq 34s linear infinite;font:italic 400 clamp(26px,4vw,40px)/1 var(--display)}
+.marquee .track span{display:flex;align-items:center;gap:40px;white-space:nowrap}
+.marquee .track span::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--gold)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.counter-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:26px}
+.counter{padding:20px;border-radius:22px;background:var(--panel);border:1px solid var(--line)}
+.counter b{font:500 clamp(54px,12vw,84px)/1 var(--display);color:var(--gold2);display:block}
+.counter small{color:var(--mute)}
+.visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:860px){.visit-grid{grid-template-columns:1fr}}
+.hours td{padding:12px 0;border-bottom:1px solid var(--line)}
+.hours{width:100%;border-collapse:collapse}
+.hours td:last-child{text-align:right}
+.hours tr.today td{color:var(--gold2)}
+.map{border-radius:24px;overflow:hidden;border:1px solid var(--line);min-height:340px}
+.map iframe{width:100%;height:100%;min-height:340px;border:0;filter:invert(.92) hue-rotate(180deg) grayscale(.6) contrast(.9)}
+.cta2{text-align:center;padding:110px 0 140px;position:relative;overflow:hidden}
+.cta2 h2{font-size:clamp(52px,13vw,110px);position:relative;z-index:1}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:20px;overflow:hidden;margin-top:18px}
+.gal button{border:0;padding:0;aspect-ratio:1;overflow:hidden;cursor:pointer;background:#111}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gal button:hover img{transform:scale(1.06)}
+@media (min-width:900px){.gal{grid-template-columns:repeat(6,1fr)}}
+.about2{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.about2 .ph{position:relative;border-radius:200px 200px 26px 26px;overflow:hidden;aspect-ratio:4/5}
+.about2 .ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);transition:transform .2s linear}
+.about2 .seal{position:absolute;right:14px;bottom:14px;width:120px;height:120px;border-radius:50%;display:grid;place-items:center;text-align:center;font:italic 500 17px/1.1 var(--display);color:var(--gold2);background:#0a0a0a;border:1px solid rgba(201,165,90,.6);animation:spin 18s linear infinite}
+@media (max-width:860px){.about2{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="has-bn">
+<div class="intro" id="intro"><span class="ring"></span><div class="b"></div></div>
+
+<nav class="nav" id="nav"><div class="wrap">
+  <a class="brand" href="#top"><img src="img/logo-white.png" alt="Do It For The Art Studio"></a>
+  <div class="nav-links"><a href="#team">Team</a><a href="#prices">Prices</a><a href="#work">Work</a><a href="#reviews">Reviews</a><a href="account.html">Account</a></div>
+  <a class="btn gold sm" href="book.html">Book</a>
+</div></nav>
+
+<header class="hero2" id="top">
+  <div class="slides" id="slides"><div style="background-image:url(img/hero.jpg)" class="on"></div><div style="background-image:url(img/about.jpg)"></div><div style="background-image:url(img/g03.jpg)"></div><div style="background-image:url(img/g16.jpg)"></div></div>
+  <div class="bubbles" id="bubbles"></div>
+  <div class="wrap">
+    <div class="eyebrow" style="position:relative;z-index:1">Bletchley · Milton Keynes</div>
+    <h1 id="h1"><span class="word">Every</span> <span class="word" style="animation-delay:.08s">cut</span> <span class="word" style="animation-delay:.16s">is</span> <span class="word" style="animation-delay:.24s">a</span><br><span class="word" style="animation-delay:.32s">work</span> <span class="word" style="animation-delay:.4s">of</span> <em class="word shimmer" style="animation-delay:.5s">art.</em></h1>
+    <p class="lead">Award-winning barbers. Fades, beards, locs and braids for every age and hair type.</p>
+    <a class="live glass" id="live" href="book.html"><span class="pulse"></span><span id="liveTxt">Checking today's chairs…</span></a>
+    <div class="hero-cta"><a class="btn gold" href="book.html">Book in 30 seconds</a><a class="btn glass" href="#" data-chat>Book on WhatsApp</a></div>
+  </div>
+  <div class="scrollcue" aria-hidden="true"></div>
+</header>
+
+<div class="check"></div>
+<div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+
+<section class="s">
+  <div class="wrap">
+    <button class="watag" data-chat>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg></span>
+      <span><b>Book on WhatsApp</b><small>Text <b style="display:inline;font-size:13px">“BOOK”</b> to 07946 683376. Our assistant books you in 24/7.</small></span><span class="go">›</span>
+    </button>
+  </div>
+</section>
+
+<section class="s marble" id="work" style="padding-top:20px">
+  <div class="wrap">
+    <div class="s-head"><div class="eyebrow">Fresh from the chair</div><h2>The <em>work.</em></h2></div>
+    <div class="stories" id="stories"></div>
+    <div class="gal" id="gal"></div>
+  </div>
+</section>
+
+<section class="s" id="team" style="background:#0d0d0d">
+  <div class="wrap">
+    <div class="s-head"><div class="eyebrow">The artists</div><h2>Swipe the <em>team.</em></h2><p class="muted" style="margin-top:10px">Tap a card to flip it.</p></div>
+    <div class="carousel" id="team2"></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</section>
+
+<section class="s marble" id="prices">
+  <div class="wrap">
+    <div class="s-head"><div class="eyebrow">Prices</div><h2>What are we <em>doing?</em></h2></div>
+    <div class="chips" id="fChips"></div>
+    <div class="chips" id="bChips" style="margin-bottom:14px"></div>
+    <div class="plist" id="plist"><span class="spin"></span></div>
+    <p class="muted" style="font-size:13px;margin-top:16px">Services before 9am or after 6pm may carry an out-of-hours charge.</p>
+  </div>
+</section>
+
+<section class="s about-s" style="background:#0d0d0d">
+  <div class="wrap about2">
+    <div class="ph"><img id="par" src="img/about.jpg" alt="Charles at work in front of the studio's black and gold marble wall" loading="lazy"><div class="seal">2026<br>award<br>winning</div></div>
+    <div>
+      <div class="eyebrow">The studio</div>
+      <h2>Traditional meets <em>modern.</em></h2>
+      <p class="muted" style="margin-top:16px;font-size:17px">A grooming studio for men, women and kids, from first cuts to senior citizens. Black marble, sharp lines and a team that takes its time. Home of the first barber apprenticeship in Milton Keynes.</p>
+      <div class="loyal" style="margin-top:26px">
+        <div class="eyebrow">DIFTA Club</div>
+        <h3 style="font-size:32px;margin-top:8px">Your <em class="shimmer">10th cut</em> is on us.</h3>
+        <p class="muted" style="font-size:14px;margin-top:6px">Book once and your account is made for you. Stamps are added automatically.</p>
+        <div class="stamps" id="stampsDemo"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s marble" id="reviews">
+  <div class="wrap">
+    <div class="s-head"><div class="eyebrow">Word of mouth</div><h2>Rated <em>five stars.</em></h2></div>
+    <div class="counter-row">
+      <div class="counter"><b data-count="465">0</b><small><span class="stars">★★★★★</span> Booksy reviews · 4.95</small></div>
+      <div class="counter"><b data-count="116">0</b><small><span class="stars">★★★★★</span> Google reviews · 5.0</small></div>
+    </div>
+  </div>
+  <div class="rmq"><div class="tr" id="r1"></div></div>
+  <div class="rmq rev"><div class="tr" id="r2"></div></div>
+</section>
+
+<section class="s" id="visit">
+  <div class="wrap visit-grid">
+    <div>
+      <div class="eyebrow">Visit</div><h2>Find the <em>studio.</em></h2>
+      <p class="muted" style="margin:14px 0">12 Wetherburn Court, Brunel Shopping Centre, Bletchley MK2 2UW</p>
+      <table class="hours" id="hours"></table>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:20px">
+        <a class="btn sm" href="tel:+447946683376">Call</a>
+        <a class="btn sm" href="#" data-chat>WhatsApp</a>
+        <a class="btn sm" href="https://www.google.com/maps/dir/?api=1&destination=51.9946273,-0.7328365" target="_blank" rel="noopener">Directions</a>
+      </div>
+    </div>
+    <div class="map"><iframe title="Map" loading="lazy" src="https://www.google.com/maps?q=DOITFORTHEART+STUDIO,+12+Wetherburn+Court,+Bletchley+MK2+2UW&z=16&output=embed"></iframe></div>
+  </div>
+</section>
+
+<section class="cta2 marble">
+  <div class="bubbles" id="bubbles2"></div>
+  <div class="wrap"><div class="eyebrow" style="position:relative;z-index:1">Your chair is waiting</div><h2>Do it for <em class="shimmer">the art.</em></h2>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px;position:relative;z-index:1"><a class="btn gold" href="book.html">Book online</a><a class="btn" href="#" data-chat>Book on WhatsApp</a></div></div>
+</section>
+
+<footer class="foot"><div class="wrap"><img src="img/logo-white.png" alt="" style="height:36px"><span>© 2026 Do It For The Art Studio · Version 2 preview</span><span><a href="admin.html">Staff</a></span></div></footer>
+
+<button class="wafab" data-chat aria-label="Book on WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg></button>
+
+<nav class="bn glass" aria-label="Main">
+  <a href="#top" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="#work"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>Work</a>
+  <a href="book.html" class="mid"><span class="big">BOOK</span><em>Book</em></a>
+  <a href="#prices"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 8h12M6 16h12"/></svg>Prices</a>
+  <a href="account.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-acct-name>Account</span></a>
+</nav>
+
+<div class="sv" id="sv"><div class="bars" id="svBars"></div><div class="hd"><span class="av"></span><b>doitfortheart__studio</b> <span class="muted" id="svT"></span><button id="svX" aria-label="Close">×</button></div><img id="svImg" alt=""><div class="tapL" id="svL"></div><div class="tapR" id="svR"></div><div class="ft"><a class="btn gold block" href="book.html">Book this look</a></div></div>
+
+<script src="assets/common.js"></script>
+<script src="assets/v2.js"></script>
+<script>
+(() => {
+  const D = DIFTA, $ = (s) => document.querySelector(s);
+  // intro (once per visit)
+  const intro = $("#intro");
+  let seen = false; try { seen = sessionStorage.getItem("difta2_intro"); sessionStorage.setItem("difta2_intro", 1); } catch (_) {}
+  setTimeout(() => intro.classList.add("done"), seen ? 0 : 1300);
+  // nav
+  const onScroll = () => {
+    $("#nav").classList.toggle("solid", scrollY > 40);
+    const p = $("#par"); if (p) { const r = p.getBoundingClientRect(); p.style.transform = `scale(1.15) translateY(${(r.top - innerHeight / 2) * -0.06}px)`; }
+  };
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  // hero crossfade
+  const sl = [...document.querySelectorAll("#slides div")]; let si = 0;
+  setInterval(() => { sl[si].classList.remove("on"); si = (si + 1) % sl.length; sl[si].classList.add("on"); }, 5200);
+  // black bubbles
+  const bub = (el, n) => { for (let i = 0; i < n; i++) { const b = document.createElement("i"), s = 14 + Math.random() * 70; b.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;animation-duration:${14 + Math.random() * 16}s;animation-delay:${-Math.random() * 20}s;--dx:${(Math.random() - .5) * 120}px`; el.appendChild(b); } };
+  bub($("#bubbles"), innerWidth < 700 ? 9 : 16); bub($("#bubbles2"), 10);
+  // marquee
+  const words = ["Skin fades", "Tapers", "Beard sculpting", "Shape-ups", "Locs", "Cornrows", "Box braids", "Kids' cuts", "Scissor cuts"];
+  $("#mq").innerHTML = [...words, ...words].map((w) => `<span>${w}</span>`).join("");
+
+  // stories + grid
+  const ST = [["Fades", ["g01", "g02", "g03", "g05", "g06", "g07"]], ["Locs", ["g14", "g15"]], ["Braids", ["g16", "g17", "g18"]], ["Beards", ["g10", "g19", "g20", "g04"]], ["Kids", ["g11", "g13"]], ["Studio", ["hero", "cover", "about"]]];
+  $("#stories").innerHTML = ST.map(([n, a], i) => `<button class="story" data-i="${i}"><span class="r"><img src="img/${a[0]}.jpg" alt=""></span>${n}</button>`).join("");
+  $("#gal").innerHTML = ["g01", "g16", "g03", "g14", "g06", "g18", "g07", "g11", "g12"].map((g) => `<button data-g="${g}"><img src="img/${g}.jpg" alt="Cut by Do It For The Art Studio" loading="lazy"></button>`).join("");
+  let cur = null, idx = 0, tm = null, t0 = 0;
+  const sv = $("#sv"), DUR = 3800;
+  function show() {
+    const [name, a] = cur; $("#svImg").src = `img/${a[idx]}.jpg`; $("#svT").textContent = name;
+    $("#svBars").innerHTML = a.map((_, i) => `<i><b style="width:${i < idx ? 100 : 0}%"></b></i>`).join("");
+    t0 = performance.now(); cancelAnimationFrame(tm);
+    const bar = $("#svBars").children[idx].firstChild;
+    (function tick(t) { const p = Math.min(1, (t - t0) / DUR); bar.style.width = p * 100 + "%"; if (p >= 1) next(); else tm = requestAnimationFrame(tick); })(t0);
+  }
+  function open(i, start = 0) { cur = ST[i]; idx = start; sv.classList.add("on"); document.body.style.overflow = "hidden"; V2.buzz(10); show(); }
+  function close() { sv.classList.remove("on"); document.body.style.overflow = ""; cancelAnimationFrame(tm); }
+  function next() { if (idx < cur[1].length - 1) { idx++; show(); } else { const n = ST.indexOf(cur) + 1; n < ST.length ? open(n) : close(); } }
+  function prev() { if (idx > 0) { idx--; show(); } else { const n = ST.indexOf(cur) - 1; n >= 0 ? open(n) : show(); } }
+  $("#stories").onclick = (e) => { const b = e.target.closest(".story"); if (b) open(+b.dataset.i); };
+  $("#gal").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; cur = ["Work", ["g01", "g16", "g03", "g14", "g06", "g18", "g07", "g11", "g12"]]; idx = cur[1].indexOf(b.dataset.g); sv.classList.add("on"); document.body.style.overflow = "hidden"; show(); };
+  $("#svR").onclick = next; $("#svL").onclick = prev; $("#svX").onclick = close;
+  let ty = 0; sv.addEventListener("touchstart", (e) => (ty = e.touches[0].clientY), { passive: true });
+  sv.addEventListener("touchend", (e) => { if (e.changedTouches[0].clientY - ty > 90) close(); });
+  addEventListener("keydown", (e) => { if (!sv.classList.contains("on")) return; if (e.key === "Escape") close(); if (e.key === "ArrowRight") next(); if (e.key === "ArrowLeft") prev(); });
+
+  // counters + reveal
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; io.unobserve(e.target);
+    const el = e.target, to = +el.dataset.count, t0 = performance.now();
+    (function f(t) { const p = Math.min(1, (t - t0) / 1600), v = Math.round(to * (1 - Math.pow(1 - p, 3))); el.textContent = v; if (p < 1) requestAnimationFrame(f); })(t0);
+  }), { threshold: .5 });
+  document.querySelectorAll("[data-count]").forEach((el) => io.observe(el));
+  // loyalty demo stamps
+  const sd = $("#stampsDemo"); sd.innerHTML = [...Array(10)].map((_, i) => `<i class="${i === 9 ? "free" : ""}">${i === 9 ? "FREE" : ""}</i>`).join("");
+  const io2 = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io2.disconnect(); [...sd.children].slice(0, 6).forEach((s, i) => setTimeout(() => s.classList.add("on"), 250 * i)); } }, { threshold: .6 });
+  io2.observe(sd);
+
+  // reviews marquee
+  fetch("reviews.json").then((r) => r.json()).then((rs) => {
+    const card = (r) => `<div class="rc"><span class="stars">★★★★★</span><q>${D.esc(r.text.replace(/\s*\n+\s*/g, " "))}</q><span><b>${D.esc(r.name)}</b> <span class="muted">· ${r.src}</span></span></div>`;
+    const a = rs.slice(0, 8).map(card).join(""), b = rs.slice(8).map(card).join("");
+    $("#r1").innerHTML = a + a; $("#r2").innerHTML = b + b;
+  });
+
+  // hours
+  const KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"], NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const t12 = (hm) => { let [h, m] = hm.split(":").map(Number); return (h % 12 || 12) + (m ? ":" + String(m).padStart(2, "0") : "") + (h >= 12 ? "pm" : "am"); };
+  const di = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/London" })).getDay();
+
+  // live data: team, prices, next free chair
+  const SPEC = { Charles: ["Skin fades", "Beard & dye", "Kids", "OAP"], Nathan: ["Haircut & beard", "Beard trims", "Shape-ups"], Jai: ["Locs", "Braids", "Cornrows", "Fades"], Jayme: ["Fades", "Haircut & beard", "Under 11s"] };
+  D.config().then(async (c) => {
+    const H = c.hours;
+    $("#hours").innerHTML = [1, 2, 3, 4, 5, 6, 0].map((i) => { const h = H[KEYS[i]] || []; return `<tr class="${i === di ? "today" : ""}"><td>${NAMES[i]}</td><td>${h.length ? h.map(([a, b]) => t12(a) + " – " + t12(b)).join(", ") : "Closed"}</td></tr>`; }).join("");
+    // team carousel
+    $("#team2").innerHTML = c.staff.map((s) => `<div class="flip"><div class="in">
+      <div class="f"><img src="${D.esc(s.photo)}" alt="${D.esc(s.name)}" loading="lazy"><span class="tapme glass">Tap ↻</span><div class="cap"><div class="eyebrow">${D.esc(s.role || "")}</div><h3>${D.esc(s.name)}</h3><span class="muted">${D.esc(s.instagram || "")}</span></div></div>
+      <div class="bk"><img class="av" src="${D.esc(s.photo)}" alt=""><h3 style="font-size:36px">${D.esc(s.name)}</h3><p>${D.esc(s.bio || "")}</p><ul>${(SPEC[s.name] || []).map((x) => `<li>${x}</li>`).join("")}</ul><a class="btn gold block" href="book.html?barber=${s.id}">Book ${D.esc(s.name)}</a></div>
+    </div></div>`).join("");
+    $("#dots").innerHTML = c.staff.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("");
+    const car = $("#team2");
+    car.onclick = (e) => { if (e.target.closest("a")) return; const f = e.target.closest(".flip"); if (f) { f.classList.toggle("on"); V2.buzz(10); } };
+    car.addEventListener("scroll", () => { const i = Math.round(car.scrollLeft / (car.firstElementChild.offsetWidth + 14)); [...$("#dots").children].forEach((d, j) => d.classList.toggle("on", j === i)); }, { passive: true });
+    // price filters
+    const F = [["All", null], ["Fades", /fade|taper/i], ["Haircut", /haircut|cut only|scissor|haircut only/i], ["Beard", /beard/i], ["Kids", /kid|under 11|oap/i], ["Locs", /loc/i], ["Braids", /braid|cornrow|twist/i]];
+    let fi = 0, bi = null, more = false;
+    $("#fChips").innerHTML = F.map(([n], i) => `<button class="chip ${i ? "" : "on"}" data-i="${i}">${n}</button>`).join("");
+    $("#bChips").innerHTML = `<button class="chip on" data-b="">All barbers</button>` + c.staff.map((s) => `<button class="chip" data-b="${s.id}"><img src="${D.esc(s.photo)}" alt="">${D.esc(s.name)}</button>`).join("");
+    const byId = Object.fromEntries(c.staff.map((s) => [s.id, s]));
+    const draw = () => {
+      const list = c.services.filter((s) => (!F[fi][1] || F[fi][1].test(s.name + " " + (s.description || ""))) && (!bi || s.staff_ids?.includes(bi)));
+      const full = list.length, shown = more ? list : list.slice(0, 8);
+      $("#plist").innerHTML = (list.length ? shown.map((s, i) => { const b = byId[s.staff_ids?.[0]] || {}; return `<div class="prow" style="animation-delay:${Math.min(i, 12) * 30}ms"><img src="${D.esc(b.photo || "img/favicon.png")}" alt=""><div class="t"><b>${D.esc(s.name)}</b><small>${D.esc(b.name || "")} · ${D.mins(s.duration_min)}</small></div><div class="p">${s.price_from ? "<small>from</small> " : ""}${D.gbp(s.price_pence)}<a href="book.html?barber=${b.id}&service=${s.id}">Book</a></div></div>`; }).join("") : `<p class="muted">Nothing matches. Try another filter.</p>`) + (full > shown.length ? `<button class="btn block" id="more">Show all ${full}</button>` : "");
+      const m = document.getElementById("more"); if (m) m.onclick = () => { more = true; draw(); };
+    };
+    $("#fChips").onclick = (e) => { const b = e.target.closest(".chip"); if (!b) return; more = false; fi = +b.dataset.i; [...$("#fChips").children].forEach((x) => x.classList.toggle("on", x === b)); V2.buzz(); draw(); };
+    $("#bChips").onclick = (e) => { const b = e.target.closest(".chip"); if (!b) return; more = false; bi = b.dataset.b || null; [...$("#bChips").children].forEach((x) => x.classList.toggle("on", x === b)); V2.buzz(); draw(); };
+    draw();
+    // next free chair (live)
+    try {
+      const today = D.ymd(), tmr = D.addDays(today, 1);
+      const picks = c.staff.map((s) => ({ s, sv: c.services.filter((x) => x.staff_ids?.includes(s.id)).sort((a, b) => a.duration_min - b.duration_min)[0] })).filter((p) => p.sv);
+      let best = null;
+      for (const d of [today, tmr]) {
+        const rs = await Promise.all(picks.map((p) => D.api(`/availability?service=${p.sv.id}&staff=${p.s.id}&date=${d}`).then((r) => ({ p, slot: r.slots[0] })).catch(() => ({}))));
+        const ok = rs.filter((r) => r.slot).sort((a, b) => a.slot.iso.localeCompare(b.slot.iso));
+        if (ok.length) { best = { d, ...ok[0], free: ok.length }; break; }
+      }
+      if (best) {
+        $("#liveTxt").innerHTML = `Next chair: <b>${best.d === today ? "today" : "tomorrow"} ${V2.fmtT(best.slot.t)}</b> with ${D.esc(best.p.s.name)}`;
+        $("#live").insertAdjacentHTML("afterbegin", `<img src="${D.esc(best.p.s.photo)}" alt="">`);
+        $("#live").querySelector(".pulse").remove();
+        $("#live").href = `book.html?barber=${best.p.s.id}`;
+      } else $("#liveTxt").textContent = "Book ahead: the week is filling up";
+    } catch (_) { $("#liveTxt").textContent = "Book your chair online"; }
+  });
+})();
+</script>
+</body>
+</html>
