@@ -79,6 +79,22 @@
     book: (payload) => rpc('za_create_booking', { p: payload }),
     lookup: (ref, phone) => rpc('za_lookup_booking', { p_ref: ref, p_phone: phone }),
     cancel: (ref, phone) => rpc('za_cancel_booking', { p_ref: ref, p_phone: phone }),
+    // Send photos/files of paper records to be typed up. Write-only for the public; staff can view them.
+    async sendPaper(files, sender, note, onProgress) {
+      const batch = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+      const H = { apikey: C.supabaseKey, Authorization: 'Bearer ' + C.supabaseKey };
+      let done = 0;
+      for (const [i, f] of Array.from(files).entries()) {
+        const safe = (f.name || 'photo').replace(/[^A-Za-z0-9._-]+/g, '_').slice(-80);
+        const path = `inbox/${batch}/${String(i + 1).padStart(2, '0')}-${safe}`;
+        const up = await fetch(`${C.supabaseUrl}/storage/v1/object/za-paper/${path}`, { method: 'POST', headers: Object.assign({ 'Content-Type': f.type || 'application/octet-stream', 'x-upsert': 'false' }, H), body: f });
+        if (!up.ok) { const t = await up.text().catch(() => ''); throw new Error(`Couldn't send ${f.name}: ${/mime|type/i.test(t) ? 'that file type isn\'t accepted' : /size|large/i.test(t) ? 'file too big (20 MB max)' : 'upload failed'}`); }
+        const row = await fetch(`${C.supabaseUrl}/rest/v1/za_paper_uploads`, { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }, H), body: JSON.stringify({ batch, path, file_name: f.name, size_bytes: f.size, sender: sender || null, note: note || null }) });
+        if (!row.ok) throw new Error('Saved the file but could not log it. Please tell Kola.');
+        done++; onProgress && onProgress(done, files.length);
+      }
+      return { batch, count: done };
+    },
     // Registration -> make/model/colour/fuel/year/MOT via edge function za-vehicle. Returns car or null; never throws.
     lookupReg: (() => {
       const memo = new Map();
@@ -149,6 +165,9 @@
     saveLocation: (row) => q(sb.from('za_locations').update(row).eq('id', row.id).select().single()),
     saveSetting: (key, value) => q(sb.from('za_settings').upsert({ key, value }).select().single()),
     clearDemo: () => rpc('za_clear_demo'),
+    paperList: () => q(sb.from('za_paper_uploads').select('*').order('created_at', { ascending: false }).limit(200)),
+    paperStatus: (batch, status) => q(sb.from('za_paper_uploads').update({ status }).eq('batch', batch)),
+    paperUrl: async (path) => { if (!sb.storage) return null; const { data } = await sb.storage.from('za-paper').createSignedUrl(path, 3600); return data ? data.signedUrl : null; },
     staffList: () => q(sb.from('za_staff').select('*').order('created_at')),
     onBookings: (cb) => sb.channel('za-bookings').on('postgres_changes', { event: '*', schema: 'public', table: 'za_bookings' }, cb).subscribe()
   };

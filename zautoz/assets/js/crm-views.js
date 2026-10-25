@@ -84,7 +84,7 @@
   // View-specific styles live here so the stylesheet files stay untouched.
   (function injectCss() {
     if (document.getElementById('cv-css')) return;
-    const s = document.createElement('style'); s.id = 'cv-css';
+    const s = document.createElement('style'); s.id = 'cv-css'; const extra = document.createElement('style'); extra.textContent = '.cv-drop{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:2px dashed #c6cbd4;border-radius:14px;padding:26px 16px;cursor:pointer;background:#fafbfc;color:var(--muted)}.cv-drop b{color:var(--text)}.cv-drop.on,.cv-drop:hover{border-color:var(--orange);background:#fff6f2}.cv-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;margin-top:12px}.cv-thumb{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#eef0f4;display:grid;place-items:center;font-weight:700;color:var(--muted)}.cv-thumb img{width:100%;height:100%;object-fit:cover}.cv-thumb button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;line-height:1}'; document.head.appendChild(extra);
     s.textContent = `
 .cv-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .cv-search{position:relative;flex:1;min-width:200px;max-width:520px}
@@ -580,16 +580,79 @@
   crm.register('import', {
     title: 'Add from paper', nav: true,
     async render(el) {
-      el.innerHTML = `<div class="cv-bar"><div class="seg" id="itab"><button type="button" data-t="quick" class="on">Quick entry</button><button type="button" data-t="paste">Paste a spreadsheet</button></div></div>
-        <div class="notice" style="margin-bottom:14px">Photograph the pages and send them to Kola — Claude can turn photos into a spreadsheet you paste here.</div>
+      el.innerHTML = `<div class="cv-bar"><div class="seg" id="itab"><button type="button" data-t="quick" class="on">Quick entry</button><button type="button" data-t="paste">Paste a spreadsheet</button><button type="button" data-t="photos">Send photos</button></div></div>
+        <div class="notice" style="margin-bottom:14px"><b>Lots of paper?</b> Take a picture of each page, or of your spreadsheet or bookings book, and send it to Kola to be converted and added to the system for you. Or upload the photos under <a href="#" id="go-photos">Send photos</a> and they'll be on the system within 48 hours.</div>
         <div id="ibody"></div>`;
       const body = $('#ibody', el); let tab = 'quick';
-      const quick = quickEntry(body), paste = pasteImport(body);
-      const show = (t) => { tab = t; $$('#itab button', el).forEach(b => b.classList.toggle('on', b.dataset.t === t)); quick.root.style.display = t === 'quick' ? '' : 'none'; paste.root.style.display = t === 'paste' ? '' : 'none'; if (t === 'quick') quick.focus(); };
+      const quick = quickEntry(body), paste = pasteImport(body), photos = sendPhotos(body);
+      const show = (t) => { tab = t; $$('#itab button', el).forEach(b => b.classList.toggle('on', b.dataset.t === t)); quick.root.style.display = t === 'quick' ? '' : 'none'; paste.root.style.display = t === 'paste' ? '' : 'none'; photos.root.style.display = t === 'photos' ? '' : 'none'; if (t === 'quick') quick.focus(); };
       $('#itab', el).addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(b.dataset.t); });
-      show('quick');
+      $('#go-photos', el).addEventListener('click', e => { e.preventDefault(); show('photos'); });
+      show(location.hash.includes('photos') ? 'photos' : 'quick');
     }
   });
+
+  // ---------- Send photos of paper records ----------
+  function sendPhotos(host) {
+    const root = document.createElement('div'); host.appendChild(root);
+    let files = [];
+    root.innerHTML = `<div class="panel">
+        <h3>Send photos of your records</h3>
+        <p class="muted" style="margin-top:-4px">Customer notebooks, job cards, a bookings diary or a spreadsheet. We type them up and add every customer and car to the system within 48 hours.</p>
+        <label class="cv-drop" id="pdrop">
+          <input type="file" id="pfile" multiple accept="image/*,application/pdf,.csv,.xls,.xlsx" style="display:none">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
+          <b>Take photos or choose files</b><span class="muted small">On a phone this opens the camera. Photos, PDFs or spreadsheets, up to 20 MB each.</span>
+        </label>
+        <div id="pthumbs" class="cv-thumbs"></div>
+        <div class="row" style="margin-top:12px">
+          <div class="field"><label>Your name</label><input class="input" id="psender" placeholder="e.g. Zaki, Pam's MOT Centre"></div>
+          <div class="field"><label>Anything we should know? <span class="muted small">(optional)</span></label><input class="input" id="pnote" placeholder="e.g. pages 1–20 of the 2024 book"></div>
+        </div>
+        <div id="pmsg"></div>
+        <button class="btn btn-primary" id="psend" type="button" disabled>Send</button>
+      </div>
+      <div class="panel" id="plist" style="display:none"><h3>Sent for typing up</h3><div id="pitems"></div></div>`;
+    const fileIn = $('#pfile', root), drop = $('#pdrop', root), sendBtn = $('#psend', root), msg = $('#pmsg', root);
+    const draw = () => {
+      $('#pthumbs', root).innerHTML = files.map((f, i) => `<div class="cv-thumb">${f.type.startsWith('image/') && !/hei[cf]/.test(f.type) ? `<img src="${URL.createObjectURL(f)}" alt="">` : `<span>${esc((f.name.split('.').pop() || 'file').toUpperCase())}</span>`}<button type="button" data-i="${i}" aria-label="Remove">×</button></div>`).join('');
+      sendBtn.disabled = !files.length; sendBtn.textContent = files.length ? `Send ${files.length} file${files.length === 1 ? '' : 's'}` : 'Send';
+    };
+    const add = (list) => { files = files.concat(Array.from(list)).slice(0, 60); msg.innerHTML = ''; draw(); };
+    fileIn.addEventListener('change', () => { add(fileIn.files); fileIn.value = ''; });
+    ['dragover', 'dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('on'); }));
+    ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('on'); }));
+    drop.addEventListener('drop', e => add(e.dataTransfer.files));
+    $('#pthumbs', root).addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b) { files.splice(Number(b.dataset.i), 1); draw(); } });
+    sendBtn.addEventListener('click', async () => {
+      if (!files.length) return;
+      sendBtn.disabled = true; msg.innerHTML = '<div class="notice">Sending…</div>';
+      try {
+        const r = await ZA.pub.sendPaper(files, $('#psender', root).value.trim(), $('#pnote', root).value.trim(), (d, n) => { msg.innerHTML = `<div class="notice">Sending ${d} of ${n}…</div>`; });
+        msg.innerHTML = `<div class="notice ok" style="margin-bottom:12px"><b>Got them: ${r.count} file${r.count === 1 ? '' : 's'}.</b> They'll be typed up and on the system within 48 hours. You'll see the customers appear under Customers.</div>`;
+        files = []; $('#pnote', root).value = ''; draw(); list();
+      } catch (e) { msg.innerHTML = `<div class="notice bad" style="margin-bottom:12px">${esc(e.message)}</div>`; sendBtn.disabled = false; }
+    });
+    async function list() {
+      let rows = [];
+      try { rows = (await staff.paperList()) || []; } catch (_) { rows = []; }
+      if (!rows.length) { $('#plist', root).style.display = 'none'; return; }
+      const batches = {}; rows.forEach(r => { (batches[r.batch] = batches[r.batch] || []).push(r); });
+      $('#plist', root).style.display = '';
+      const label = { received: 'Received', in_progress: 'Being typed up', done: 'Added' };
+      $('#pitems', root).innerHTML = Object.entries(batches).map(([b, rs]) => `<div class="veh" style="cursor:default;flex-wrap:wrap">
+          <b style="min-width:150px">${fmt.day(rs[0].created_at)} ${fmt.time(rs[0].created_at)}</b>
+          <span>${rs.length} file${rs.length === 1 ? '' : 's'}${rs[0].sender ? ' from ' + esc(rs[0].sender) : ''}${rs[0].note ? ' · ' + esc(rs[0].note) : ''}</span>
+          <span style="flex:1"></span>
+          <span class="tag ${rs[0].status === 'done' ? 'green' : rs[0].status === 'in_progress' ? 'orange' : ''}">${label[rs[0].status] || rs[0].status}</span>
+          ${crm.me && crm.me.role === 'owner' ? `<button class="btn btn-ghost btn-sm" type="button" data-open="${esc(b)}">View</button><select class="input" data-st="${esc(b)}" style="width:auto;padding:6px 8px">${Object.entries(label).map(([k, t]) => `<option value="${k}" ${rs[0].status === k ? 'selected' : ''}>${t}</option>`).join('')}</select>` : ''}
+        </div>`).join('');
+      $$('[data-open]', root).forEach(btn => btn.onclick = async () => { for (const r of batches[btn.dataset.open]) { const u = await staff.paperUrl(r.path); if (u) window.open(u, '_blank', 'noopener'); } });
+      $$('[data-st]', root).forEach(s => s.onchange = async () => { try { await staff.paperStatus(s.dataset.st, s.value); crm.toast('Updated'); } catch (e) { crm.fail(e); } });
+    }
+    list();
+    return { root };
+  }
 
   function quickEntry(host) {
     const root = document.createElement('div'); host.appendChild(root);
