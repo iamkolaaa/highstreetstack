@@ -58,8 +58,8 @@
       return `<div class="seg" id="${id}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" class="${v === cur ? 'on' : ''}">${t}</button>`).join('')}</div>`;
     },
     toast(msg, bad) {
-      const t = document.createElement('div'); t.className = 'toast' + (bad ? ' bad' : ''); t.textContent = msg;
-      $('#toasts').appendChild(t); setTimeout(() => t.remove(), bad ? 6000 : 3200);
+      const t = document.createElement('div'); t.className = 'toast' + (bad ? ' bad' : ''); t.textContent = msg; const long = arguments[2];
+      $('#toasts').appendChild(t); setTimeout(() => t.remove(), long || (bad ? 6000 : 3200));
     },
     fail(e) { console.error(e); crm.toast(e && e.message ? e.message : 'Something went wrong', true); },
     modal(html) { const m = $('#modal'); m.innerHTML = html; m.classList.add('open'); $('#scrim').classList.add('open'); const f = $('input,select,textarea', m); if (f) setTimeout(() => f.focus(), 60); return m; },
