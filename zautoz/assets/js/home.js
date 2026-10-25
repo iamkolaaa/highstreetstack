@@ -18,10 +18,11 @@
     if (!raw) hint.textContent = '', hint.className = 'hint';
     else if (!fmt.plateValid(raw)) hint.textContent = "That doesn't look like a standard UK reg, but you can still carry on.", hint.className = 'hint warn';
     else hint.textContent = '', hint.className = 'hint';
+    if (fmt.plateValid(raw)) { hint.innerHTML = '<span class="gov-row" style="margin:0">' + fmt.govBtn(raw) + '<span>See the make, model and MOT history</span></span>'; hint.className = 'hint'; }
     clearTimeout(lookT);
     if (fmt.plateValid(raw)) lookT = setTimeout(async () => {
       const car = await ZA.pub.lookupReg(raw);
-      if (car && fmt.normReg(regEl.value) === raw) { hint.innerHTML = '<b>✓ ' + esc(fmt.carLine(car)) + '</b>' + (car.mot_expiry ? ' · MOT due ' + esc(fmt.date(car.mot_expiry)) : ''); hint.className = 'hint ok'; }
+      if (car && fmt.normReg(regEl.value) === raw) { hint.innerHTML = '<span class="gov-row" style="margin:0"><b>✓ ' + esc(fmt.carLine(car)) + '</b>' + (car.mot_expiry ? '<span>MOT due ' + esc(fmt.date(car.mot_expiry)) + '</span>' : '') + fmt.govBtn(raw) + '</span>'; hint.className = 'hint ok'; }
     }, 450);
   });
   let lookT;
@@ -83,7 +84,7 @@
     mr.className = 'mot-result ' + cls;
     mr.innerHTML = `<div class="big">${head}</div><p>Expires ${fmt.longDay(v + 'T12:00:00Z')}.</p>${body}
       <a class="btn btn-primary" href="book.html?service=mot4">Book my MOT</a>
-      <p class="small" style="margin-top:12px"><a href="https://www.gov.uk/check-mot-history" target="_blank" rel="noopener" style="color:#ffb48a">Official GOV.UK MOT history checker</a></p>`;
+      <p class="small" style="margin-top:12px"><a href="https://www.check-mot.service.gov.uk/" target="_blank" rel="noopener" style="color:#ffb48a">Official GOV.UK MOT history checker</a></p>`;
   });
 
   // ---------- locations + map ----------

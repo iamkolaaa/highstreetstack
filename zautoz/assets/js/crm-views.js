@@ -394,7 +394,7 @@
           ${fld('Last mileage', inp('xmi', v.last_mileage, 'inputmode="numeric"'), 'max-width:200px')}
           ${fld('Notes', `<textarea class="input" id="xnt" rows="3">${esc(v.notes || '')}</textarea>`)}
           <div class="cv-actions"><button class="btn btn-primary btn-sm" type="button" id="xsave">Save</button><button class="btn btn-dark btn-sm" type="button" id="xbook">Book this car</button></div>
-          <a class="small" href="https://www.gov.uk/check-mot-history" target="_blank" rel="noopener">MOT history on GOV.UK</a>
+          <div class="gov-row">${fmt.govBtn(v.reg, 'MOT history on GOV.UK')}</div>
         </div>
         <div class="panel"><h3>Owner <button class="btn btn-ghost btn-sm" type="button" id="xown" style="padding:5px 12px">Change owner</button></h3>
           ${own ? `<div class="veh" data-cid="${own.id}"><div style="flex:1"><b>${esc(fmt.name(own))}</b><div class="small muted">${esc(own.phone || '')} ${esc(own.email || '')}</div></div><span class="muted">›</span></div>` : '<div class="muted small">No owner linked to this car.</div>'}</div>
@@ -617,7 +617,8 @@
       const parts = [];
       if (state.veh) parts.push(`<span class="notice ok" style="display:inline-block;margin-right:6px">Car on file: <b>${esc([state.veh.make, state.veh.model].filter(Boolean).join(' ') || 'no details')}</b>${state.veh.za_customers ? ' · owner ' + esc(fmt.name(state.veh.za_customers)) : ''}${state.veh.mot_expiry ? ' · MOT ' + fmt.date(state.veh.mot_expiry) : ''}</span>`);
       if (state.phoneCust) parts.push(`<span class="notice ok" style="display:inline-block">Already on file: <b>${esc(fmt.name(state.phoneCust))}</b> — will add to them</span>`);
-      g('match').innerHTML = parts.join('');
+      const qr = fmt.normReg(g('reg').value); if (fmt.plateValid(qr)) parts.push(fmt.govBtn(qr, 'Look up on GOV.UK'));
+      g('match').innerHTML = parts.join(' ');
     }
     const checkReg = debounce(async () => {
       const reg = fmt.normReg(g('reg').value), my = ++vehSeq; state.veh = null;
@@ -625,7 +626,7 @@
       try {
         const v = await staff.vehicleByReg(reg); if (my !== vehSeq) return; state.veh = v;
         if (v) { if (!g('make').value && v.make) g('make').value = v.make; if (!g('model').value && v.model) g('model').value = v.model; if (!g('mot').value && v.mot_expiry) g('mot').value = fmt.date(v.mot_expiry); }
-        else if (fmt.plateValid(reg)) { const car = await ZA.pub.lookupReg(reg); if (my !== vehSeq) return; if (car) { if (!g('make').value && car.make) g('make').value = car.make; if (!g('model').value && car.model) g('model').value = car.model; if (!g('mot').value && car.mot_expiry) g('mot').value = fmt.date(car.mot_expiry); g('match').innerHTML = `<span class="notice ok" style="display:inline-block">Looked up: <b>${esc(fmt.carLine(car))}</b></span>`; return; } }
+        else if (fmt.plateValid(reg)) { const car = await ZA.pub.lookupReg(reg); if (my !== vehSeq) return; if (car) { if (!g('make').value && car.make) g('make').value = car.make; if (!g('model').value && car.model) g('model').value = car.model; if (!g('mot').value && car.mot_expiry) g('mot').value = fmt.date(car.mot_expiry); g('match').innerHTML = `<span class="notice ok" style="display:inline-block">Looked up: <b>${esc(fmt.carLine(car))}</b></span> ${fmt.govBtn(reg)}`; return; } }
         renderMatch();
       } catch (_) {}
     }, 300);

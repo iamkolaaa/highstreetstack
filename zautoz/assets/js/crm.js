@@ -404,7 +404,7 @@
         <dl class="kv">
           <dt>When</dt><dd><b>${fmt.longDay(b.starts_at)}</b>, ${fmt.time(b.starts_at)}–${fmt.time(b.ends_at)} <button class="btn btn-sm btn-ghost" id="move" style="padding:3px 10px;margin-left:6px">Move</button></dd>
           <dt>Customer</dt><dd><a href="#/customer/${b.customer_id}">${esc(fmt.name(b))}</a><div class="small">${b.phone ? `<a href="${fmt.phoneHref(b.phone)}">${esc(b.phone)}</a> · <a target="_blank" rel="noopener" href="${fmt.whatsapp(b.phone, crm.whatsappText(b, b, 'confirm'))}">WhatsApp</a>` : '<span class="muted">no phone</span>'}${b.email ? ' · ' + esc(b.email) : ''}</div></dd>
-          <dt>Vehicle</dt><dd><a href="#/vehicle/${b.vehicle_id}">${esc([b.make, b.model, b.colour].filter(Boolean).join(' ') || 'Details not recorded')}</a> ${crm.motPill(b.mot_expiry)}</dd>
+          <dt>Vehicle</dt><dd><a href="#/vehicle/${b.vehicle_id}">${esc([b.make, b.model, b.colour].filter(Boolean).join(' ') || 'Details not recorded')}</a> ${crm.motPill(b.mot_expiry)}${b.vehicle_reg ? '<div style="margin-top:6px">' + fmt.govBtn(b.vehicle_reg, 'MOT history on GOV.UK') + '</div>' : ''}</dd>
           <dt>Booked</dt><dd>${esc(b.source)} · ${fmt.date(b.created_at)}</dd>
           ${b.customer_notes ? `<dt>Customer says</dt><dd style="white-space:pre-wrap">${esc(b.customer_notes)}</dd>` : ''}
         </dl>
@@ -559,7 +559,7 @@
         const v = await staff.vehicleByReg(reg);
         if (v) {
           st.veh = v; st.cust = v.za_customers;
-          $('#nmatch', m).innerHTML = `<div class="notice ok">Known vehicle: <b>${esc([v.make, v.model].filter(Boolean).join(' ') || 'details not recorded')}</b>${st.cust ? ` · owner <b>${esc(fmt.name(st.cust))}</b> ${esc(st.cust.phone || '')}` : ''} ${crm.motPill(v.mot_expiry)}</div>`;
+          $('#nmatch', m).innerHTML = `<div class="notice ok">Known vehicle: <b>${esc([v.make, v.model].filter(Boolean).join(' ') || 'details not recorded')}</b>${st.cust ? ` · owner <b>${esc(fmt.name(st.cust))}</b> ${esc(st.cust.phone || '')}` : ''} ${crm.motPill(v.mot_expiry)} ${fmt.govBtn(reg)}</div>`;
           if (st.cust) { $('#nfn', m).value = st.cust.first_name; $('#nln', m).value = st.cust.last_name; $('#nph', m).value = st.cust.phone || ''; $('#nem', m).value = st.cust.email || ''; }
           $('#nmk', m).value = v.make || ''; $('#nmd', m).value = v.model || ''; $('#nmot', m).value = v.mot_expiry || '';
         } else {
@@ -567,8 +567,8 @@
           const car = await pub.lookupReg(reg);
           if (fmt.normReg($('#nreg', m).value) !== reg) return;
           if (car) { st.car = car; if (car.make) $('#nmk', m).value = car.make; if (car.model) $('#nmd', m).value = car.model; if (car.mot_expiry && !$('#nmot', m).value) $('#nmot', m).value = car.mot_expiry;
-            $('#nmatch', m).innerHTML = `<div class="notice ok">New vehicle: <b>${esc(fmt.carLine(car))}</b> ${crm.motPill(car.mot_expiry)}. Fill in the owner below.</div>`; }
-          else $('#nmatch', m).innerHTML = '<span class="muted">New vehicle. Fill in the owner and car below.</span>';
+            $('#nmatch', m).innerHTML = `<div class="notice ok">New vehicle: <b>${esc(fmt.carLine(car))}</b> ${crm.motPill(car.mot_expiry)}. Fill in the owner below. ${fmt.govBtn(reg)}</div>`; }
+          else $('#nmatch', m).innerHTML = `<div class="gov-row"><span class="muted">New vehicle.</span>${fmt.govBtn(reg, 'Look up on GOV.UK')}<span class="muted small">Copy the make, model and MOT date into the boxes below.</span></div>`;
         }
       } catch (e) { crm.fail(e); }
     };

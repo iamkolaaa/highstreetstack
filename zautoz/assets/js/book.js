@@ -37,13 +37,13 @@
   async function findCar(n) {
     const my = ++lookSeq; const car = await pub.lookupReg(n);
     if (my !== lookSeq || fmt.normReg(regEl.value) !== n) return;
-    if (!car) { $('#reg-hint').innerHTML = '<span class="muted">Add the make and model below.</span>'; return; }
+    if (!car) { $('#reg-hint').innerHTML = `<div class="gov-row">${fmt.govBtn(n, 'Look up ' + fmt.plate(n) + ' on GOV.UK')}<span class="muted small">Opens the official checker in a new tab. Then add the make and model below.</span></div>`; return; }
     st.car = Object.assign({}, car, { reg: n });
     if (car.make) $('#make').value = car.make;
     if (car.model) $('#model').value = car.model;
     if (car.mot_expiry && !$('#mot_expiry').value) $('#mot_expiry').value = car.mot_expiry;
     const due = car.mot_expiry ? fmt.daysUntil(car.mot_expiry) : null;
-    $('#reg-hint').innerHTML = `<div class="notice ok" style="margin-top:4px"><b>✓ ${fmt.esc(fmt.carLine(car))}</b>${car.mot_expiry ? `<br><span class="small">MOT ${due < 0 ? '<b style="color:var(--bad)">expired ' + fmt.date(car.mot_expiry) + '</b>' : 'due ' + fmt.date(car.mot_expiry) + (due <= 30 ? ' <b>(soon)</b>' : '')}</span>` : ''}</div>`;
+    $('#reg-hint').innerHTML = `<div class="notice ok" style="margin-top:4px"><b>✓ ${fmt.esc(fmt.carLine(car))}</b>${car.mot_expiry ? `<br><span class="small">MOT ${due < 0 ? '<b style="color:var(--bad)">expired ' + fmt.date(car.mot_expiry) + '</b>' : 'due ' + fmt.date(car.mot_expiry) + (due <= 30 ? ' <b>(soon)</b>' : '')}</span>` : ''}<div class="gov-row">${fmt.govBtn(n, 'Full MOT history on GOV.UK')}</div></div>`;
     summary();
   }
   ['make', 'model'].forEach(id => $('#' + id).addEventListener('input', summary));

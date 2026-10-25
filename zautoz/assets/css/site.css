@@ -221,6 +221,9 @@ details.faq p { margin: 10px 0 0; color: var(--muted); }
 .cta-band { background: var(--grad); color: #fff; border-radius: 22px; padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 .cta-band h2 { margin: 0; }
 
+.gov-btn { display: inline-flex; align-items: center; gap: 6px; background: #0b0c0c; color: #fff !important; text-decoration: none; font: 700 .82rem/1 var(--font); padding: 8px 12px; border-radius: 8px; border-bottom: 3px solid #1d70b8; white-space: nowrap; vertical-align: middle; }
+.gov-btn:hover { background: #1d70b8; }
+.gov-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
 /* footer */
 footer { background: var(--ink); color: #aeb4c0; padding: 54px 0 30px; font-size: .92rem; }
 footer h4 { color: #fff; font-size: 1.15rem; text-transform: uppercase; }

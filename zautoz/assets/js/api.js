@@ -62,6 +62,9 @@
     daysUntil(iso) { if (!iso) return null; return Math.round((new Date(iso + 'T12:00:00Z') - new Date(fmt.today() + 'T12:00:00Z')) / 864e5); },
     esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); },
     name(c) { return [c && c.first_name, c && c.last_name].filter(Boolean).join(' ') || 'No name'; },
+    // Official GOV.UK MOT checker, opened with the plate filled in (free; real make/model/colour/MOT history)
+    govUrl(reg) { return 'https://www.check-mot.service.gov.uk/results?registration=' + encodeURIComponent(fmt.normReg(reg)) + '&checkRecalls=true'; },
+    govBtn(reg, label) { return `<a class="gov-btn" href="${fmt.govUrl(reg)}" target="_blank" rel="noopener" title="Opens the official GOV.UK MOT history checker">${label || 'Check on GOV.UK'}<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>`; },
     // "Ford Focus · Blue · Petrol · 2019"
     carLine(car) { if (!car) return ''; return [[car.make, car.model].filter(Boolean).join(' '), car.colour, car.fuel_type ? car.fuel_type[0].toUpperCase() + car.fuel_type.slice(1).toLowerCase() : '', car.year].filter(Boolean).join(' · '); }
   };
