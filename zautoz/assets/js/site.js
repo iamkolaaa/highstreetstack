@@ -7,7 +7,7 @@
 
   const links = [['index.html', 'Home'], ['services.html', 'Services & prices'], ['index.html#locations', 'Find us'], ['manage.html', 'My booking']];
   const header = `
-    ${window.ZA_CONFIG.previewBanner ? '<div class="preview-bar">Preview site. Prices shown are placeholders until the garage confirms them.</div>' : ''}
+    ${window.ZA_CONFIG.previewBanner ? '<div class="preview-bar">Demo website. Bookings go to the demo workshop, not the real garage. Prices are examples.</div>' : ''}
     <header class="nav"><div class="wrap">
       <a class="brand" href="index.html">${LOGO}<b><span class="grad-text">Z</span> Autoz</b></a>
       <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<title>Z Autoz · Demo</title>
+<link rel="icon" href="assets/img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css?v=202610250102">
+<style>
+  .demo-hero .wrap { grid-template-columns: 1.2fr .8fr; }
+  .qr-card { text-align: center; }
+  .qr-card #qr { display: inline-block; padding: 12px; background: #fff; border-radius: 14px; border: 1px solid var(--line); }
+  .qr-card #qr img, .qr-card #qr canvas { width: 210px !important; height: 210px !important; }
+  .big-links { display: grid; gap: 10px; margin-top: 22px; }
+  .big-links a { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 14px 16px; color: #fff; text-decoration: none; }
+  .big-links a:hover { background: rgba(255,255,255,.1); }
+  .big-links b { display: block; font-size: 1.05rem; }
+  .big-links span { color: #aab0bc; font-size: .9rem; }
+  .big-links .n { width: 34px; height: 34px; flex: none; border-radius: 50%; background: var(--grad); display: grid; place-items: center; font: 700 1.1rem var(--display); }
+  .script li { margin-bottom: 14px; }
+  .script li b { display: block; }
+  .script .say { color: var(--muted); font-style: italic; }
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .ba .card h3 { display: flex; gap: 8px; align-items: center; }
+  .ba ul { padding-left: 18px; margin: 0; }
+  .ba li { margin-bottom: 6px; }
+  @media (max-width: 800px) { .ba { grid-template-columns: 1fr; } }
+  @media print { .nav, .preview-bar, footer, .fab, .no-print { display: none !important; } section { padding: 24px 0; } .hero { background: #fff; color: #111; } }
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="hero demo-hero">
+  <div class="wrap">
+    <div>
+      <div class="kicker">Show and tell · Z Autoz &amp; Pam's MOT Centre</div>
+      <h1>Your garage, <span class="grad-text">online</span></h1>
+      <p class="lead">A website customers can book from, and a workshop system that replaces the paper notes: every customer, every car by its reg, every job, at both sites.</p>
+      <div class="big-links">
+        <a href="index.html" target="_blank" rel="noopener"><span class="n">1</span><span><b>The website</b><span>What customers see: services, prices, both sites on the map, MOT checker</span></span></a>
+        <a href="book.html" target="_blank" rel="noopener"><span class="n">2</span><span><b>Book a car in</b><span>Reg, job, time, details. About a minute. Try it on your phone with the QR code</span></span></a>
+        <a href="staff/demo.html" target="_blank" rel="noopener"><span class="n">3</span><span><b>The workshop screen</b><span>No login needed for the demo. The booking you just made appears here</span></span></a>
+      </div>
+    </div>
+    <div class="hero-card qr-card">
+      <h3>Book on your phone</h3>
+      <p class="muted small">Scan, book a slot, then watch it land on the workshop screen.</p>
+      <div id="qr"></div>
+      <p class="small" style="margin-top:10px"><a id="qr-link" href="book.html"></a></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Before and after</span><h2>What changes for the garage</h2></div>
+    <div class="ba">
+      <div class="card"><h3>📒 Today</h3><ul>
+        <li>Customer details in pages of handwritten notes</li>
+        <li>Bookings by phone only, while you're under a car</li>
+        <li>No way to see who's due an MOT</li>
+        <li>Small yard: hard to know what's coming in and where it goes</li>
+        <li>Two sites, two sets of paper</li></ul></div>
+      <div class="card" style="border-color:#ffc6a8"><h3>⚡ With this</h3><ul>
+        <li>Type the reg, see the customer, their cars and full history</li>
+        <li>Customers book themselves 24/7; one space per site is always kept for walk-ins</li>
+        <li>MOT reminders list with one-tap WhatsApp or text</li>
+        <li>Yard map: what's on the lift, under it, inside and parked outside</li>
+        <li>One system for Z Autoz and Pam's MOT Centre</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Running order</span><h2>The demo in 10 minutes</h2></div>
+    <div class="grid g2">
+      <ol class="script card">
+        <li><b>Open the website on their phone (QR code).</b><span class="say">"This is what your customers see. Both sites, opening hours, directions, prices."</span></li>
+        <li><b>Use the MOT checker.</b><span class="say">"Put in your MOT date: it tells you the earliest day you can test and keep the same renewal date."</span></li>
+        <li><b>Book a car in on their phone.</b> Use their own reg, pick Tyre fitting or an MOT, choose a time.<span class="say">"About a minute, and they get a reference straight away."</span></li>
+        <li><b>Switch to the workshop screen.</b> Within 15 seconds the booking pops up under "Online requests to confirm".<span class="say">"You tap Confirm. Done. No phone call while you're under a car."</span></li>
+        <li><b>Search their reg in the top bar.</b><span class="say">"Every car is matched to its owner by the reg. Next time they're already on file."</span></li>
+      </ol>
+      <ol class="script card" start="6">
+        <li><b>Today → Job board.</b> Drag a car from Booked in → On site → In progress → Ready.<span class="say">"When it's ready it offers to WhatsApp the customer."</span></li>
+        <li><b>Today → Yard map.</b> Drag cars between the lift, under the lift, inside and the yard.<span class="say">"You can see the whole yard at a glance, at both sites."</span></li>
+        <li><b>Open a job.</b> Add a part and labour, record mileage, MOT pass with the new expiry, print the job card.</li>
+        <li><b>MOT reminders.</b><span class="say">"Everyone due in the next 30 days. One tap sends the WhatsApp. That's repeat business you're missing today."</span></li>
+        <li><b>Add from paper.</b> Type one customer from their notes.<span class="say">"This is how the notebooks get in. Or photograph the pages and we type them up for you."</span></li>
+      </ol>
+    </div>
+    <p class="notice" style="margin-top:18px">The demo uses example customers and resets every morning. Anything clicked on the workshop screen stays on that screen and goes back to normal on reload, so nothing can break during the meeting.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">To go live</span><h2>What we need from them</h2></div>
+    <div class="grid g3">
+      <div class="card"><h3>Prices &amp; hours</h3><p class="muted">Real prices for MOT, services, tyres and repairs. Check opening hours and phone numbers for both sites.</p></div>
+      <div class="card"><h3>The yard</h3><p class="muted">How many cars can be worked on at once at each site, and how many spaces to keep free for walk-ins.</p></div>
+      <div class="card"><h3>People</h3><p class="muted">Who needs a login, who signs off, and the email or phone that should get new-booking alerts.</p></div>
+      <div class="card"><h3>The paper records</h3><p class="muted">Photos of the customer notebooks, or a member of staff typing them in with the quick-entry screen.</p></div>
+      <div class="card"><h3>A web address</h3><p class="muted">Their own domain, e.g. zautoz.co.uk, so the site and booking link are theirs.</p></div>
+      <div class="card"><h3>Car lookup (optional)</h3><p class="muted">The garage applies for the free DVSA MOT history service so make, model and MOT date fill in from the reg.</p></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="assets/js/config.js?v=202610250102"></script>
+<script src="assets/js/api.js?v=202610250102"></script>
+<script src="assets/js/site.js?v=202610250102"></script>
+<script>
+  const url = new URL('book.html', location.href).href;
+  document.getElementById('qr-link').textContent = url.replace(/^https?:\/\//, '');
+  document.getElementById('qr-link').href = url;
+  try { new QRCode(document.getElementById('qr'), { text: url, width: 420, height: 420, colorDark: '#111318', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); }
+  catch (e) { document.getElementById('qr').textContent = url; }
+</script>
+</body>
+</html>

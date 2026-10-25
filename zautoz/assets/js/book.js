@@ -199,9 +199,10 @@
   function done() {
     const r = st.result;
     $('#done-title').textContent = r.status === 'confirmed' ? "You're booked in" : 'Request received';
+    $('#done-where').dataset.extra = r.status === 'confirmed' ? '' : ' The garage will confirm your time shortly.';
     $('#done-ref').textContent = r.ref;
     $('#done-when').textContent = fmt.longDay(r.starts_at) + ' at ' + fmt.time(r.starts_at);
-    $('#done-where').textContent = `${r.service} · ${r.location}, ${r.address}`;
+    $('#done-where').textContent = `${r.service} · ${r.location}, ${r.address}.` + ($('#done-where').dataset.extra || '');
     $('#directions').href = `https://www.google.com/maps/dir/?api=1&destination=${st.loc.lat},${st.loc.lng}`;
     $('#manage').href = `manage.html?ref=${encodeURIComponent(r.ref)}`;
     try { sessionStorage.setItem('za-manage', JSON.stringify({ ref: r.ref, phone: $('#phone').value.trim() })); } catch (_) {}

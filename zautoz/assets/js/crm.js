@@ -106,7 +106,7 @@
         <button class="btn btn-primary" style="width:100%">Sign in</button>
         <button class="btn btn-ghost btn-sm" type="button" id="lm" style="width:100%;margin-top:10px">Email me a sign-in link instead</button>
       </form>
-      <p class="small muted" style="margin:16px 0 0">Staff only. <a href="../">Back to the website</a></p></div></div>`;
+      <p class="small muted" style="margin:16px 0 0">Staff only. <a href="../">Back to the website</a></p><a class="btn btn-dark btn-sm" href="demo.html" style="width:100%;margin-top:14px">Open the demo workshop (no login)</a></div></div>`;
     $('#lf').addEventListener('submit', async e => {
       e.preventDefault(); $('#lerr').textContent = '';
       try { await staff.signIn($('#le').value.trim(), $('#lp').value); boot(); } catch (er) { $('#lerr').textContent = er.message; }
