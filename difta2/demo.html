@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Show and tell | Do It For The Art Studio</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/v2.css">
+<style>
+section{padding:clamp(60px,9vw,110px) 0}
+.hero-d{padding:clamp(110px,14vw,150px) 0 clamp(60px,8vw,90px);position:relative;overflow:hidden}
+.hero-d .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(28px,5vw,60px);align-items:center;position:relative;z-index:1}
+.hero-d h1{font-size:clamp(54px,9vw,104px);line-height:.95;margin:16px 0 18px}
+.hero-d .lead{color:#d6cfc3;font-size:clamp(17px,2vw,20px)}
+.steps-d{display:grid;gap:12px;margin-top:28px}
+.steps-d a,.steps-d button{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid var(--line2);transition:border-color .2s,transform .15s;text-align:left;width:100%;color:var(--text);cursor:pointer;font:inherit}
+.steps-d a:hover,.steps-d button:hover{border-color:var(--gold)}
+.steps-d a:active,.steps-d button:active{transform:scale(.99)}
+.steps-d .n{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font:600 18px var(--ui);color:#111;background:linear-gradient(135deg,var(--gold2),var(--gold) 55%,#a8833b);box-shadow:0 0 0 4px rgba(201,165,90,.15)}
+.steps-d .n.wag{background:#25d366;color:#fff;box-shadow:0 0 0 4px rgba(37,211,102,.18)}
+.steps-d b{display:block;font-size:18px;font-weight:600}
+.steps-d small{color:var(--mute);font-size:14.5px}
+.qr{text-align:center;padding:30px 26px;border-radius:28px;background:#f4f1ea;color:#0a0a0a;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.qr h3{font-size:34px;color:#0a0a0a}
+.qr p{color:#5c564d;font-size:15px;margin-top:6px}
+.qr #qr{display:inline-block;margin:18px 0 12px;padding:12px;background:#fff;border-radius:18px;border:1px solid #e3ddd1}
+.qr #qr img,.qr #qr canvas{width:210px!important;height:210px!important}
+.qr a{color:#0a0a0a;text-decoration:underline;font-size:14px;word-break:break-all}
+.qr .mk{width:64px;height:64px;border-radius:50%;margin:-62px auto 10px;background:#0a0a0a url(img/mark-white.png) center/cover;box-shadow:0 0 0 4px #f4f1ea,0 0 0 5px var(--gold)}
+@media (max-width:900px){.hero-d .grid{grid-template-columns:1fr}.qr{margin-top:30px}}
+.sec-head{margin-bottom:28px}
+.sec-head h2{margin-top:10px}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ba .card{padding:26px}
+.ba h3{font-size:30px;margin-bottom:10px}
+.ba ul{list-style:none;display:grid;gap:12px}
+.ba li{display:flex;gap:10px;color:#d6cfc3;font-size:15.5px}
+.ba li::before{content:"✕";color:var(--bad);flex:none}
+.ba .after{border-color:rgba(201,165,90,.5);background:linear-gradient(160deg,#1a1408,#141414 60%)}
+.ba .after li::before{content:"✓";color:var(--gold2)}
+@media (max-width:760px){.ba{grid-template-columns:1fr}}
+.script{list-style:none;counter-reset:s;display:grid;gap:12px;padding:22px}
+.script li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:4px 12px;font-size:15.5px}
+.script li::before{content:counter(s);grid-row:span 2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--gold);color:var(--gold2);font:600 13px var(--ui)}
+.script .say{grid-column:2;color:var(--gold2);font:italic 500 18px/1.35 var(--display)}
+.script .say::before{content:"“"}.script .say::after{content:"”"}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g3 .card{padding:22px}
+.g3 h3{font-size:26px;margin-bottom:6px}
+@media (max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+.notice{padding:16px 18px;border-radius:16px;border:1px solid rgba(226,176,74,.35);background:rgba(226,176,74,.08);color:#f0d9a6;font-size:14.5px}
+table.cost{width:100%;border-collapse:collapse;font-size:15.5px}
+table.cost td{padding:14px 0;border-bottom:1px solid var(--line)}
+table.cost td:last-child{text-align:right;color:var(--gold2);white-space:nowrap;padding-left:12px}
+table.cost tr.tot td{font-weight:600;border-bottom:0;font-size:17px}
+.versions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+</style>
+</head>
+<body class="marble">
+<nav class="nav solid"><div class="wrap"><a class="brand" href="index.html"><img src="img/logo-white.png" alt="Do It For The Art Studio"></a><a class="btn gold sm" href="book.html">Book</a></div></nav>
+
+<header class="hero-d">
+  <div class="bubbles" id="bub"></div>
+  <div class="wrap grid">
+    <div>
+      <div class="eyebrow">Show and tell · Do It For The Art Studio</div>
+      <h1>Your studio, <em class="shimmer">online.</em></h1>
+      <p class="lead">Your own booking site, a WhatsApp assistant and a staff diary with every client in it. Your brand, your customers, your money. No middleman.</p>
+      <div class="steps-d">
+        <a href="index.html" target="_blank" rel="noopener"><span class="n">1</span><span><b>The website</b><small>What clients see: the team, the work, prices, reviews, opening hours and directions</small></span></a>
+        <a href="book.html" target="_blank" rel="noopener"><span class="n">2</span><span><b>Book a cut</b><small>Barber, service, time, done. About 30 seconds. Try it on your phone with the QR code</small></span></a>
+        <button data-chat><span class="n wag">3</span><span><b>Book on WhatsApp</b><small>The assistant books you in by chat, 24/7, using the real diary</small></span></button>
+        <a href="admin.html" target="_blank" rel="noopener"><span class="n">4</span><span><b>The staff app</b><small>The booking you just made appears in the diary. Kola will give you the staff PIN.</small></span></a>
+      </div>
+    </div>
+    <div class="qr">
+      <div class="mk"></div>
+      <h3>Book on your phone</h3>
+      <p>Scan, book a cut, then watch it land in the staff diary.</p>
+      <div id="qr"></div>
+      <p><a id="qrLink" href="book.html"></a></p>
+    </div>
+  </div>
+</header>
+
+<div class="check"></div>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><div class="eyebrow">Before and after</div><h2>What changes for the <em>studio.</em></h2></div>
+    <div class="ba">
+      <div class="card"><h3>Today, on Booksy</h3><ul>
+        <li>Monthly fees for a platform that isn't yours</li>
+        <li>Your 465 five-star reviews live on Booksy's page, not yours</li>
+        <li>Clients see other barbers' adverts while they book</li>
+        <li>No loyalty scheme, no easy way to win back regulars</li>
+        <li>No website of your own to send people to</li></ul></div>
+      <div class="card after"><h3>With this</h3><ul>
+        <li>Your own site in your brand: black marble, the logo, your work</li>
+        <li>Clients book online or just text “BOOK” on WhatsApp</li>
+        <li>Payment up front by card or Apple Pay, straight to your bank</li>
+        <li>Every client saved automatically, with notes, visits and spend</li>
+        <li>“Due a cut” list and one-tap WhatsApp rebook messages</li>
+        <li>DIFTA Club: every 10th cut free, tracked for you</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#0d0d0d">
+  <div class="wrap">
+    <div class="sec-head"><div class="eyebrow">Running order</div><h2>The demo in <em>10 minutes.</em></h2></div>
+    <div class="g2">
+      <ol class="script card">
+        <li><b>Hand him your phone on the website (QR code).</b><span class="say">This is what your clients see. Your studio, your team, your work.</span></li>
+        <li><b>Tap a story circle, then swipe the team cards.</b><span class="say">Your Instagram, built into your own site.</span></li>
+        <li><b>Show the live badge at the top.</b><span class="say">It shows the next free chair, straight from your diary.</span></li>
+        <li><b>Book a cut with his own name.</b> Pick a barber, service and time, then pay with the demo card.<span class="say">Thirty seconds, paid up front. No more no-shows.</span></li>
+        <li><b>Show the confirmation.</b> Confetti, loyalty stamp and the WhatsApp message they'd get.<span class="say">They get their account automatically. No password, no app.</span></li>
+      </ol>
+      <ol class="script card" start="6" style="counter-reset:s 5">
+        <li><b>Tap the green WhatsApp button and book by chat.</b><span class="say">Or they just text BOOK. It books them in at 2am while you're asleep.</span></li>
+        <li><b>Open the staff app.</b> Both bookings are in today's diary.<span class="say">Everything lands here. Every barber, every chair.</span></li>
+        <li><b>Tap a booking, then WhatsApp reminder.</b><span class="say">One tap sends the reminder. Tomorrow's list takes a minute.</span></li>
+        <li><b>Clients tab.</b> Show visits, spend, notes and “Due a cut”.<span class="say">This is who to message when it's quiet.</span></li>
+        <li><b>Menu &amp; team.</b> Change a price, then change it back.<span class="say">You run it yourself. No developer needed.</span></li>
+      </ol>
+    </div>
+    <p class="notice" style="margin-top:18px">This is a demo. No card is charged and no WhatsApp message is sent: buttons show what would happen. Bookings made today are real entries in a demo diary and get cleared before going live.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap g2" style="align-items:start">
+    <div>
+      <div class="sec-head"><div class="eyebrow">Running costs</div><h2>What it costs the <em>studio.</em></h2></div>
+      <table class="cost">
+        <tr><td>Website and booking system hosting</td><td>£0</td></tr>
+        <tr><td>Client database and staff app</td><td>£0</td></tr>
+        <tr><td>Card payments (Stripe), per payment</td><td>1.5% + 20p</td></tr>
+        <tr><td>WhatsApp messages clients start</td><td>£0</td></tr>
+        <tr><td>WhatsApp reminders the studio sends</td><td>~2p each</td></tr>
+        <tr><td>Own web address, e.g. difta.co.uk</td><td>~£10 / year</td></tr>
+        <tr class="tot"><td>Typical month, about 400 bookings</td><td>~£10 + card fees</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="sec-head"><div class="eyebrow">To go live</div><h2>What we need from <em>you.</em></h2></div>
+      <div class="g3" style="grid-template-columns:1fr 1fr">
+        <div class="card"><h3>Prices &amp; hours</h3><p class="muted">Check every barber's menu, times and days off.</p></div>
+        <div class="card"><h3>Stripe</h3><p class="muted">A free Stripe account in the studio's name, so payments go to your bank.</p></div>
+        <div class="card"><h3>WhatsApp</h3><p class="muted">The studio number verified with Meta (free, 1–7 days) for the assistant.</p></div>
+        <div class="card"><h3>Web address</h3><p class="muted">Your own domain so the link is yours, e.g. difta.co.uk.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#0d0d0d;padding-top:60px">
+  <div class="wrap">
+    <div class="eyebrow">Design options</div><h2 style="font-size:clamp(34px,5vw,48px)">Pick a <em>look.</em></h2>
+    <div class="versions"><a class="btn" href="../difta/" target="_blank" rel="noopener">Version 1 · classic</a><a class="btn gold" href="index.html" target="_blank" rel="noopener">Version 2 · interactive</a></div>
+  </div>
+</section>
+
+<footer class="foot"><div class="wrap"><img src="img/logo-white.png" alt="" style="height:36px"><span>Prepared for Do It For The Art Studio · Bletchley</span></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="assets/common.js"></script>
+<script src="assets/v2.js"></script>
+<script>
+(() => {
+  const url = new URL("book.html", location.href).href;
+  const l = document.getElementById("qrLink"); l.textContent = url.replace(/^https?:\/\//, ""); l.href = url;
+  try { new QRCode(document.getElementById("qr"), { text: url, width: 420, height: 420, colorDark: "#0a0a0a", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M }); }
+  catch (e) { document.getElementById("qr").textContent = url; }
+  const el = document.getElementById("bub");
+  for (let i = 0; i < 10; i++) { const b = document.createElement("i"), s = 14 + Math.random() * 60; b.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;animation-duration:${16 + Math.random() * 14}s;animation-delay:${-Math.random() * 20}s;--dx:${(Math.random() - .5) * 100}px`; el.appendChild(b); }
+})();
+</script>
+</body>
+</html>
