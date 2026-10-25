@@ -52,10 +52,10 @@ h1 em{font-style:italic;color:var(--gold2)}
   const start = new Date(b.start_at), end = new Date(b.end_at);
   const ics = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const icsTxt = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//DIFTA Studio//EN", "BEGIN:VEVENT", `UID:${b.id}@difta`, `DTSTAMP:${ics(new Date())}`, `DTSTART:${ics(start)}`, `DTEND:${ics(end)}`,
-    `SUMMARY:${b.service} with ${b.barber} · DIFTA Studio`, "LOCATION:12 Wetherburn Court\\, Brunel Shopping Centre\\, Bletchley MK2 2UW", `DESCRIPTION:Booking ref ${b.ref}. Need to change? WhatsApp 07946 683376.`,
-    "BEGIN:VALARM", "TRIGGER:-PT2H", "ACTION:DISPLAY", "DESCRIPTION:Trim at DIFTA Studio", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    `SUMMARY:${b.service} with ${b.barber} · Do It For The Art Studio`, "LOCATION:12 Wetherburn Court\\, Brunel Shopping Centre\\, Bletchley MK2 2UW", `DESCRIPTION:Booking ref ${b.ref}. Need to change? WhatsApp 07946 683376.`,
+    "BEGIN:VALARM", "TRIGGER:-PT2H", "ACTION:DISPLAY", "DESCRIPTION:Trim at Do It For The Art Studio", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const icsUrl = URL.createObjectURL(new Blob([icsTxt], { type: "text/calendar" }));
-  const waMsg = `Hi DIFTA Studio, I've just booked ${b.service} with ${b.barber} on ${D.niceDate(b.date)} at ${fmtT(b.time)} (ref ${b.ref}).`;
+  const waMsg = `Hi Do It For The Art Studio, I've just booked ${b.service} with ${b.barber} on ${D.niceDate(b.date)} at ${fmtT(b.time)} (ref ${b.ref}).`;
   box.innerHTML = `
     <div class="mark"></div>
     <div class="eyebrow">You're booked in</div>
@@ -68,13 +68,13 @@ h1 em{font-style:italic;color:var(--gold2)}
       <div class="row"><span>Reference</span><span class="ref">${D.esc(b.ref)}</span></div>
     </div>
     <div class="acts">
-      <a class="btn gold" href="${icsUrl}" download="DIFTA-${b.ref}.ics">Add to calendar</a>
+      <a class="btn gold" href="${icsUrl}" download="DoItForTheArt-${b.ref}.ics">Add to calendar</a>
       <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=51.9946273,-0.7328365" target="_blank" rel="noopener">Directions</a>
       <a class="btn" href="${D.wa("447946683376", waMsg)}" target="_blank" rel="noopener">WhatsApp us</a>
       <a class="btn" href="index.html">Back to the studio</a>
     </div>
     <div class="loyal" style="text-align:left;margin:18px 0 6px">
-      <div class="eyebrow">${new URLSearchParams(location.search).get("new") ? "🎉 Your DIFTA account is ready" : "DIFTA Club"}</div>
+      <div class="eyebrow">${new URLSearchParams(location.search).get("new") ? "🎉 Your Do It For The Art account is ready" : "The Art Club"}</div>
       <h3 style="font-size:28px;margin-top:6px">${(() => { const a = V2.acct.get(); const n = a?.bookings?.length || 1; return n >= 10 ? "This one's <em class='shimmer'>on us.</em>" : `${10 - n} more until a <em class="shimmer">free cut.</em>`; })()}</h3>
       <div class="stamps" id="stamps"></div>
       <p class="muted" style="font-size:13px;margin-top:12px">No password needed. We've sent a sign-in link to your WhatsApp.</p>
@@ -90,7 +90,7 @@ h1 em{font-style:italic;color:var(--gold2)}
   setTimeout(() => V2.confetti(), 250);
   if (D.DEMO) {
     const conf = `Hi ${(b.customer_first || "there")}, you're booked in at Do It For The Art Studio ✂️\n${b.service} with ${b.barber}\n${D.niceDate(b.date)} at ${fmtT(b.time)}\nRef ${b.ref}\n12 Wetherburn Court, Bletchley MK2 2UW\nSee you then!`;
-    const show = () => D.waPreview(conf, "DIFTA Studio", true);
+    const show = () => D.waPreview(conf, "Do It For The Art Studio", true);
     document.getElementById("seeWa").onclick = show;
     setTimeout(show, 2600);
   }

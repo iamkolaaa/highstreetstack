@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pay | Do It For The Art Studio</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+body{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 0 40px}
+.box{width:min(440px,100% - 32px);text-align:center}
+.mark{width:96px;height:96px;border-radius:50%;margin:0 auto 18px;background:#0a0a0a url(img/mark-white.png) center/cover;box-shadow:0 0 0 1px rgba(201,165,90,.6),0 0 0 9px rgba(10,10,10,.6),0 0 0 10px rgba(201,165,90,.25)}
+.to{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.amt{font:500 clamp(84px,26vw,120px)/1 var(--display);margin:10px 0 6px;color:var(--text)}
+.for{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--mute);font-size:15px}
+.for img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,165,90,.5)}
+.pay{display:grid;gap:10px;margin-top:30px}
+.apple,.gpay,.card-b{min-height:56px;border-radius:14px;border:0;font:600 18px system-ui,-apple-system,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s}
+.apple{background:#fff;color:#000}
+.gpay{background:#1f1f1f;color:#fff;border:1px solid #3a3a3a}
+.card-b{background:transparent;color:var(--text);border:1px solid var(--line2);font:500 15px var(--ui);letter-spacing:.08em}
+.apple:active,.gpay:active,.card-b:active{transform:scale(.98)}
+.cardform{display:none;gap:10px;text-align:left;margin-top:4px}
+.cardform.on{display:grid}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.go{min-height:56px;border-radius:14px;border:0;background:linear-gradient(135deg,var(--gold2),var(--gold) 55%,#a8833b);color:#111;font:600 17px var(--ui);cursor:pointer}
+.secure{margin-top:16px;color:var(--mute);font-size:13px}
+.demo{margin-top:14px;padding:10px 12px;border-radius:12px;background:rgba(226,176,74,.08);border:1px solid rgba(226,176,74,.35);color:#f0d9a6;font-size:13px}
+.ok svg{width:150px;height:150px;margin:0 auto}
+.ok circle{fill:#1f8a5b;transform-origin:center;animation:pop .5s cubic-bezier(.2,.9,.2,1.4) both}
+.ok path{fill:none;stroke:#fff;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:120;stroke-dashoffset:120;animation:draw .55s .35s ease forwards}
+@keyframes pop{from{transform:scale(.2);opacity:0}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ok h1{font-size:clamp(48px,13vw,64px);margin-top:14px}
+.ok h1 em{font-style:italic;color:var(--gold2)}
+.acts{display:grid;gap:10px;margin-top:26px}
+.acts .btn{white-space:normal;text-align:center}
+.proc{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--mute);margin-top:30px}
+</style>
+</head>
+<body class="marble">
+<div class="box" id="box"><span class="spin"></span></div>
+<script src="assets/common.js"></script>
+<script>
+(async () => {
+  const D = DIFTA, box = document.getElementById("box"), q = new URLSearchParams(location.search), id = q.get("b");
+  const buzz = (p) => { try { navigator.vibrate && navigator.vibrate(p); } catch (_) {} };
+  if (!id) { box.innerHTML = `<p class="muted">Payment link not found. Ask your barber for a new QR code.</p>`; return; }
+  let info;
+  const load = async () => (info = await D.api("/pay-info?b=" + encodeURIComponent(id)));
+  try { await load(); } catch (e) { box.innerHTML = `<p class="muted">${D.esc(e.message)}</p>`; return; }
+
+  function paid() {
+    buzz([30, 50, 30]);
+    box.innerHTML = `<div class="ok"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="56"/><path d="M36 62 l16 16 l32 -36"/></svg>
+      <h1>Thank you${info.customer_first && !/^zztest/i.test(info.customer_first) ? ", <em>" + D.esc(info.customer_first) + "</em>" : ""}.</h1>
+      <p class="muted" style="margin-top:8px">${D.gbp(info.price_pence)} paid to Do It For The Art Studio · Ref ${D.esc(info.ref)}</p>
+      <div class="acts">
+        <a class="btn gold" href="book.html">Book your next cut</a>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=DOITFORTHEART+STUDIO+Bletchley" target="_blank" rel="noopener">Leave a Google review ★</a>
+      </div>
+      <p class="muted" style="font-size:13px;margin-top:18px">Your barber has been notified. You can close this page.</p></div>`;
+  }
+  if (info.due_pence <= 0 || q.get("done")) {
+    if (info.due_pence <= 0) return paid();
+    box.innerHTML = `<div class="proc"><span class="spin"></span> Confirming your payment…</div>`;
+    for (let i = 0; i < 10; i++) { await new Promise((r) => setTimeout(r, 1500)); await load(); if (info.due_pence <= 0) return paid(); }
+  }
+
+  box.innerHTML = `<div class="mark"></div>
+    <div class="to">Pay Do It For The Art Studio</div>
+    <div class="amt">${D.gbp(info.due_pence)}</div>
+    <div class="for">${info.barber_photo ? `<img src="${D.esc(info.barber_photo)}" alt="">` : ""}<span>${D.esc(info.service)} with ${D.esc(info.barber)}</span></div>
+    <div class="pay">
+      <button class="apple" data-m="apple"> Pay</button>
+      <button class="gpay" data-m="google"><b style="color:#4285f4">G</b> Pay</button>
+      <button class="card-b" id="cardBtn">Pay by card</button>
+      <div class="cardform" id="cardform">
+        <input class="in" value="4242 4242 4242 4242" inputmode="numeric" aria-label="Card number">
+        <div class="row2"><input class="in" value="12 / 28" aria-label="Expiry"><input class="in" value="123" aria-label="CVC"></div>
+        <button class="go" data-m="card">Pay ${D.gbp(info.due_pence)}</button>
+      </div>
+    </div>
+    <div class="secure">🔒 Secure payment by Stripe. Paid straight to the studio.</div>
+    ${info.live ? "" : `<div class="demo">Demo: no card is charged. Live, Apple Pay and Google Pay open on the customer's phone.</div>`}`;
+  document.getElementById("cardBtn").onclick = () => document.getElementById("cardform").classList.toggle("on");
+  box.querySelectorAll("[data-m]").forEach((b) => b.onclick = async () => {
+    buzz(10);
+    box.querySelectorAll("button").forEach((x) => (x.disabled = true));
+    b.innerHTML = `<span class="spin"></span>`;
+    try {
+      const r = await D.api("/pay-start", { method: "POST", body: { id, return_base: location.href.replace(/\/[^/]*$/, "") } });
+      if (r.checkout_url) { location.href = r.checkout_url; return; }
+      await new Promise((ok) => setTimeout(ok, 1200)); // feels like a real wallet sheet
+      await D.api("/pay-demo", { method: "POST", body: { id } });
+      await load(); paid();
+    } catch (e) { D.toast(e.message, true); box.querySelectorAll("button").forEach((x) => (x.disabled = false)); b.textContent = "Try again"; }
+  });
+})();
+</script>
+</body>
+</html>

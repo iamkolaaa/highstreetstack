@@ -137,7 +137,7 @@ section.s{padding:clamp(80px,11vw,140px) 0}
   <div class="hero-bg" role="img" aria-label="Inside the studio: black marble floors, oval mirrors and ring lights"></div>
   <div class="wrap hero-grid">
     <div>
-      <div class="eyebrow">Bletchley · Milton Keynes · Est. DIFTA</div>
+      <div class="eyebrow">Bletchley · Milton Keynes · Est. Bletchley</div>
       <h1>Every cut is a<br>work of <em>art.</em></h1>
       <p class="lead">Award-winning barbers in the Brunel Centre. Skin fades, tapers, beards, locs and braids, for every age and every hair type. Traditional meets modern, all under one roof.</p>
       <div class="hero-ctas">
@@ -303,7 +303,7 @@ section.s{padding:clamp(80px,11vw,140px) 0}
   const PHOTO_ALT = { Charles: "Charles, founder of Do It For The Art Studio, cutting hair", Nathan: "Nathan of Cutz by NS", Jai: "Jai, barber and braider, at work", Jayme: "Jayme of JM Fades" };
   D.config().then((c) => {
     if (c.hours) renderHours(c.hours);
-    if (c.business?.whatsapp) $("#waBtn").href = D.wa(c.business.whatsapp, "Hi DIFTA Studio, ");
+    if (c.business?.whatsapp) $("#waBtn").href = D.wa(c.business.whatsapp, "Hi Do It For The Art Studio, ");
     $("#teamGrid").innerHTML = c.staff.map((s) => `
       <article class="barber fade-up in-view">
         <div class="ph"><img src="${D.esc(s.photo)}" alt="${D.esc(PHOTO_ALT[s.name] || s.name)}" loading="lazy"><span class="alias">${D.esc(s.instagram || "")}</span></div>

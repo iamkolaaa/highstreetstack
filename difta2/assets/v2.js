@@ -37,7 +37,7 @@ window.V2 = (() => {
     buzz(12);
     if (chatEl) chatEl.remove();
     const el = (chatEl = document.createElement("div")); el.className = "wa";
-    el.innerHTML = `<div class="wa-top"><button class="wa-x" aria-label="Close">‹</button><span class="wa-av"></span><span><b>DIFTA Studio</b><small id="waStat">online</small></span><span class="wa-badge">DEMO</span></div>
+    el.innerHTML = `<div class="wa-top"><button class="wa-x" aria-label="Close">‹</button><span class="wa-av"></span><span><b>Do It For The Art Studio</b><small id="waStat">online</small></span><span class="wa-badge">DEMO</span></div>
       <div class="wa-log" id="waLog"><div class="wa-sys">This is how booking on WhatsApp would feel. Real times from the studio diary, nothing is sent.</div></div>
       <div class="wa-quick" id="waQuick"></div>
       <form class="wa-in" id="waForm"><input id="waText" placeholder="Message" autocomplete="off"><button aria-label="Send">➤</button></form>`;
@@ -109,7 +109,7 @@ window.V2 = (() => {
         const isNew = acct.addBooking({ id: r.booking.id, barber_id: b.s.id, service_id: sv.x.id }, name, phone);
         confetti(90);
         await bot(`✅ <b>You're booked!</b><br>Ref <b>${r.booking.ref}</b>. I'll send a reminder the day before. Reply <b>CHANGE</b> or <b>CANCEL</b> any time.`);
-        if (isNew) await bot(`🎉 I've also set up your DIFTA account, ${D.esc(String(name).split(" ")[0])}. Every 10th cut is on us. <a href="account.html">View my account</a>`);
+        if (isNew) await bot(`🎉 I've also set up your Do It For The Art account, ${D.esc(String(name).split(" ")[0])}. Every 10th cut is on us. <a href="account.html">View my account</a>`);
         menu();
       } catch (e) { await bot("Ah, that time has just gone 😬 Let's pick another."); book(); }
     }

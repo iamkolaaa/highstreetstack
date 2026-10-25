@@ -110,8 +110,8 @@ window.DIFTA = (() => {
       e.preventDefault();
       const u = new URL(a.href), num = u.pathname.slice(1), text = u.searchParams.get("text") || "";
       const studio = num === "447946683376";
-      const to = studio ? "DIFTA Studio" : (a.dataset.to || "+" + num.replace(/^44/, "44 "));
-      waPreview(text || "Hi DIFTA Studio 👋", to, false);
+      const to = studio ? "Do It For The Art Studio" : (a.dataset.to || "+" + num.replace(/^44/, "44 "));
+      waPreview(text || "Hi Do It For The Art Studio 👋", to, false);
     }, true);
     addEventListener("DOMContentLoaded", () => { demoCss(); const c = document.createElement("div"); c.className = "dm-chip"; c.textContent = "DEMO"; document.body.appendChild(c); });
   }

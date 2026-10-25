@@ -45,7 +45,7 @@ h1{font-size:clamp(46px,11vw,72px)}
   const D = DIFTA, app = document.getElementById("app"), a = V2.acct.get();
   const wa = `<button class="watag" data-chat style="margin-top:18px"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg></span><span><b>Book on WhatsApp</b><small>Text “BOOK” to 07946 683376</small></span><span class="go">›</span></button>`;
   if (!a) {
-    app.innerHTML = `<div class="eyebrow">DIFTA Club</div><h1>Your <em>account.</em></h1>
+    app.innerHTML = `<div class="eyebrow">The Art Club</div><h1>Your <em>account.</em></h1>
       <p class="muted" style="margin:14px 0 22px">Accounts are created automatically the first time you book. No password, no app: we send a sign-in link to your WhatsApp.</p>
       <div class="loyal"><h3 style="font-size:28px">Every <em class="shimmer">10th cut</em> is free.</h3><div class="stamps">${[...Array(10)].map((_, i) => `<i class="${i === 9 ? "free" : ""}">${i === 9 ? "FREE" : ""}</i>`).join("")}</div></div>
       <a class="btn gold block" href="book.html" style="margin-top:20px">Make my first booking</a>${wa}`;
@@ -59,7 +59,7 @@ h1{font-size:clamp(46px,11vw,72px)}
   const n = Math.min(10, list.length), last = list[list.length - 1];
   const M = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   const card = (b) => { const d = new Date(b.date + "T12:00:00Z"); return `<div class="bk"><div class="d"><small>${M[d.getUTCMonth()]}</small><b>${d.getUTCDate()}</b></div><div class="t"><b>${D.esc(b.service)}</b><small>${D.esc(b.barber)} · ${D.dayName(b.date).slice(0, 3)} ${V2.fmtT(b.time)} · Ref ${D.esc(b.ref)}</small></div><span class="pillst ok">${b.paid_pence ? "Paid" : "Booked"}</span></div>`; };
-  app.innerHTML = `<div class="eyebrow">DIFTA Club member</div><h1>Hey, <em>${D.esc(first)}.</em></h1>
+  app.innerHTML = `<div class="eyebrow">The Art Club member</div><h1>Hey, <em>${D.esc(first)}.</em></h1>
     <p class="muted" style="margin:10px 0 22px">${D.esc(a.phone || "")} · signed in on this phone</p>
     <div class="loyal"><div class="eyebrow">Loyalty card</div><h3 style="font-size:28px;margin-top:6px">${n >= 10 ? "Your next cut is <em class='shimmer'>free.</em>" : `${10 - n} more until a <em class="shimmer">free cut.</em>`}</h3><div class="stamps" id="st">${[...Array(10)].map((_, i) => `<i class="${i === 9 ? "free" : ""}">${i === 9 ? "FREE" : ""}</i>`).join("")}</div></div>
     <h2 style="font-size:34px;margin:30px 0 12px">Upcoming</h2>
