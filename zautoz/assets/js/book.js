@@ -23,7 +23,13 @@
   regEl.addEventListener('input', onReg);
   let lookT, lookSeq = 0;
   regEl.addEventListener('input', () => {
-    clearTimeout(lookT); st.car = null; const n = fmt.normReg(regEl.value);
+    clearTimeout(lookT); const n = fmt.normReg(regEl.value);
+    if (st.car && st.car.reg !== n) { // clear details we filled for the previous plate
+      if ($('#make').value === (st.car.make || '')) $('#make').value = '';
+      if ($('#model').value === (st.car.model || '')) $('#model').value = '';
+      if ($('#mot_expiry').value === (st.car.mot_expiry || '')) $('#mot_expiry').value = '';
+      st.car = null; $('#reg-hint').innerHTML = ''; summary();
+    }
     if (!fmt.plateValid(n)) return;
     $('#reg-hint').innerHTML = '<span class="muted">Looking up your car…</span>';
     lookT = setTimeout(() => findCar(n), 400);
@@ -32,7 +38,7 @@
     const my = ++lookSeq; const car = await pub.lookupReg(n);
     if (my !== lookSeq || fmt.normReg(regEl.value) !== n) return;
     if (!car) { $('#reg-hint').innerHTML = '<span class="muted">Add the make and model below.</span>'; return; }
-    st.car = car;
+    st.car = Object.assign({}, car, { reg: n });
     if (car.make) $('#make').value = car.make;
     if (car.model) $('#model').value = car.model;
     if (car.mot_expiry && !$('#mot_expiry').value) $('#mot_expiry').value = car.mot_expiry;
