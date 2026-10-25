@@ -21,8 +21,27 @@
     summary();
   }
   regEl.addEventListener('input', onReg);
+  let lookT, lookSeq = 0;
+  regEl.addEventListener('input', () => {
+    clearTimeout(lookT); st.car = null; const n = fmt.normReg(regEl.value);
+    if (!fmt.plateValid(n)) return;
+    $('#reg-hint').innerHTML = '<span class="muted">Looking up your car…</span>';
+    lookT = setTimeout(() => findCar(n), 400);
+  });
+  async function findCar(n) {
+    const my = ++lookSeq; const car = await pub.lookupReg(n);
+    if (my !== lookSeq || fmt.normReg(regEl.value) !== n) return;
+    if (!car) { $('#reg-hint').innerHTML = '<span class="muted">Add the make and model below.</span>'; return; }
+    st.car = car;
+    if (car.make) $('#make').value = car.make;
+    if (car.model) $('#model').value = car.model;
+    if (car.mot_expiry && !$('#mot_expiry').value) $('#mot_expiry').value = car.mot_expiry;
+    const due = car.mot_expiry ? fmt.daysUntil(car.mot_expiry) : null;
+    $('#reg-hint').innerHTML = `<div class="notice ok" style="margin-top:4px"><b>✓ ${fmt.esc(fmt.carLine(car))}</b>${car.mot_expiry ? `<br><span class="small">MOT ${due < 0 ? '<b style="color:var(--bad)">expired ' + fmt.date(car.mot_expiry) + '</b>' : 'due ' + fmt.date(car.mot_expiry) + (due <= 30 ? ' <b>(soon)</b>' : '')}</span>` : ''}</div>`;
+    summary();
+  }
   ['make', 'model'].forEach(id => $('#' + id).addEventListener('input', summary));
-  if (params.get('reg')) { regEl.value = params.get('reg'); onReg(); }
+  if (params.get('reg')) { regEl.value = params.get('reg'); onReg(); if (fmt.plateValid(fmt.normReg(regEl.value))) findCar(fmt.normReg(regEl.value)); }
 
   // ---------- data ----------
   Promise.all([pub.services(), pub.locations(), pub.settings().catch(() => ({}))]).then(([s, l, set]) => {
@@ -186,7 +205,7 @@
       st.result = await pub.book({
         location_id: st.loc.id, service_id: st.svc.id, starts_at: st.slot.starts_at,
         reg: n, reg_display: fmt.plate(n), make: $('#make').value.trim(), model: $('#model').value.trim(),
-        mot_expiry: $('#mot_expiry').value || '', first_name: first, last_name: $('#last_name').value.trim(),
+        mot_expiry: $('#mot_expiry').value || '', colour: st.car ? st.car.colour || '' : '', fuel_type: st.car ? st.car.fuel_type || '' : '', year: st.car && st.car.year ? String(st.car.year) : '', first_name: first, last_name: $('#last_name').value.trim(),
         phone, email, notes: $('#notes').value.trim(), marketing_opt_in: $('#marketing').checked
       });
       done();

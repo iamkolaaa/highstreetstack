@@ -18,7 +18,13 @@
     if (!raw) hint.textContent = '', hint.className = 'hint';
     else if (!fmt.plateValid(raw)) hint.textContent = "That doesn't look like a standard UK reg, but you can still carry on.", hint.className = 'hint warn';
     else hint.textContent = '', hint.className = 'hint';
+    clearTimeout(lookT);
+    if (fmt.plateValid(raw)) lookT = setTimeout(async () => {
+      const car = await ZA.pub.lookupReg(raw);
+      if (car && fmt.normReg(regEl.value) === raw) { hint.innerHTML = '<b>✓ ' + esc(fmt.carLine(car)) + '</b>' + (car.mot_expiry ? ' · MOT due ' + esc(fmt.date(car.mot_expiry)) : ''); hint.className = 'hint ok'; }
+    }, 450);
   });
+  let lookT;
   document.getElementById('quick').addEventListener('submit', e => {
     e.preventDefault();
     const q = new URLSearchParams(), reg = fmt.normReg(regEl.value);

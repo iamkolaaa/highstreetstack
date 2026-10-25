@@ -562,7 +562,14 @@
           $('#nmatch', m).innerHTML = `<div class="notice ok">Known vehicle: <b>${esc([v.make, v.model].filter(Boolean).join(' ') || 'details not recorded')}</b>${st.cust ? ` · owner <b>${esc(fmt.name(st.cust))}</b> ${esc(st.cust.phone || '')}` : ''} ${crm.motPill(v.mot_expiry)}</div>`;
           if (st.cust) { $('#nfn', m).value = st.cust.first_name; $('#nln', m).value = st.cust.last_name; $('#nph', m).value = st.cust.phone || ''; $('#nem', m).value = st.cust.email || ''; }
           $('#nmk', m).value = v.make || ''; $('#nmd', m).value = v.model || ''; $('#nmot', m).value = v.mot_expiry || '';
-        } else $('#nmatch', m).innerHTML = '<span class="muted">New vehicle. Fill in the owner below.</span>';
+        } else {
+          $('#nmatch', m).innerHTML = '<span class="muted">New vehicle. Looking it up…</span>';
+          const car = await pub.lookupReg(reg);
+          if (fmt.normReg($('#nreg', m).value) !== reg) return;
+          if (car) { st.car = car; if (car.make) $('#nmk', m).value = car.make; if (car.model) $('#nmd', m).value = car.model; if (car.mot_expiry && !$('#nmot', m).value) $('#nmot', m).value = car.mot_expiry;
+            $('#nmatch', m).innerHTML = `<div class="notice ok">New vehicle: <b>${esc(fmt.carLine(car))}</b> ${crm.motPill(car.mot_expiry)}. Fill in the owner below.</div>`; }
+          else $('#nmatch', m).innerHTML = '<span class="muted">New vehicle. Fill in the owner and car below.</span>';
+        }
       } catch (e) { crm.fail(e); }
     };
     $('#nreg', m).addEventListener('input', () => { clearTimeout(rt); rt = setTimeout(lookup, 350); });
@@ -587,7 +594,7 @@
           location_id: st.loc, service_id: st.svc, starts_at: starts, reg, reg_display: fmt.plate(reg),
           customer_id: st.cust ? st.cust.id : '', first_name: $('#nfn', m).value.trim(), last_name: $('#nln', m).value.trim(),
           phone: $('#nph', m).value.trim(), email: $('#nem', m).value.trim(), make: $('#nmk', m).value.trim(), model: $('#nmd', m).value.trim(),
-          mot_expiry: $('#nmot', m).value, notes: $('#nnotes', m).value.trim(), price_quoted: $('#npq', m).value.trim(),
+          mot_expiry: $('#nmot', m).value, colour: st.car ? st.car.colour || '' : '', fuel_type: st.car ? st.car.fuel_type || '' : '', year: st.car && st.car.year ? String(st.car.year) : '', notes: $('#nnotes', m).value.trim(), price_quoted: $('#npq', m).value.trim(),
           source: walk ? 'walk-in' : 'phone', status: walk ? 'arrived' : 'confirmed', force: walk || $('#nforce', m).checked
         });
         // keep vehicle details current when staff typed them

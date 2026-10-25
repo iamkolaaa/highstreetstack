@@ -61,7 +61,9 @@
     },
     daysUntil(iso) { if (!iso) return null; return Math.round((new Date(iso + 'T12:00:00Z') - new Date(fmt.today() + 'T12:00:00Z')) / 864e5); },
     esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); },
-    name(c) { return [c && c.first_name, c && c.last_name].filter(Boolean).join(' ') || 'No name'; }
+    name(c) { return [c && c.first_name, c && c.last_name].filter(Boolean).join(' ') || 'No name'; },
+    // "Ford Focus · Blue · Petrol · 2019"
+    carLine(car) { if (!car) return ''; return [[car.make, car.model].filter(Boolean).join(' '), car.colour, car.fuel_type ? car.fuel_type[0].toUpperCase() + car.fuel_type.slice(1).toLowerCase() : '', car.year].filter(Boolean).join(' · '); }
   };
 
   // ---------- public API ----------
@@ -73,7 +75,18 @@
     slots: (location, service, day) => rpc('za_availability', { p_location: location, p_service: service, p_day: day }),
     book: (payload) => rpc('za_create_booking', { p: payload }),
     lookup: (ref, phone) => rpc('za_lookup_booking', { p_ref: ref, p_phone: phone }),
-    cancel: (ref, phone) => rpc('za_cancel_booking', { p_ref: ref, p_phone: phone })
+    cancel: (ref, phone) => rpc('za_cancel_booking', { p_ref: ref, p_phone: phone }),
+    // Registration -> make/model/colour/fuel/year/MOT via edge function za-vehicle. Returns car or null; never throws.
+    lookupReg: (() => {
+      const memo = new Map();
+      return async (reg) => {
+        reg = fmt.normReg(reg); if (reg.length < 2) return null;
+        if (memo.has(reg)) return memo.get(reg);
+        const p = fetch(C.supabaseUrl + '/functions/v1/za-vehicle', { method: 'POST', headers: { apikey: C.supabaseKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ reg }) })
+          .then(r => r.json()).then(j => (j && j.found ? j.car : null)).catch(() => null);
+        memo.set(reg, p); const car = await p; if (!car) memo.delete(reg); return car;
+      };
+    })()
   };
 
   // ---------- staff API ----------

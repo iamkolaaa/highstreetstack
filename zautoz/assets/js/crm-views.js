@@ -625,6 +625,7 @@
       try {
         const v = await staff.vehicleByReg(reg); if (my !== vehSeq) return; state.veh = v;
         if (v) { if (!g('make').value && v.make) g('make').value = v.make; if (!g('model').value && v.model) g('model').value = v.model; if (!g('mot').value && v.mot_expiry) g('mot').value = fmt.date(v.mot_expiry); }
+        else if (fmt.plateValid(reg)) { const car = await ZA.pub.lookupReg(reg); if (my !== vehSeq) return; if (car) { if (!g('make').value && car.make) g('make').value = car.make; if (!g('model').value && car.model) g('model').value = car.model; if (!g('mot').value && car.mot_expiry) g('mot').value = fmt.date(car.mot_expiry); g('match').innerHTML = `<span class="notice ok" style="display:inline-block">Looked up: <b>${esc(fmt.carLine(car))}</b></span>`; return; } }
         renderMatch();
       } catch (_) {}
     }, 300);
