@@ -1,4 +1,4 @@
-// Shared helpers for the DIFTA Studio site. API = Supabase edge function `difta`.
+// Shared helpers for the Do It For The Art Studio site. API = Supabase edge function `difta`.
 window.DIFTA = (() => {
   const API = "https://rbjyyikzddnjecbnjvey.supabase.co/functions/v1/difta";
   const gbp = (p) => p == null ? "" : "£" + (p / 100).toFixed(p % 100 ? 2 : 0);

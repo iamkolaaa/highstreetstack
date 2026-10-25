@@ -1,4 +1,4 @@
-// DIFTA v2 extras: WhatsApp booking bot demo, account (local), confetti, haptics, bottom nav.
+// v2 extras: WhatsApp booking chat demo, account (local), confetti, haptics, bottom nav.
 window.V2 = (() => {
   const D = DIFTA;
   const buzz = (ms = 8) => { try { navigator.vibrate && navigator.vibrate(ms); } catch (_) {} };
@@ -31,7 +31,7 @@ window.V2 = (() => {
     })();
   }
 
-  // ---------- WhatsApp booking bot (demo runs in the browser against the live diary) ----------
+  // ---------- WhatsApp booking chat (demo runs in the browser against the live diary) ----------
   let chatEl;
   function chat() {
     buzz(12);
@@ -48,7 +48,7 @@ window.V2 = (() => {
     const now = () => new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
     const scroll = () => (log.scrollTop = log.scrollHeight);
     const me = (t) => { log.insertAdjacentHTML("beforeend", `<div class="wa-m me">${D.esc(t)}<small>${now()} ✓✓</small></div>`); scroll(); };
-    const bot = (t, delay = 650) => new Promise((ok) => {
+    const reply = (t, delay = 650) => new Promise((ok) => {
       stat.textContent = "typing…"; const ty = document.createElement("div"); ty.className = "wa-m typing"; ty.innerHTML = "<i></i><i></i><i></i>"; log.appendChild(ty); scroll();
       setTimeout(() => { ty.remove(); stat.textContent = "online"; log.insertAdjacentHTML("beforeend", `<div class="wa-m">${t}<small>${now()}</small></div>`); scroll(); buzz(5); ok(); }, delay);
     });
@@ -66,54 +66,54 @@ window.V2 = (() => {
     };
     async function freeText(t) {
       const s = t.toLowerCase();
-      if (/hour|open|close|time/.test(s)) await bot("We're open <b>Mon 12–7</b>, <b>Tue–Sat 9–7</b> and <b>Sun 12–4</b> 🕘");
-      else if (/where|address|locat|park/.test(s)) await bot("12 Wetherburn Court, Brunel Shopping Centre, Bletchley MK2 2UW 📍 Parking right outside the centre.");
-      else if (/price|cost|how much|£/.test(s)) await bot("Cuts start from <b>£15</b>, skin fades from <b>£23</b>, haircut & beard from <b>£23</b>. Locs & braids from <b>£40</b>.");
-      else if (/cancel|change|resched/.test(s)) await bot("No problem. In the live version I'd show your booking here with <b>Change</b> and <b>Cancel</b> buttons ✂️");
-      else await bot("I can book you in, show prices or opening hours. Try <i>“book a skin fade Saturday”</i> 👇");
+      if (/hour|open|close|time/.test(s)) await reply("We're open <b>Mon 12–7</b>, <b>Tue–Sat 9–7</b> and <b>Sun 12–4</b> 🕘");
+      else if (/where|address|locat|park/.test(s)) await reply("12 Wetherburn Court, Brunel Shopping Centre, Bletchley MK2 2UW 📍 Parking right outside the centre.");
+      else if (/price|cost|how much|£/.test(s)) await reply("Cuts start from <b>£15</b>, skin fades from <b>£23</b>, haircut & beard from <b>£23</b>. Locs & braids from <b>£40</b>.");
+      else if (/cancel|change|resched/.test(s)) await reply("No problem. In the live version I'd show your booking here with <b>Change</b> and <b>Cancel</b> buttons ✂️");
+      else await reply("I can book you in, show prices or opening hours. Try <i>“book a skin fade Saturday”</i> 👇");
       menu();
     }
     let cfg;
     async function menu() {
       const o = await ask([{ label: "✂️ Book an appointment", k: "book", match: /book|appoint|cut|trim|fade|slot/i }, { label: "💷 Prices", k: "price", match: /price|cost/i }, { label: "🕘 Opening hours", k: "hours", match: /hour|open/i }]);
-      if (o.k === "price") { await bot("Cuts from <b>£15</b>, skin fades from <b>£23</b>, haircut & beard from <b>£23</b>, locs & braids from <b>£40</b>. Want to book?"); return menu(); }
-      if (o.k === "hours") { await bot("Mon 12–7 · Tue–Sat 9–7 · Sun 12–4 🕘"); return menu(); }
+      if (o.k === "price") { await reply("Cuts from <b>£15</b>, skin fades from <b>£23</b>, haircut & beard from <b>£23</b>, locs & braids from <b>£40</b>. Want to book?"); return menu(); }
+      if (o.k === "hours") { await reply("Mon 12–7 · Tue–Sat 9–7 · Sun 12–4 🕘"); return menu(); }
       book();
     }
     async function book() {
       cfg = cfg || await D.config();
-      await bot("Lovely 🙌 Who would you like?");
+      await reply("Lovely 🙌 Who would you like?");
       const b = await ask(cfg.staff.map((s) => ({ label: s.name, s, match: new RegExp(s.name, "i") })));
       const svs = cfg.services.filter((x) => !x.staff_ids?.length || x.staff_ids.includes(b.s.id));
-      await bot(`<b>${D.esc(b.s.name)}</b> it is. What are we doing?`);
+      await reply(`<b>${D.esc(b.s.name)}</b> it is. What are we doing?`);
       const sv = await ask(svs.slice(0, 8).map((x) => ({ label: `${x.name} · ${D.gbp(x.price_pence)}`, x })));
-      await bot("Checking the diary… 📖", 500);
+      await reply("Checking the diary… 📖", 500);
       const days = (await D.api(`/days?service=${sv.x.id}&staff=${b.s.id}&from=${D.ymd()}&n=10`)).days;
       const free = Object.keys(days).sort().filter((d) => days[d] > 0).slice(0, 6);
-      if (!free.length) { await bot("Fully booked for the next 10 days, sorry! Want to try another barber?"); return book(); }
-      await bot("Which day suits you?");
+      if (!free.length) { await reply("Fully booked for the next 10 days, sorry! Want to try another barber?"); return book(); }
+      await reply("Which day suits you?");
       const d = await ask(free.map((x) => ({ label: x === D.ymd() ? "Today" : D.niceDate(x), x })));
       const sl = (await D.api(`/availability?service=${sv.x.id}&staff=${b.s.id}&date=${d.x}`)).slots;
-      await bot(`Here's what ${D.esc(b.s.name)} has free:`);
+      await reply(`Here's what ${D.esc(b.s.name)} has free:`);
       const t = await ask(sl.slice(0, 9).map((x) => ({ label: fmtT(x.t), x })));
       const saved = acct.get();
       let name = saved?.name, phone = saved?.phone;
-      if (!name) { await bot("Last bit. What name is the booking under?"); name = await askText("Your name"); }
-      if (!phone) { await bot("And your mobile? (In the live bot I'd already know it from WhatsApp 😉)"); phone = await askText("07…"); }
-      await bot(`Just to confirm:<br><b>${D.esc(sv.x.name)}</b> with <b>${D.esc(b.s.name)}</b><br>${D.niceDate(d.x)} at <b>${fmtT(t.x.t)}</b><br>£${(sv.x.price_pence / 100).toFixed(2)}`);
+      if (!name) { await reply("Last bit. What name is the booking under?"); name = await askText("Your name"); }
+      if (!phone) { await reply("And your mobile? (On WhatsApp we'd already have it 😉)"); phone = await askText("07…"); }
+      await reply(`Just to confirm:<br><b>${D.esc(sv.x.name)}</b> with <b>${D.esc(b.s.name)}</b><br>${D.niceDate(d.x)} at <b>${fmtT(t.x.t)}</b><br>£${(sv.x.price_pence / 100).toFixed(2)}`);
       const pay = await ask([{ label: `💳 Pay £${(sv.x.price_pence / 100).toFixed(0)} now`, k: "pay" }, { label: "Pay in the studio", k: "studio" }, { label: "Start again", k: "again" }]);
       if (pay.k === "again") return book();
-      if (pay.k === "pay") { await bot("Here's your secure Stripe link 🔒 (demo)", 400); const ok = await D.demoPay(sv.x.price_pence, `${sv.x.name} with ${b.s.name}`); if (!ok) { await bot("No worries, cancelled. Want to try again?"); return menu(); } }
+      if (pay.k === "pay") { await reply("Here's your secure Stripe link 🔒 (demo)", 400); const ok = await D.demoPay(sv.x.price_pence, `${sv.x.name} with ${b.s.name}`); if (!ok) { await reply("No worries, cancelled. Want to try again?"); return menu(); } }
       try {
         const r = await D.api("/book", { method: "POST", body: { service_id: sv.x.id, staff_id: b.s.id, date: d.x, time: t.x.t, name, phone, pay: pay.k === "pay" ? "demo" : "studio", notes: "Booked on WhatsApp (demo)" } });
         const isNew = acct.addBooking({ id: r.booking.id, barber_id: b.s.id, service_id: sv.x.id }, name, phone);
         confetti(90);
-        await bot(`✅ <b>You're booked!</b><br>Ref <b>${r.booking.ref}</b>. I'll send a reminder the day before. Reply <b>CHANGE</b> or <b>CANCEL</b> any time.`);
-        if (isNew) await bot(`🎉 I've also set up your Do It For The Art account, ${D.esc(String(name).split(" ")[0])}. Every 10th cut is on us. <a href="account.html">View my account</a>`);
+        await reply(`✅ <b>You're booked!</b><br>Ref <b>${r.booking.ref}</b>. I'll send a reminder the day before. Reply <b>CHANGE</b> or <b>CANCEL</b> any time.`);
+        if (isNew) await reply(`🎉 I've also set up your Do It For The Art account, ${D.esc(String(name).split(" ")[0])}. Every 10th cut is on us. <a href="account.html">View my account</a>`);
         menu();
-      } catch (e) { await bot("Ah, that time has just gone 😬 Let's pick another."); book(); }
+      } catch (e) { await reply("Ah, that time has just gone 😬 Let's pick another."); book(); }
     }
-    (async () => { await bot("Hey 👋 Welcome to <b>Do It For The Art Studio</b>. I can book you in 24/7, no app needed."); await bot("What can I do for you?", 500); menu(); })();
+    (async () => { await reply("Hey 👋 Welcome to <b>Do It For The Art Studio</b>. I can book you in 24/7, no app needed."); await reply("What can I do for you?", 500); menu(); })();
   }
 
   // ---------- bottom nav + WhatsApp tag wiring ----------
