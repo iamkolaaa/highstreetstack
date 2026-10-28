@@ -19,6 +19,17 @@ async function getForms() {
   return forms;
 }
 
+/* Keep a small copy of each uploaded photo so the demo PDF can show it. Separate key, so a full quota never costs the main records. */
+const PKEY = 'cc_mock_photos_v1';
+function keepPhoto(id, b64) {
+  try {
+    if (b64.length > 400000) return;
+    const all = JSON.parse(localStorage.getItem(PKEY) || '{}');
+    all[id] = b64;
+    localStorage.setItem(PKEY, JSON.stringify(all));
+  } catch (e) {}
+}
+
 function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
 
 function mkRef(date) { db.seq = (db.seq || 1) + 1; return `CC-${ymd(date)}-${String(1000 + db.seq * 37 % 9000).padStart(4, '0')}`.slice(0, 16); }
@@ -51,7 +62,7 @@ function seed(f) {
   const prevWE = addDays(weekEndingOf(today), -7);
   const days = {};
   ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(k => { days[k] = { start: '07:30', finish: '17:30', driver_h: 10, crane_h: 10, zoning_h: 0, comment: '' }; });
-  d.timesheets.push({ id: 'T1', site_id: 'S1', driver_id: 'D1', week_ending: prevWE, status: 'approved', days, bonus: '', comment: '', operator_name: 'Kola Salau', submitted_at: addDays(prevWE, 1) + 'T09:05:00.000Z', approved_at: addDays(prevWE, 1) + 'T11:40:00.000Z', approved_by: 'Site Agent (demo)', pdf_url: pdfUrl('TS-' + prevWE) });
+  d.timesheets.push({ id: 'T1', site_id: 'S1', driver_id: 'D1', week_ending: prevWE, status: 'approved', days, bonus: '', comment: '', operator_name: 'Kola Salau', submitted_at: addDays(prevWE, 1) + 'T09:05:00.000Z', approved_at: addDays(prevWE, 1) + 'T11:40:00.000Z', approved_by: 'Site Agent (demo)', pdf_url: pdfUrl('TS-' + prevWE, '&ts=T1') });
   return d;
 }
 
@@ -63,7 +74,7 @@ async function ensure() {
   return f;
 }
 
-export function resetMock() { try { localStorage.removeItem(KEY); } catch (e) {} db = null; }
+export function resetMock() { try { localStorage.removeItem(KEY); localStorage.removeItem(PKEY); } catch (e) {} db = null; }
 
 const fail = (m, o) => { throw new ApiError(m, o); };
 const siteOf = id => db.sites.find(s => s.id === id);
@@ -100,6 +111,7 @@ const H = {
     if (!p.b64 || typeof p.b64 !== 'string') fail('No photo data.');
     if (p.b64.length > 1400000) fail('Photo is too large.');
     const id = 'F' + rnd(10);
+    keepPhoto(id, p.b64);
     return { ok: true, file_id: id, url: 'https://drive.example/' + id };
   },
 
@@ -152,7 +164,7 @@ const H = {
       if (!String(p.operator_name || '').trim()) fail('Type your name to submit.');
       const token = hex(32);
       t.status = 'submitted'; t.submitted_at = new Date().toISOString(); t.approved_at = ''; t.approved_by = ''; t.reject_comment = '';
-      t.pdf_url = pdfUrl('TS-' + t.week_ending);
+      t.pdf_url = pdfUrl('TS-' + t.week_ending, '&ts=' + encodeURIComponent(t.id));
       db.tokens[token] = { ts_id: t.id, used: false, expires: Date.now() + 14 * 864e5 };
       demo = new URL(href('approve.html') + '#t=' + token, location.href).href;
     } else { t.status = t.status === 'rejected' ? 'draft' : 'draft'; }
@@ -237,7 +249,7 @@ const H = {
   async admin_weekly_pdf(p) {
     adminAuth(p);
     if (!siteOf(p.site_id)) fail('Pick a site.');
-    return { ok: true, pdf_url: pdfUrl('WEEK-' + p.week_ending, '&weekly=1') };
+    return { ok: true, pdf_url: pdfUrl('WEEK-' + p.week_ending, '&weekly=1&site=' + encodeURIComponent(p.site_id)) };
   },
   async admin_upload_scan(p) {
     adminAuth(p);

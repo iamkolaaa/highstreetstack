@@ -1,8 +1,71 @@
 <!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>Demo PDF</title>
-<style>body{font-family:system-ui,sans-serif;margin:0;background:#e9edf0;color:#101418}.pg{max-width:640px;margin:20px auto;background:#fff;border:1px solid #bbb;padding:28px;min-height:70vh}.wm{display:inline-block;border:2px solid #000;padding:2px 8px;font-size:22px}.wm small{display:block;font-size:7px;font-weight:700}.bar{background:#1f6fb2;color:#fff;padding:6px 10px;margin:18px 0 10px;font-weight:600}</style></head>
-<body><div class="pg"><div class="wm">bennetts<small>TOWER CRANE PROFESSIONALS</small></div>
-<div class="bar" id="t">Demo document</div><p id="ref"></p>
-<p>This is a placeholder for the PDF that is filed to Drive in the live system. Nothing here is a real record.</p></div>
-<script>const q=new URLSearchParams(location.search);document.getElementById('ref').textContent='Reference: '+(q.get('ref')||'');if(q.get('weekly'))document.getElementById('t').textContent='Weekly Inspection Sheet (demo)';else if(q.get('scan'))document.getElementById('t').textContent='Scanned paper copy (demo)';else if((q.get('ref')||'').startsWith('TS-'))document.getElementById('t').textContent='Drivers Time Sheet (demo)';else document.getElementById('t').textContent='Crane Daily/Weekly Inspections & Maintenance (demo)';</script></body></html>
+<style>
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#e9edf0;color:#101418}
+.tb{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;justify-content:space-between;background:#10253a;color:#fff;padding:8px 14px;font-size:14px;line-height:1.3;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.tb span{flex:1;min-width:0}
+.tb button{flex:none;background:#fff;color:#10253a;border:0;border-radius:6px;padding:8px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.tb button:hover{background:#dbe8f4}
+.wrap{padding:16px 8px 32px;overflow-x:hidden}
+.sheet{width:794px;box-sizing:border-box;margin:0 auto;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.2);padding:40px 42px;min-height:1000px}
+.nf{max-width:480px;margin:40px auto;background:#fff;border:1px solid #c7cfd6;border-radius:8px;padding:24px;text-align:center}
+.nf h1{font-size:18px;margin:0 0 8px}.nf p{margin:6px 0;color:#444}
+@media(max-width:520px){.tb{font-size:12px;padding:6px 10px}.tb button{padding:7px 10px;font-size:13px}}
+@page{size:A4;margin:12mm}
+@media print{
+  .tb{display:none}
+  body{background:#fff}
+  .wrap{padding:0}
+  .sheet{width:auto;margin:0;padding:0;box-shadow:none;min-height:0;zoom:1 !important}
+}
+</style>
+<style id="doccss"></style></head>
+<body>
+<div class="tb" id="tb"><span>Demo copy &ndash; in the live system this PDF is filed to Google Drive</span><button type="button" id="pr">Print / Save as PDF</button></div>
+<div class="wrap"><div id="out"></div></div>
+<script type="module">
+import { buildDocument, DOC_CSS } from './pdfview.js';
+const $ = s => document.querySelector(s);
+const out = $('#out');
+$('#doccss').textContent = DOC_CSS;
+$('#pr').onclick = () => window.print();
+
+function notFound() {
+  document.title = 'Record not found';
+  $('#pr').style.display = 'none';
+  out.innerHTML = '<div class="nf"><h1>Record not found</h1><p>This record is not in this browser\'s demo data.</p><p>Demo records are kept only in the browser they were created in, so a link copied to another phone or computer will not open here.</p></div>';
+}
+
+function fit() {
+  const s = $('.sheet'); if (!s) return;
+  const avail = document.documentElement.clientWidth - 16;
+  s.style.zoom = avail < 794 ? String(avail / 794) : '1';
+}
+
+try {
+  const q = new URLSearchParams(location.search);
+  let db = null, photos = {};
+  try { db = JSON.parse(localStorage.getItem('cc_mock_db_v1')); } catch (e) {}
+  try { photos = JSON.parse(localStorage.getItem('cc_mock_photos_v1')) || {}; } catch (e) {}
+  const forms = await (await fetch(new URL('../forms.json', import.meta.url))).json();
+  const doc = db && db.submissions ? buildDocument(db, forms, q, photos) : null;
+  if (!doc) notFound();
+  else {
+    document.title = doc.title;
+    out.innerHTML = '<div class="sheet pdfdoc">' + doc.html + '</div>';
+    fit(); addEventListener('resize', fit);
+    out.addEventListener('click', e => {
+      const a = e.target.closest('a[data-photo]'); if (!a) return;
+      e.preventDefault();
+      const b64 = photos[a.dataset.photo]; if (!b64) return;
+      const bin = atob(b64), u = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      window.open(URL.createObjectURL(new Blob([u], { type: 'image/jpeg' })), '_blank');
+    });
+    out.addEventListener('click', e => { const a = e.target.closest('a[href^="#photo-"]'); if (a && !a.dataset.photo) e.preventDefault(); });
+  }
+} catch (e) { notFound(); }
+</script>
+</body></html>
