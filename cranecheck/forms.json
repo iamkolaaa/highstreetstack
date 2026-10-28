@@ -1,0 +1,106 @@
+{
+  "company": {
+    "name": "Bennetts Cranes Limited",
+    "tagline": "Tower Crane Professionals",
+    "address": "Burma Road, Sharpness, Gloucestershire GL13 9UQ",
+    "email": "office@tower-crane.co.uk",
+    "phone": "01453 811754",
+    "web": "www.tower-crane.co.uk",
+    "companyNo": "6779103"
+  },
+  "inspection": {
+    "title": "Crane Daily/Weekly Inspections & Maintenance",
+    "ref": "R6",
+    "legend": "Tick where satisfactory, X where a defect has been identified, N/A if not applicable. Any issues with the crane are to be phoned through to the Bennetts office on 01453 811754. The crane should not be reset until instructed by Bennetts.",
+    "supervisorNote": "Items marked * are to be completed by the Banksman / Crane Supervisor.",
+    "sections": [
+      {
+        "id": "pre",
+        "title": "Daily Pre-Use Checks",
+        "items": [
+          "Condition of mains cable & earthing",
+          "Base Bolts / Pins & clear of Obstruction / Debris",
+          "Condition / Security of Tower Bolts",
+          "Condition of Ladders / Platforms / Tower",
+          "Check Counter Jib Fittings",
+          "Check Counter Jib Ballast Security",
+          "Check RAM Condition / Operation / not creeping",
+          "Check motors free of unexpected noise / vibration",
+          "Check Hoist Rope Condition & Lubrication",
+          "Check Trolley / Luffing Rope Condition & Lubrication",
+          "Check Slew Teeth, Bolts Condition & Lubrication",
+          "Check Hoist / Luff Limit Paddle",
+          "Cleanliness of Crane and Decking",
+          "*Security of Loose Items e.g. Lifting Accessories",
+          "*Check Hook Block Safety Catches and Swivel",
+          "Check Visual Display (if fitted)",
+          "Cab Gauges and Warning Lights",
+          "Check Hook Block Height Limit",
+          "Operation of Slewing Brakes",
+          "Operation of Emergency Electrical Isolation",
+          "Operation of Hoist / Trolley / Luffing Brakes",
+          "Check all Controls respond correctly including joysticks, horn, buttons",
+          "Check Dead Man Control (if fitted)",
+          "Check Trolley / Luffing In / Out Limiter",
+          "Windspeed Indicator",
+          "Confirm Zoning System Shunt Plug is NOT in use",
+          "Confirm Zoning system stops at correct points",
+          "Visual Inspection of Jib Pivot Pins, Locking Pins & Keeper Plates (Luffing)",
+          "Jib Radius correct & Slew Brake lifted for Free Slew, Green light Operational",
+          "Condition of doors and glazing, including the handles, cab door latch, cab door lock & the locking mechanism",
+          "All ancillaries checked, secure & operational",
+          "Condition of Collar & Tie – Pins, Collar Bolts, Wedges, Base Plate Bolts"
+        ]
+      },
+      {
+        "id": "close",
+        "title": "Daily Closedown Procedures",
+        "items": [
+          "Remove all lifting tackle from hook block",
+          "Raise hook block to visible height from cab",
+          "Set Luffing / Trolley Out of Service Radius",
+          "Put Crane in Free Slew",
+          "*Check Aircraft Warning Lights",
+          "Press Emergency Stop in cab",
+          "Secure Drivers Cab, Windows, anti climb hatch & all openings, including hoarding door",
+          "Report Defects"
+        ]
+      }
+    ],
+    "lubrication": [
+      "Hoist Drum",
+      "Hoist Rope",
+      "Hoist Gearbox Oil",
+      "*Hook Block & Swivel",
+      "Luffing / Trolley Drum",
+      "Luffing / Trolley Ropes",
+      "Luffing / Trolley Gearbox Oil",
+      "Motor oil levels",
+      "Hydraulic RAM",
+      "Slew Ring & Lubrication",
+      "Slew Gearbox Oil Level(s)"
+    ],
+    "required": ["Grease gun", "Grease", "Wire Rope Spray", "Open Gear Spray"],
+    "declaration": "All certification relevant to this crane, equipment and accessories are held by the Client / Hiring Organisation. I have carried out all prescribed maintenance and I am satisfied that all safety devices operate in a satisfactory manner, as disclosed above. I am in receipt of a Bennetts induction for the operation of this crane. A rescue system is in place, rescue from height training has been rolled out and the appropriate equipment is available."
+  },
+  "timesheet": {
+    "title": "Drivers Time Sheet",
+    "ref": "R2",
+    "deadline": "All timesheets must be signed & returned to us by no later than 4pm every Monday.",
+    "columns": ["Start Time", "Finish Time", "Driver Hours", "Crane Hours", "Zoning Device Hours", "Comments"],
+    "notes": [
+      "Contracts are based on a minimum of 10 hours per day (Monday – Friday) for both crane and driver i.e. if you work less than 10 hours you will still be charged for 10 hours.",
+      "\"The signature of the Hirer's representative shall bind the Hirer to accept the hours shown on the Drivers Time Sheet.\" CPA Terms and Conditions – Clause 18(a)",
+      "Allowance will only be made for breakdowns which are detailed on this timesheet."
+    ],
+    "bonusLabel": "Bonus to be Paid (Employers NI will be added to this figure)"
+  },
+  "demoSite": {
+    "contractor": "Kingerlee",
+    "name": "Ratan Tata Building, Somerville College",
+    "address": "Somerville College, Woodstock Road, Oxford OX2 6HD",
+    "crane": "Jost JTL108.6",
+    "serial": "065",
+    "pn": "245"
+  }
+}

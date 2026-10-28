@@ -1,0 +1,14 @@
+{
+  "name": "CraneCheck",
+  "short_name": "CraneCheck",
+  "description": "Digital crane check-sheet and timesheet for Bennetts Cranes",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1f6fb2",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

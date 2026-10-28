@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Demo PDF</title>
+<style>body{font-family:system-ui,sans-serif;margin:0;background:#e9edf0;color:#101418}.pg{max-width:640px;margin:20px auto;background:#fff;border:1px solid #bbb;padding:28px;min-height:70vh}.wm{display:inline-block;border:2px solid #000;padding:2px 8px;font-size:22px}.wm small{display:block;font-size:7px;font-weight:700}.bar{background:#1f6fb2;color:#fff;padding:6px 10px;margin:18px 0 10px;font-weight:600}</style></head>
+<body><div class="pg"><div class="wm">bennetts<small>TOWER CRANE PROFESSIONALS</small></div>
+<div class="bar" id="t">Demo document</div><p id="ref"></p>
+<p>This is a placeholder for the PDF that is filed to Drive in the live system. Nothing here is a real record.</p></div>
+<script>const q=new URLSearchParams(location.search);document.getElementById('ref').textContent='Reference: '+(q.get('ref')||'');if(q.get('weekly'))document.getElementById('t').textContent='Weekly Inspection Sheet (demo)';else if(q.get('scan'))document.getElementById('t').textContent='Scanned paper copy (demo)';else if((q.get('ref')||'').startsWith('TS-'))document.getElementById('t').textContent='Drivers Time Sheet (demo)';else document.getElementById('t').textContent='Crane Daily/Weekly Inspections & Maintenance (demo)';</script></body></html>
