@@ -1,4 +1,8 @@
 import { api, ApiError } from './api.js';
+import { MOCK } from './config.js';
+
+/* demo mode keeps its own keys so trying the demo never touches a real driver's session */
+const P = MOCK ? 'ccdemo_' : 'cc_';
 
 /* ---------- safe localStorage ---------- */
 const ls = {
@@ -10,15 +14,15 @@ export { ls };
 
 /* ---------- session: remembered check-in code + last resolve ---------- */
 export const session = {
-  getCode: () => ls.get('cc_code', ''),
-  setCode: c => ls.set('cc_code', c),
-  getCtx: () => ls.get('cc_ctx', null),
-  setCtx: c => ls.set('cc_ctx', c),
-  clear() { ls.del('cc_code'); ls.del('cc_ctx'); }
+  getCode: () => ls.get(P + 'code', ''),
+  setCode: c => ls.set(P + 'code', c),
+  getCtx: () => ls.get(P + 'ctx', null),
+  setCtx: c => ls.set(P + 'ctx', c),
+  clear() { ls.del(P + 'code'); ls.del(P + 'ctx'); }
 };
 
 /* ---------- drafts (per kind + code + date) ---------- */
-const dk = (kind, code, date) => `cc_draft_${kind}_${code}_${date}`;
+const dk = (kind, code, date) => `${P}draft_${kind}_${code}_${date}`;
 export const drafts = {
   load: (kind, code, date) => ls.get(dk(kind, code, date)),
   save: (kind, code, date, state) => ls.set(dk(kind, code, date), state),
@@ -27,13 +31,13 @@ export const drafts = {
 
 /* ---------- local "done today" flags (so the tick shows when offline) ---------- */
 export const doneFlags = {
-  get: (code, date) => ls.get(`cc_done_${code}_${date}`, {}),
-  mark(code, date, kind) { const d = this.get(code, date); d[kind] = true; ls.set(`cc_done_${code}_${date}`, d); }
+  get: (code, date) => ls.get(`${P}done_${code}_${date}`, {}),
+  mark(code, date, kind) { const d = this.get(code, date); d[kind] = true; ls.set(`${P}done_${code}_${date}`, d); }
 };
 
 export const results = {
-  get: sid => ls.get('cc_res_' + sid),
-  set: (sid, r) => ls.set('cc_res_' + sid, r)
+  get: sid => ls.get(P + 'res_' + sid),
+  set: (sid, r) => ls.set(P + 'res_' + sid, r)
 };
 
 /* ---------- IndexedDB (photos + queue), with in-memory fallback ---------- */
@@ -44,7 +48,7 @@ function openDb() {
   if (dbp) return dbp;
   dbp = new Promise((res, rej) => {
     if (!window.indexedDB) return rej(new Error('no indexedDB'));
-    const r = indexedDB.open('cranecheck', 1);
+    const r = indexedDB.open(MOCK ? 'cranecheck-demo' : 'cranecheck', 1);
     r.onupgradeneeded = () => { const d = r.result; d.createObjectStore('photos', { keyPath: 'id' }); d.createObjectStore('queue', { keyPath: 'sid' }); };
     r.onsuccess = () => res(r.result);
     r.onerror = () => rej(r.error);

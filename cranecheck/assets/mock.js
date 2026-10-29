@@ -3,6 +3,7 @@ import { ApiError } from './api.js';
 import { todayLondon, addDays, weekEndingOf, href } from './ui.js';
 
 const KEY = 'cc_mock_db_v1';
+export const DEMO_TOKEN = 'demo-site-agent-link';
 const ALPHA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 let forms = null;
 let db = null;
@@ -59,10 +60,13 @@ function seed(f) {
       d.submissions.push({ ref, sid: 'seed-' + kind + i, kind, date, week_ending: weekEndingOf(date), received_at: received, site_id: 'S1', driver_id: 'D1', code: 'DEMO2026', defects, status: 'filed', pdf_url: pdfUrl(ref), n: kind === 'pre' ? preN : closeN });
     }
   }
-  const prevWE = addDays(weekEndingOf(today), -7);
+  const prevWE = addDays(weekEndingOf(today), -7), oldWE = addDays(prevWE, -7);
   const days = {};
   ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(k => { days[k] = { start: '07:30', finish: '17:30', driver_h: 10, crane_h: 10, zoning_h: 0, comment: '' }; });
-  d.timesheets.push({ id: 'T1', site_id: 'S1', driver_id: 'D1', week_ending: prevWE, status: 'approved', days, bonus: '', comment: '', operator_name: 'Kola Salau', submitted_at: addDays(prevWE, 1) + 'T09:05:00.000Z', approved_at: addDays(prevWE, 1) + 'T11:40:00.000Z', approved_by: 'Site Agent (demo)', pdf_url: pdfUrl('TS-' + prevWE, '&ts=T1') });
+  d.timesheets.push({ id: 'T0', site_id: 'S1', driver_id: 'D1', week_ending: oldWE, status: 'approved', days, bonus: '', comment: '', operator_name: 'Kola Salau', submitted_at: addDays(oldWE, 1) + 'T09:05:00.000Z', approved_at: addDays(oldWE, 1) + 'T11:40:00.000Z', approved_by: 'Site Agent (demo)', pdf_url: pdfUrl('TS-' + oldWE, '&ts=T0') });
+  /* last week's sheet is waiting for the site agent, so the tour can open the approval page straight away */
+  d.timesheets.push({ id: 'T1', site_id: 'S1', driver_id: 'D1', week_ending: prevWE, status: 'submitted', days: clone(days), bonus: '', comment: '', operator_name: 'Kola Salau', submitted_at: addDays(prevWE, 1) + 'T08:52:00.000Z', approved_at: '', approved_by: '', pdf_url: pdfUrl('TS-' + prevWE, '&ts=T1') });
+  d.tokens[DEMO_TOKEN] = { ts_id: 'T1', used: false, expires: Date.now() + 365 * 864e5 };
   return d;
 }
 
@@ -74,9 +78,16 @@ async function ensure() {
   return f;
 }
 
-export function resetMock() { try { localStorage.removeItem(KEY); localStorage.removeItem(PKEY); } catch (e) {} db = null; }
+export function resetMock() { try { localStorage.removeItem(KEY); localStorage.removeItem(PKEY); localStorage.removeItem('ccdemo_sup_v1'); } catch (e) {} db = null; }
 
 const fail = (m, o) => { throw new ApiError(m, o); };
+
+/* supervisor inspections live in their own demo store (supervisor.js); show them in the office register too */
+function supervisorItems() {
+  let sup = null; try { sup = JSON.parse(localStorage.getItem('ccdemo_sup_v1')); } catch (e) {}
+  if (!sup || !Array.isArray(sup.inspections)) return [];
+  return sup.inspections.map(x => ({ ref: x.ref, kind: 'supervisor', date: x.date, received_at: x.received_at, driver: x.name, site: sup.site.name, defects: x.flags || 0, pdf_url: new URL(`../supervisor.html?mock#r=${encodeURIComponent(x.ref)}`, import.meta.url).href, status: 'filed' }));
+}
 const siteOf = id => db.sites.find(s => s.id === id);
 const driverOf = id => db.drivers.find(s => s.id === id);
 
@@ -243,6 +254,7 @@ const H = {
     db.submissions.filter(s => (!p.site_id || s.site_id === p.site_id) && inRange(s.date)).forEach(s => items.push({ ref: s.ref, kind: s.kind, date: s.date, received_at: s.received_at, driver: (driverOf(s.driver_id) || {}).name || '', site: (siteOf(s.site_id) || {}).name || '', defects: s.defects, pdf_url: s.pdf_url, status: s.status }));
     db.timesheets.filter(t => t.status !== 'draft' && (!p.site_id || t.site_id === p.site_id) && inRange(t.week_ending)).forEach(t => items.push({ ref: 'TS ' + t.week_ending, kind: 'timesheet', date: t.week_ending, received_at: t.submitted_at || '', driver: (driverOf(t.driver_id) || {}).name || '', site: (siteOf(t.site_id) || {}).name || '', defects: 0, pdf_url: t.pdf_url || '', status: t.status }));
     db.scans.filter(s => (!p.site_id || s.site_id === p.site_id) && inRange(s.month + '-01')).forEach(s => items.push({ ref: s.name, kind: 'scan', date: s.month + '-01', received_at: s.uploaded_at, driver: '', site: (siteOf(s.site_id) || {}).name || '', defects: 0, pdf_url: s.url, status: 'filed' }));
+    if (!p.site_id) supervisorItems().filter(s => inRange(s.date)).forEach(s => items.push(s));
     items.sort((a, b) => (b.received_at || b.date).localeCompare(a.received_at || a.date));
     return { ok: true, items };
   },

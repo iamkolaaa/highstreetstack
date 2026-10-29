@@ -5,11 +5,12 @@ import { chrome, esc, $, $$, href, fmtDate, fmtDateTime, fmtCode, copyText, addD
 
 chrome({ back: 'index.html', backLabel: 'Home' });
 const app = $('#app');
-const KL = { pre: 'Pre-use', close: 'Closedown', timesheet: 'Timesheet', scan: 'Scan' };
+const KL = { pre: 'Pre-use', close: 'Closedown', timesheet: 'Timesheet', scan: 'Scan', supervisor: 'Lifting accessories (supervisor)' };
 const TABS = [['register', 'Register'], ['sites', 'Sites'], ['drivers', 'Drivers'], ['codes', 'Codes'], ['scans', 'Scans'], ['settings', 'Settings']];
 
 let pin = '', data = null, tab = 'register', edit = null, lastCode = null, regCache = null, weekly = {};
-const ss = { get() { try { return sessionStorage.getItem('cc_pin') || ''; } catch (e) { return ''; } }, set(v) { try { v ? sessionStorage.setItem('cc_pin', v) : sessionStorage.removeItem('cc_pin'); } catch (e) {} } };
+const PK = MOCK ? 'ccdemo_pin' : 'cc_pin';
+const ss = { get() { try { return sessionStorage.getItem(PK) || ''; } catch (e) { return ''; } }, set(v) { try { v ? sessionStorage.setItem(PK, v) : sessionStorage.removeItem(PK); } catch (e) {} } };
 const call = (action, p = {}) => api(action, { pin, ...p });
 const errText = e => (e instanceof ApiError && e.network ? 'No signal. Try again.' : errMsg(e));
 const errBox = m => `<div class="banner bad" role="alert">${esc(m)}</div>`;
@@ -36,7 +37,8 @@ function login(msg = '') {
     try { data = await call('admin_data'); ss.set(pin); shell(); }
     catch (x) { pin = ''; $('#err').innerHTML = errBox(errText(x)); b.disabled = false; b.textContent = 'Sign in'; }
   });
-  $('#pin').focus();
+  if (MOCK && !msg) $('#pin').value = '123456';
+  if (window.top === window) $('#pin').focus();
 }
 
 function shell() {
@@ -232,5 +234,5 @@ function settings() {
     if (a !== b) throw new Error('The two PINs do not match.');
     await call('admin_set_pin', { new_pin: a }); pin = a; ss.set(a); $('#p-1').value = $('#p-2').value = ''; toast('PIN changed', 'ok');
   }, '#perr'); };
-  const rs = $('#rs'); if (rs) rs.onclick = async () => { if (!confirm('Reset all demo data?')) return; const m = await import('./mock.js'); m.resetMock(); ['cc_code', 'cc_ctx'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} }); ss.set(''); location.reload(); };
+  const rs = $('#rs'); if (rs) rs.onclick = async () => { if (!confirm('Reset all demo data?')) return; const m = await import('./mock.js'); m.resetMock(); ['ccdemo_code', 'ccdemo_ctx'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} }); ss.set(''); location.reload(); };
 }

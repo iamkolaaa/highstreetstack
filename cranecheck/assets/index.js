@@ -38,6 +38,7 @@ function showEntry(msg = '') {
     </form>
     <p class="small muted center">No code or it isn’t working? Phone the office on the red bar below.</p>`;
   const inp = $('#code');
+  if (MOCK && !msg) inp.value = 'DEMO-2026';
   inp.addEventListener('input', () => { inp.value = fmtCode(inp.value); });
   $('#f').addEventListener('submit', async e => {
     e.preventDefault();
@@ -56,7 +57,7 @@ function showEntry(msg = '') {
       b.disabled = false; b.textContent = 'Continue';
     }
   });
-  inp.focus();
+  if (window.top === window) inp.focus();
 }
 
 /* ---------- refresh ---------- */

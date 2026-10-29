@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1f6fb2">
+<title>CraneCheck demo · Bennetts Cranes</title>
+<meta name="description" content="A working demo of digital crane check sheets, timesheets and supervisor checks for Bennetts Cranes.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Questrial&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css?v=202610291426">
+<style>
+  body{padding-bottom:0;background:#fff}
+  .t-hdr{border-bottom:4px solid var(--blue);background:#fff;position:sticky;top:0;z-index:30}
+  .t-hdr .in{max-width:1180px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:12px;min-height:60px}
+  .t-hdr .tag{font-weight:600;font-size:.85rem;color:var(--blue-d)}
+  .t-wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+  .hero{background:linear-gradient(160deg,var(--blue-d),var(--blue) 70%);color:#fff;padding:44px 0 40px}
+  .hero .kicker{font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+  .hero h1{font-size:clamp(1.9rem,4.4vw,2.9rem);margin:10px 0 12px;max-width:20ch}
+  .hero .lead{font-size:1.08rem;max-width:62ch;opacity:.95}
+  .hero .note{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.35);border-radius:var(--r);padding:12px 14px;margin-top:18px;max-width:70ch;font-size:.95rem}
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .jump a{color:#fff;border:1.5px solid rgba(255,255,255,.6);border-radius:99px;padding:8px 14px;text-decoration:none;font-weight:600;font-size:.92rem}
+  .jump a:hover{background:rgba(255,255,255,.14)}
+  .main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:36px;align-items:start;padding:34px 0 10px}
+  @media(max-width:1000px){.main{grid-template-columns:minmax(0,1fr)}.phone-col{display:none}}
+  .sec-h{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-d);margin:0 0 6px}
+  .role{border:2px solid #d3d9de;border-radius:16px;padding:18px;margin:0 0 16px;background:#fff;scroll-margin-top:80px;transition:border-color .2s,box-shadow .2s}
+  .role.on{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-l)}
+  .role .top{display:flex;gap:14px;align-items:flex-start}
+  .role .num{flex:0 0 42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font:600 1.15rem var(--head)}
+  .role h2{margin:0;font-size:1.35rem}
+  .role .when{color:var(--muted);font-size:.9rem;font-weight:600}
+  .role ul{margin:12px 0 12px;padding-left:20px}
+  .role li{margin-bottom:6px}
+  .login{display:inline-flex;gap:8px;align-items:center;background:var(--row);border-radius:10px;padding:6px 12px;font-size:.9rem;margin:2px 0 12px}
+  .login b{font-family:var(--head);letter-spacing:.08em;font-size:1.05rem}
+  .acts{display:flex;gap:10px;flex-wrap:wrap}
+  .acts .btn{width:auto}
+  .preview-btn{display:none}
+  @media(min-width:1001px){.preview-btn{display:flex}}
+  .eg{background:#fff7e0;border:2px dashed #b07400;border-radius:10px;padding:8px 12px;font-size:.88rem;color:#4f3300;margin:0 0 12px}
+  .phone-col{position:sticky;top:84px}
+  .phone{width:390px;height:min(780px,calc(100vh - 150px));border:12px solid #101418;border-radius:44px;overflow:hidden;background:#fff;box-shadow:0 24px 60px rgba(16,20,24,.28);position:relative}
+  .phone iframe{width:100%;height:100%;border:0;display:block}
+  .phone-lbl{display:flex;justify-content:space-between;align-items:center;margin:0 6px 10px;font-weight:600;font-size:.9rem}
+  .phone-lbl a{font-size:.85rem}
+  .tree{font:500 .9rem/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--row);border-radius:10px;padding:12px 14px;margin:0 0 12px;overflow-x:auto;white-space:pre}
+  .flow{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  .flow li{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:start;background:#fff;border:2px solid #d3d9de;border-radius:12px;padding:12px 14px}
+  .flow .w{font-weight:700;color:var(--blue-d);font-size:.92rem}
+  @media(max-width:560px){.flow li{grid-template-columns:1fr;gap:2px}}
+  .band{background:var(--bg);padding:34px 0;margin-top:20px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.cols{grid-template-columns:1fr}}
+  .cols .card ul{margin:6px 0 0;padding-left:20px}.cols .card li{margin-bottom:6px}
+  .t-foot{text-align:center;padding:34px 16px 40px}
+  .t-foot .fine{padding:14px 0 0}
+</style>
+</head>
+<body>
+<header class="t-hdr"><div class="in"><span class="wm"><span class="wm-name">bennetts</span><span class="wm-sub">TOWER CRANE PROFESSIONALS</span></span><span class="sp" style="flex:1"></span><span class="tag">CraneCheck · demo</span></div></header>
+
+<section class="hero"><div class="t-wrap">
+  <div class="kicker">Demo for Bennetts Cranes</div>
+  <h1>Check sheets and timesheets, on the phone</h1>
+  <p class="lead">The R6 daily inspection sheet, the R2 drivers time sheet and the supervisor’s equipment check, filled in one step at a time. Every sheet is timestamped and filed as a PDF in Google Drive, and faults are reported with photos the moment they’re found.</p>
+  <div class="note"><b>This is a demo with example data.</b> Try anything you like: nothing is sent to Bennetts, the site or anyone else. It doesn’t have to look like this. The layout and colours can all change; this shows how it works.</div>
+  <nav class="jump" aria-label="Views">
+    <a href="#driver">1 · Crane driver</a><a href="#agent">2 · Site manager</a><a href="#supervisor">3 · Crane supervisor</a><a href="#office">4 · Office / AP</a><a href="#inspector">5 · H&amp;S inspector</a>
+  </nav>
+</div></section>
+
+<div class="t-wrap main">
+  <div>
+    <p class="sec-h">Pick a view</p>
+    <p class="muted" style="margin-top:0">Each person sees only what they need. Open any view below; on a computer it also shows in the phone on the right.</p>
+
+    <article class="role" id="driver" data-src="index.html?mock">
+      <div class="top"><span class="num">1</span><div><h2>Crane driver</h2><div class="when">Every day, from the cab</div></div></div>
+      <ul>
+        <li><b>Pre-use check</b>: the 32 items from the R6 sheet, a few per page, with ✓ / ✗ / N/A and an “All OK on this page” button.</li>
+        <li>Mark an item <b>✗</b> and add a photo: that’s a <b>defect report</b>. The office gets an email with the photo straight away.</li>
+        <li><b>Closedown</b> at the end of the shift, lubrication and consumables, declaration and signature.</li>
+        <li><b>Timesheet</b>: start and finish times each day, crane and zoning hours, then submit for approval.</li>
+        <li>No signal? Tap the yellow <b>Demo mode</b> pill to switch signal off. Checks save on the phone and send when signal returns.</li>
+      </ul>
+      <div class="login">Check-in code <b>DEMO-2026</b> <span class="muted small">(already filled in)</span></div>
+      <div class="acts"><button class="btn sm primary preview-btn" type="button" data-preview>Show in phone</button><a class="btn sm ghost" href="index.html?mock" target="_blank" rel="noopener">Open full screen &#8599;</a></div>
+    </article>
+
+    <article class="role" id="agent" data-src="approve.html?mock#t=demo-site-agent-link">
+      <div class="top"><span class="num">2</span><div><h2>Site manager / site agent</h2><div class="when">Once a week, from an email</div></div></div>
+      <ul>
+        <li>When the driver submits the timesheet, the site agent gets an <b>email with a link</b>. No login or app needed.</li>
+        <li>They see the week’s hours and that week’s checks, type their name and <b>approve</b> or <b>reject</b> with a reason.</li>
+        <li>Once approved, the signed timesheet and the weekly inspection sheet go to the <b>Bennetts office as PDFs</b>, ready for the 4pm Monday deadline.</li>
+        <li>Each link works once and runs out after 14 days.</li>
+      </ul>
+      <div class="login">In the demo, last week’s timesheet is waiting for approval</div>
+      <div class="acts"><button class="btn sm primary preview-btn" type="button" data-preview>Show in phone</button><a class="btn sm ghost" href="approve.html?mock#t=demo-site-agent-link" target="_blank" rel="noopener">Open full screen &#8599;</a></div>
+    </article>
+
+    <article class="role" id="supervisor" data-src="supervisor.html?mock">
+      <div class="top"><span class="num">3</span><div><h2>Crane supervisor</h2><div class="when">Every two weeks</div></div></div>
+      <div class="eg"><b>Example form:</b> this uses the Delta Tower Cranes lifting accessories register from a previous site, to show how the supervisor’s bi-weekly equipment check would work. Bennetts’ own supervisor sheet would replace it.</div>
+      <ul>
+        <li>Every accessory on the site register, one at a time: chains, slings, forks, nets, skips. Serial number, SWL and thorough examination dates are already filled in.</li>
+        <li>Condition is <b>Good</b>, <b>Fair (monitor)</b> or <b>Poor (quarantine)</b>, with comments and photos.</li>
+        <li>Examinations that are <b>due soon or overdue are flagged</b>. One demo item is overdue, so you can see what happens.</li>
+        <li>Declaration and signature, then a PDF report is filed and any quarantined item sends an alert.</li>
+      </ul>
+      <div class="login">No code needed in the demo</div>
+      <div class="acts"><button class="btn sm primary preview-btn" type="button" data-preview>Show in phone</button><a class="btn sm ghost" href="supervisor.html?mock" target="_blank" rel="noopener">Open full screen &#8599;</a></div>
+    </article>
+
+    <article class="role" id="office" data-src="admin.html?mock">
+      <div class="top"><span class="num">4</span><div><h2>Bennetts office / Appointed Person</h2><div class="when">Whenever you need it</div></div></div>
+      <ul>
+        <li>A <b>register of every sheet</b> by week and site: checks, timesheets, supervisor reports and scans, with defects highlighted.</li>
+        <li>The <b>weekly inspection sheet</b> as one PDF, laid out like the paper R6.</li>
+        <li>Add <b>sites and drivers</b>, and give a driver a check-in code for a site. A relief driver can get a <b>temporary code for the day</b>.</li>
+        <li><b>Upload the paper copies</b> collected at the monthly visit so everything is in one place.</li>
+        <li>Choose who gets defect alerts and where approved timesheets go.</li>
+      </ul>
+      <div class="login">Admin PIN <b>123456</b> <span class="muted small">(already filled in)</span></div>
+      <div class="acts"><button class="btn sm primary preview-btn" type="button" data-preview>Show in phone</button><a class="btn sm ghost" href="admin.html?mock" target="_blank" rel="noopener">Open full screen &#8599;</a></div>
+    </article>
+
+    <article class="role" id="inspector" data-src="">
+      <div class="top"><span class="num">5</span><div><h2>Health &amp; safety inspector or client</h2><div class="when">On the spot, no login</div></div></div>
+      <p>Every sheet lands in a Google Drive folder for the site, sorted by year and month. Share the folder and the latest copies are always there, the moment they’re sent.</p>
+      <div class="tree" aria-label="Example Drive folder">CraneCheck – Bennetts/
+└ Ratan Tata Building, Somerville College/
+  └ 2026/
+    └ 10 Oct/
+      ├ Pre-use 2026-10-29 Kola Salau.pdf
+      ├ Closedown 2026-10-29 Kola Salau.pdf
+      ├ Weekly Inspection WE 2026-11-01.pdf
+      ├ Timesheet WE 2026-10-25 (approved).pdf
+      ├ Lifting accessories 2026-10-29.pdf
+      ├ Photos/
+      └ Scans/</div>
+      <div class="acts"><a class="btn sm primary" id="weeklyPdf" href="assets/mock-pdf.html" target="_blank" rel="noopener">Open this week’s inspection sheet (PDF) &#8599;</a></div>
+    </article>
+  </div>
+
+  <aside class="phone-col" aria-label="Phone preview">
+    <div class="phone-lbl"><span id="phoneName">Crane driver</span><a id="phoneOpen" href="index.html?mock" target="_blank" rel="noopener">Open full screen &#8599;</a></div>
+    <div class="phone"><iframe id="phone" title="Phone preview" src="index.html?mock" loading="lazy"></iframe></div>
+  </aside>
+</div>
+
+<section class="band"><div class="t-wrap">
+  <p class="sec-h">How a week runs</p>
+  <ol class="flow">
+    <li><span class="w">Every morning</span><span>Driver does the <b>pre-use check</b> before the first lift. The PDF is filed in Drive and the time is stamped by the server, not the phone.</span></li>
+    <li><span class="w">Fault found</span><span>Driver marks it ✗ with a photo. The <b>Bennetts office and the site get an email within a minute</b>, with the photo and the PDF attached.</span></li>
+    <li><span class="w">End of shift</span><span><b>Closedown</b>: hook block up, free slew, cab secure, defects reported.</span></li>
+    <li><span class="w">Every 2 weeks</span><span><b>Crane supervisor</b> checks the lifting accessories. Anything quarantined is flagged straight away.</span></li>
+    <li><span class="w">Friday / Monday</span><span>Driver submits the <b>timesheet</b>. The site agent approves it from the email by 4pm Monday and the office gets the signed PDF.</span></li>
+    <li><span class="w">Monthly</span><span>Office uploads any <b>paper copies</b> from the site visit, so the file is complete.</span></li>
+  </ol>
+</div></section>
+
+<section class="t-wrap" style="padding:34px 16px 0">
+  <div class="cols">
+    <div class="card"><h3>Already working</h3><ul>
+      <li>The driver check sheets and timesheet are live on the Ratan Tata Building crane (Kingerlee, Somerville College) as a trial.</li>
+      <li>Nothing to install. It opens in the phone’s browser and can be added to the home screen like an app.</li>
+      <li>Works with poor signal: it saves on the phone and sends later.</li>
+      <li>Everything is stored in Google Drive, so the records are easy to find and share.</li>
+    </ul></div>
+    <div class="card"><h3>Easy to change</h3><ul>
+      <li>Bennetts’ own colours, layout and wording.</li>
+      <li>Bennetts’ own supervisor sheet in place of the example.</li>
+      <li>Other forms, such as a weathervane register, a LOLER register or site audits.</li>
+      <li>Personal logins with passwords, and more sites and cranes.</li>
+    </ul></div>
+  </div>
+</section>
+
+<footer class="t-foot">
+  <p><b>Questions?</b> Kola can walk you through it in ten minutes, or just jump in and have a go.</p>
+  <button class="btn sm ghost" id="reset" type="button" style="margin:10px auto 0">Reset the demo</button>
+  <div class="fine">CraneCheck by High Street Stack · demo, example data only</div>
+</footer>
+
+<script type="module">
+import { handle, resetMock } from './assets/mock.js';
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+const phone = $('#phone'), phoneName = $('#phoneName'), phoneOpen = $('#phoneOpen');
+
+function show(card) {
+  if (!card.dataset.src) return;
+  $$('.role').forEach(r => r.classList.toggle('on', r === card));
+  phoneName.textContent = card.querySelector('h2').textContent;
+  phoneOpen.href = card.dataset.src;
+  phone.src = card.dataset.src;
+}
+$$('[data-preview]').forEach(b => b.addEventListener('click', () => show(b.closest('.role'))));
+$('.role').classList.add('on');
+
+/* make sure the example data exists, then point the inspector link at the newest week that has checks */
+async function ready() {
+  try { await handle('history', { code: 'DEMO2026' }); } catch (e) {}
+  try {
+    const db = JSON.parse(localStorage.getItem('cc_mock_db_v1'));
+    const we = db.submissions.map(s => s.week_ending).sort().pop();
+    if (we) $('#weeklyPdf').href = `assets/mock-pdf.html?ref=WEEK-${we}&weekly=1&site=S1`;
+  } catch (e) {}
+}
+ready();
+
+$('#reset').addEventListener('click', async () => {
+  if (!confirm('Put the whole demo back to its example data?')) return;
+  resetMock();
+  try { Object.keys(localStorage).filter(k => k.startsWith('ccdemo_')).forEach(k => localStorage.removeItem(k)); sessionStorage.removeItem('ccdemo_pin'); } catch (e) {}
+  await ready();
+  phone.src = phone.getAttribute('src');
+  alert('Demo reset.');
+});
+</script>
+</body>
+</html>
