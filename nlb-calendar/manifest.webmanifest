@@ -1,0 +1,14 @@
+{
+  "name": "Diary",
+  "short_name": "Diary",
+  "description": "NLB club sessions and PT clients in one private diary",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d2240",
+  "theme_color": "#0d2240",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
