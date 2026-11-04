@@ -1,6 +1,6 @@
-import { api, errMsg } from './api.js?v=202611040819';
-import { esc, href, param, ngn, fmtRange, fmtDay, fmtTime, waUrl } from './format.js?v=202611040819';
-import { mountChrome, setWhatsApp, icon, stashedBooking } from './ui.js?v=202611040819';
+import { api, errMsg } from './api.js?v=202611040820';
+import { esc, href, param, ngn, fmtRange, fmtDay, fmtTime, waUrl } from './format.js?v=202611040820';
+import { mountChrome, setWhatsApp, icon, stashedBooking } from './ui.js?v=202611040820';
 
 mountChrome('');
 const root = document.getElementById('root');

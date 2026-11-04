@@ -1,6 +1,6 @@
 /* Per-property calendar: month view, tap two days to block, tap a block to remove, tap a booking to open it. */
-import { renderCalendar } from '../calendar.js?v=202611040819';
-import { openBooking } from './inbox.js?v=202611040819';
+import { renderCalendar } from '../calendar.js?v=202611040820';
+import { openBooking } from './inbox.js?v=202611040820';
 
 const KEY = 'rm_cal_prop';
 const REASONS = ['Owner stay', 'Cleaning', 'Maintenance', 'Booked elsewhere'];

@@ -1,5 +1,5 @@
-import { esc, addDays, todayLagos, monthLabel, weekday, fmtLong } from './format.js?v=202611040819';
-import { toast } from './ui.js?v=202611040819';
+import { esc, addDays, todayLagos, monthLabel, weekday, fmtLong } from './format.js?v=202611040820';
+import { toast } from './ui.js?v=202611040820';
 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const pad = n => String(n).padStart(2, '0');

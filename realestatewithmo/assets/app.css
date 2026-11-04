@@ -383,7 +383,7 @@ body.has-cta .wa-float { bottom: calc(88px + var(--safe-bottom)); }
 .prose ul { padding-left: 1.2em; color: var(--muted); }
 
 /* reveal motion */
-.rv { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+.rv { opacity: 0; transform: translateY(18px); transition: opacity .45s ease, transform .45s ease; }
 .rv.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

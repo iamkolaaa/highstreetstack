@@ -1,7 +1,7 @@
-import { api, errMsg } from './api.js?v=202611040819';
-import { esc, href, param, priceLabel, priceParts, fmtRange, photoSrc, isSale, kindLabel, waUrl } from './format.js?v=202611040819';
-import { mountChrome, setWhatsApp, propertyCard, icon, reveal } from './ui.js?v=202611040819';
-import { mountMap, setMarkers, fitTo } from './map.js?v=202611040819';
+import { api, errMsg } from './api.js?v=202611040820';
+import { esc, href, param, priceLabel, priceParts, fmtRange, photoSrc, isSale, kindLabel, waUrl } from './format.js?v=202611040820';
+import { mountChrome, setWhatsApp, propertyCard, icon, reveal } from './ui.js?v=202611040820';
+import { mountMap, setMarkers, fitTo } from './map.js?v=202611040820';
 
 mountChrome('');
 const root = document.getElementById('root');

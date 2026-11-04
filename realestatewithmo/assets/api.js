@@ -1,4 +1,4 @@
-import { API_URL, MOCK } from './config.js?v=202611040819';
+import { API_URL, MOCK } from './config.js?v=202611040820';
 
 export class ApiError extends Error {
   constructor(message, { network = false, status = 0 } = {}) {
@@ -12,7 +12,7 @@ export class ApiError extends Error {
 /* POST /exec with a text/plain JSON body (no preflight), following the Apps Script redirect. */
 export async function api(action, params = {}, { timeout = 30000 } = {}) {
   if (MOCK) {
-    const m = await import('./mock.js?v=202611040819');
+    const m = await import('./mock.js?v=202611040820');
     return m.handle(action, params);
   }
   const ctl = new AbortController();

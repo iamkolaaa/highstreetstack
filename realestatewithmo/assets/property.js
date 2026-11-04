@@ -1,8 +1,8 @@
-import { api, errMsg } from './api.js?v=202611040819';
-import { esc, href, param, ngn, priceLabel, priceParts, fmtRange, fmtTime, nights as nightsBetween, todayLagos, addDays, photoSrc, kindLabel, brandOf, isSale, waUrl } from './format.js?v=202611040819';
-import { mountChrome, setWhatsApp, openSheet, closeSheet, toast, icon, allowedDates, slotPickerHtml, bindSlotPicker, stashBooking } from './ui.js?v=202611040819';
-import { renderCalendar } from './calendar.js?v=202611040819';
-import { mountMap, setMarkers, fitTo } from './map.js?v=202611040819';
+import { api, errMsg } from './api.js?v=202611040820';
+import { esc, href, param, ngn, priceLabel, priceParts, fmtRange, fmtTime, nights as nightsBetween, todayLagos, addDays, photoSrc, kindLabel, brandOf, isSale, waUrl } from './format.js?v=202611040820';
+import { mountChrome, setWhatsApp, openSheet, closeSheet, toast, icon, allowedDates, slotPickerHtml, bindSlotPicker, stashBooking } from './ui.js?v=202611040820';
+import { renderCalendar } from './calendar.js?v=202611040820';
+import { mountMap, setMarkers, fitTo } from './map.js?v=202611040820';
 
 mountChrome('');
 const root = document.getElementById('root');

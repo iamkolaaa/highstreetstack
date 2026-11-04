@@ -1,5 +1,5 @@
 /* Share links: list and the builder. One link with Mo's main pick plus recommendations. */
-import * as T from './templates.js?v=202611040819';
+import * as T from './templates.js?v=202611040820';
 
 function expiryText(s, f) {
   if (s.status === 'expired') return 'Expired';

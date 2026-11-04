@@ -215,7 +215,7 @@ export async function render(root, ctx) {
     const b = e.currentTarget;
     b.disabled = true;
     try {
-      const seed = await import('../seed.js?v=202611040819');
+      const seed = await import('../seed.js?v=202611040820');
       const all = seed.DEMO_PROPERTIES || [];
       if (!all.length) throw new Error('No demo listings found.');
       let added = 0;

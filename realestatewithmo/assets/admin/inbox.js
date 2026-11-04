@@ -1,5 +1,5 @@
 /* Bookings inbox: Pending / Confirmed / Past tabs, cards with actions. */
-import * as T from './templates.js?v=202611040819';
+import * as T from './templates.js?v=202611040820';
 
 const TABS = [['pending', 'Pending'], ['confirmed', 'Confirmed'], ['past', 'Past']];
 let curTab = 'pending';

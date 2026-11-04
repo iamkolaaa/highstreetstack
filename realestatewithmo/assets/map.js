@@ -1,4 +1,4 @@
-import { esc } from './format.js?v=202611040819';
+import { esc } from './format.js?v=202611040820';
 
 const CSS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
 const JS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';

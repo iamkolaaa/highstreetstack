@@ -1,4 +1,4 @@
-import { TZ, WA_FALLBACK } from './config.js?v=202611040819';
+import { TZ, WA_FALLBACK } from './config.js?v=202611040820';
 
 const DAY = 86400000;
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

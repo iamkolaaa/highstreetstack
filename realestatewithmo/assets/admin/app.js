@@ -1,13 +1,13 @@
 /* Admin shell: PIN session, hash router, nav, shared helpers handed to every screen. */
-import * as CFG from '../config.js?v=202611040819';
-import * as API from '../api.js?v=202611040819';
-import * as FMT from '../format.js?v=202611040819';
-import * as UI from '../ui.js?v=202611040819';
-import * as Inbox from './inbox.js?v=202611040819';
-import * as Cal from './calendar.js?v=202611040819';
-import * as Props from './properties.js?v=202611040819';
-import * as Shares from './shares.js?v=202611040819';
-import * as Settings from './settings.js?v=202611040819';
+import * as CFG from '../config.js?v=202611040820';
+import * as API from '../api.js?v=202611040820';
+import * as FMT from '../format.js?v=202611040820';
+import * as UI from '../ui.js?v=202611040820';
+import * as Inbox from './inbox.js?v=202611040820';
+import * as Cal from './calendar.js?v=202611040820';
+import * as Props from './properties.js?v=202611040820';
+import * as Shares from './shares.js?v=202611040820';
+import * as Settings from './settings.js?v=202611040820';
 
 const TZ = CFG.TZ || 'Africa/Lagos';
 const MOCK = !!CFG.MOCK;

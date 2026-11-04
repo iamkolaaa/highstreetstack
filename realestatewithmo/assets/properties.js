@@ -1,8 +1,8 @@
-import { api, errMsg } from './api.js?v=202611040819';
-import { AREAS } from './config.js?v=202611040819';
-import { esc, href, param, todayLagos, addDays, priceLabel } from './format.js?v=202611040819';
-import { mountChrome, setWhatsApp, toast, propertyCard, skeleton } from './ui.js?v=202611040819';
-import { mountMap, setMarkers, fitTo } from './map.js?v=202611040819';
+import { api, errMsg } from './api.js?v=202611040820';
+import { AREAS } from './config.js?v=202611040820';
+import { esc, href, param, todayLagos, addDays, priceLabel } from './format.js?v=202611040820';
+import { mountChrome, setWhatsApp, toast, propertyCard, skeleton } from './ui.js?v=202611040820';
+import { mountMap, setMarkers, fitTo } from './map.js?v=202611040820';
 
 mountChrome('');
 

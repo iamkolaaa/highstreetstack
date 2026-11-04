@@ -1,5 +1,5 @@
 /* Properties: the list (render) and the editor (renderEditor). */
-import { mountUploader } from './upload.js?v=202611040819';
+import { mountUploader } from './upload.js?v=202611040820';
 
 const KINDS = [['shortlet', 'Shortlet'], ['residential', 'Residential'], ['land', 'Land'], ['commercial', 'Commercial']];
 const UNITS = [['night', 'per night'], ['total', 'total price'], ['per_plot', 'per plot'], ['per_sqm', 'per sqm']];
@@ -262,7 +262,7 @@ export async function renderEditor(root, ctx, param) {
   async function mountPicker() {
     if (!alive) return;
     try {
-      const M = await import('../map.js?v=202611040819');
+      const M = await import('../map.js?v=202611040820');
       await M.loadMap();
       if (!alive) return;
       pmBox.innerHTML = '';

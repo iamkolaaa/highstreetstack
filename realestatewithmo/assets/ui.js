@@ -1,5 +1,5 @@
-import { BRAND } from './config.js?v=202611040819';
-import { esc, href, photoSrc, priceParts, kindLabel, brandOf, waUrl, isSale, todayLagos, addDays, weekday, fmtDay } from './format.js?v=202611040819';
+import { BRAND } from './config.js?v=202611040820';
+import { esc, href, photoSrc, priceParts, kindLabel, brandOf, waUrl, isSale, todayLagos, addDays, weekday, fmtDay } from './format.js?v=202611040820';
 
 /* icons: 24px stroke set, returned as inline SVG strings */
 const P = {
@@ -169,7 +169,8 @@ export function reveal(root = document) {
   const els = root.querySelectorAll('.rv:not(.in)');
   if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) { els.forEach(e => e.classList.add('in')); return; }
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
-  els.forEach(e => io.observe(e));
+  // anything already on screen shows straight away; only content further down fades in
+  els.forEach(e => (e.getBoundingClientRect().top < innerHeight ? e.classList.add('in') : io.observe(e)));
 }
 
 /* day and time slot picker (inspections, consultations) */

@@ -1,9 +1,9 @@
 /* In-memory stand-in for the RealEstateWithMo API (docs/API.md). Demo only.
    Changes live in memory and are copied to sessionStorage, so a reload in the same tab keeps them.
    Demo mode accepts any admin PIN of 6 to 12 digits. */
-import { ApiError } from './api.js?v=202611040819';
-import { SITE_URL, WA_FALLBACK, AMENITIES } from './config.js?v=202611040819';
-import { DEMO_PROPERTIES, DEMO_BOOKINGS, DEMO_BLOCKS, DEMO_SHARES, DEMO_SETTINGS } from './seed.js?v=202611040819';
+import { ApiError } from './api.js?v=202611040820';
+import { SITE_URL, WA_FALLBACK, AMENITIES } from './config.js?v=202611040820';
+import { DEMO_PROPERTIES, DEMO_BOOKINGS, DEMO_BLOCKS, DEMO_SHARES, DEMO_SETTINGS } from './seed.js?v=202611040820';
 
 export const IS_MOCK = true;
 export const isMock = () => true;

@@ -1,7 +1,7 @@
 /* Demo data for the offline demo and for the admin "Load demo listings" button.
    Every property carries demo: 'yes' so "Remove demo listings" can clear them in one go.
    Bookings, blocks and the share are dated relative to today (Africa/Lagos) so the demo always looks current. */
-import { SITE_URL } from './config.js?v=202611040819';
+import { SITE_URL } from './config.js?v=202611040820';
 
 const U = id => ({ url: `https://images.unsplash.com/photo-${id}?w=1600&q=80` });
 
