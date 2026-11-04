@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="RealEstateWithMo">
+  <defs>
+    <linearGradient id="g" x1="8" y1="4" x2="56" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6a1cb7"/>
+      <stop offset="1" stop-color="#c23a9a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0b0612"/>
+  <path fill="url(#g)" fill-rule="evenodd" d="M32 6C20.4 6 11 15.2 11 26.6 11 41.5 32 58 32 58S53 41.5 53 26.6C53 15.2 43.6 6 32 6ZM32 17.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19Z"/>
+  <circle cx="32" cy="27" r="4.6" fill="#e9a6d4"/>
+</svg>

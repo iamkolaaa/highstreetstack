@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 96" role="img" aria-label="Real Estate with Mo">
+  <defs>
+    <linearGradient id="g" x1="6" y1="4" x2="62" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6a1cb7"/>
+      <stop offset="1" stop-color="#c23a9a"/>
+    </linearGradient>
+    <linearGradient id="t" x1="84" y1="0" x2="320" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b68cf0"/>
+      <stop offset="1" stop-color="#e48fc8"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#g)" fill-rule="evenodd" d="M36 6C20.5 6 8 18.3 8 33.5 8 53.5 36 90 36 90S64 53.5 64 33.5C64 18.3 51.5 6 36 6ZM36 21a12.5 12.5 0 1 0 0 25 12.5 12.5 0 0 0 0-25Z"/>
+  <circle cx="36" cy="34" r="6" fill="#e9a6d4"/>
+  <text x="80" y="50" font-family="'Playfair Display', Georgia, 'Times New Roman', serif" font-style="italic" font-weight="400" font-size="40" fill="url(#t)">Real Estate</text>
+  <text x="156" y="82" font-family="'Playfair Display', Georgia, 'Times New Roman', serif" font-style="italic" font-weight="400" font-size="26" fill="#9b59e8" letter-spacing="1">with Mo</text>
+</svg>

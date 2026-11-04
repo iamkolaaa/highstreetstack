@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap");
+
+:root {
+  --bg: #0b0612;
+  --bg-2: #140a22;
+  --card: #1a0f2b;
+  --ink: #f6f1ff;
+  --muted: #b9acd1;
+  --line: #2e2144;
+  --purple: #7d2fd4;
+  --purple-2: #9b59e8;
+  --gold: #c9a84c;
+  --on-purple: #ffffff;
+  --btn: #7d2fd4;
+  --on-btn: #fff;
+  --focus: #c3a4ff;
+  --danger: #ff6b6b; --danger-bg: #3a1216;
+  --ok: #4cd98a; --ok-bg: #0f2a1c;
+  --warn: #ffcf66; --warn-bg: #3a2b0a;
+  --pending: #ffcf66; --confirmed: #4cd98a; --blocked: #8a8a8a; --imported: #6fb2ff;
+  --radius: 14px; --radius-s: 8px;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --wrap: 1100px; --wrap-narrow: 640px;
+  --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* extras used by app.css */
+  --grad: linear-gradient(135deg, #6a1cb7, #c23a9a);
+  --gold-soft: rgba(201, 168, 76, .14);
+  --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  --wa: #25d366; --on-wa: #052e16;
+  --hdr-h: 60px;
+}
+
+[data-theme="light"] {
+  --bg: #f7f4fb; --bg-2: #ffffff; --card: #ffffff;
+  --ink: #1b1030; --muted: #5e5276; --line: #e3dcef;
+  --purple: #6a1cb7; --purple-2: #5b2fc9; --gold: #8a6d1d;
+  --focus: #5b2fc9;
+  --btn: #6a1cb7;
+  --danger: #b3261e; --danger-bg: #fde8e6;
+  --ok: #0f7a43; --ok-bg: #e2f6ea;
+  --warn: #8a5a00; --warn-bg: #fff1d0;
+  --pending: #d99a00; --confirmed: #1f9d5c; --blocked: #7a7a7a; --imported: #2f7fd6;
+  --shadow: 0 12px 34px rgba(40, 20, 80, .14);
+  --gold-soft: rgba(138, 109, 29, .12);
+  --on-wa: #052e16;
+}

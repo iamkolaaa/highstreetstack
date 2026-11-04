@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Find a place | Real Estate with Mo</title>
+<meta name="description" content="Browse Lagos shortlets, land and homes for sale.">
+<meta name="theme-color" content="#0b0612">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="assets/app.css?v=202611040819">
+</head>
+<body>
+<div id="hdr" style="min-height:60px"></div>
+<main id="main">
+<div class="wrap page-head">
+  <p class="eyebrow">Browse</p>
+  <h1 style="font-size:clamp(2rem,7vw,3.2rem)">Find your <em class="gold">place</em></h1>
+</div>
+<div class="wrap" style="padding-bottom:60px">
+  <form class="filters" id="filters" aria-label="Filters" novalidate>
+    <div class="chips" id="kindChips" role="group" aria-label="Type"></div>
+    <div class="row">
+      <div class="field"><label for="fArea">Area</label><select class="select" id="fArea"><option value="">All areas</option></select></div>
+      <div class="field"><label for="fGuests">Guests</label><select class="select" id="fGuests"><option value="">Any</option></select></div>
+      <div class="field"><label for="fIn">Check-in</label><input class="input" type="date" id="fIn"></div>
+      <div class="field"><label for="fOut">Check-out</label><input class="input" type="date" id="fOut"></div>
+      <button class="btn btn-outline" type="button" id="fClear">Clear</button>
+    </div>
+  </form>
+  <div class="toolbar">
+    <span class="count" id="count" aria-live="polite"></span>
+    <div class="seg" role="group" aria-label="View"><button type="button" id="vList" aria-pressed="true">List</button><button type="button" id="vMap" aria-pressed="false">Map</button></div>
+  </div>
+  <div id="mapWrap" hidden><div class="map" id="map"></div><p class="hint" id="mapNote" style="margin-top:10px"></p></div>
+  <div class="grid" id="results"></div>
+</div>
+</main>
+<div id="ftr"></div>
+<script type="module" src="assets/properties.js?v=202611040819"></script>
+</body>
+</html>

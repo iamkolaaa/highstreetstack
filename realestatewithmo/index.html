@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Real Estate with Mo | Lagos shortlets, land and homes</title>
+<meta name="description" content="Verified land, homes and shortlets in Lagos with Mo. Find a stay or book a consultation.">
+<meta name="theme-color" content="#0b0612">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="assets/app.css?v=202611040819">
+<link rel="preload" as="image" href="assets/mo.jpg">
+</head>
+<body>
+<div id="hdr" style="min-height:60px"></div>
+<main id="main">
+
+<section class="hero" aria-labelledby="h1">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-art" aria-hidden="true"><img src="assets/mo.jpg" alt="" width="900" height="1349" decoding="async"></div>
+  <div class="wrap hero-in">
+    <div class="hero-by"><img src="assets/mo.jpg" alt="Mo" width="46" height="46"><span><b>Moyinoluwa "Mo" Johnson-Oladipo</b>Lagos real estate consultant, MBA Marketing</span></div>
+    <p class="eyebrow">Lagos shortlets, land and homes</p>
+    <h1 id="h1">Stay well. <em>Invest</em> with confidence.</h1>
+    <p class="lede">Hand-picked shortlets for your next Lagos trip, and verified land and homes when you are ready to buy. Mo looks after you from the first message to the keys.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="properties.html?kind=shortlet" id="findStay">Find a stay</a>
+      <a class="btn btn-outline" href="#consult" data-consult>Book a consultation</a>
+    </div>
+    <form class="search" id="quick" aria-label="Quick search for a stay">
+      <div class="field"><label for="qIn">Check-in</label><input class="input" id="qIn" type="date"></div>
+      <div class="field"><label for="qOut">Check-out</label><input class="input" id="qOut" type="date"></div>
+      <div class="field full"><label for="qGuests">Guests</label><select class="select" id="qGuests"><option value="">Any</option></select></div>
+      <button class="btn btn-primary" type="submit">Search stays</button>
+    </form>
+  </div>
+</section>
+
+<section class="section" style="padding-top:36px;padding-bottom:36px">
+  <div class="wrap"><div class="stats rv" id="stats"></div></div>
+</section>
+
+<section class="section" id="stay" style="padding-top:28px">
+  <div class="wrap">
+    <div class="sec-head rv"><div><p class="eyebrow">EkoShortletWithMo</p><h2 class="section-title">Featured <em>shortlets</em></h2></div><a class="btn btn-outline btn-sm" href="properties.html?kind=shortlet">See all shortlets</a></div>
+    <div class="strip rv" id="featured" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="section alt" id="buy">
+  <div class="wrap">
+    <div class="sec-head rv"><div><p class="eyebrow">For sale</p><h2 class="section-title">Land and <em>homes</em></h2><p class="lede" style="margin:.6em 0 0">Every plot and house is checked before it is listed. Book an inspection and Mo walks it with you.</p></div><a class="btn btn-outline btn-sm" href="properties.html?kind=sale">See all for sale</a></div>
+    <div class="grid rv" id="listings" aria-live="polite"></div>
+    <div class="chips rv" id="kinds" style="margin-top:22px"></div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="center rv" style="margin-bottom:34px"><p class="eyebrow">What Mo does</p><h2 class="section-title">Six ways to <em>work with her</em></h2></div>
+    <div class="svc">
+      <article class="svc-item rv"><span class="n">01</span><h3>Land acquisition</h3><p>Documented plots in fast-growing corridors like Ibeju-Lekki, checked before you pay.</p><a class="more" href="properties.html?kind=land">See land for sale</a></article>
+      <article class="svc-item rv"><span class="n">02</span><h3>Property inspection</h3><p>Mo goes to the site with you and checks the details, so there are no surprises.</p><a class="more" href="properties.html?kind=sale">Choose a property</a></article>
+      <article class="svc-item rv"><span class="n">03</span><h3>Consultation</h3><p>One-to-one time to match a property to your budget, whether it is your first or your tenth.</p><a class="more" href="#consult" data-consult>Book a consultation</a></article>
+      <article class="svc-item rv"><span class="n">04</span><h3>Financial advice</h3><p>Plain talk on returns, risks and timing in the Nigerian property market.</p><a class="more" data-wa data-wa-text="Hello Mo, I would like some advice on a property investment." target="_blank" rel="noopener" href="#">Ask Mo</a></article>
+      <article class="svc-item rv"><span class="n">05</span><h3>Construction management</h3><p>From foundation to finishing, with trusted contractors and clear timelines.</p><a class="more" data-wa data-wa-text="Hello Mo, I would like to talk about a building project." target="_blank" rel="noopener" href="#">Start a project</a></article>
+      <article class="svc-item rv"><span class="n">06</span><h3>Property management</h3><p>Tenants, upkeep and rent collected for owners at home or abroad.</p><a class="more" data-wa data-wa-text="Hello Mo, I would like you to manage my property." target="_blank" rel="noopener" href="#">Hand it over</a></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:8px">
+  <div class="wrap">
+    <div class="eko rv">
+      <p class="eyebrow">A Real Estate with Mo brand</p>
+      <h2>Eko<em>Shortlet</em>WithMo</h2>
+      <p class="lede" style="color:#dccff2">Lagos shortlets with real hospitality. Book a stylish apartment or a beachfront retreat, and add the extras that make a trip.</p>
+      <ul class="eko-list" id="ekoList"></ul>
+      <div class="hero-actions" style="margin:0">
+      <a class="btn btn-primary" href="properties.html?kind=shortlet">Find a stay</a>
+      <a class="btn btn-outline" data-wa data-wa-text="Hello Mo, I would like to ask about car rental, a boat cruise, jet ski or security for my stay." target="_blank" rel="noopener" href="#">Ask about extras</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap">
+    <div class="center rv" style="margin-bottom:30px"><p class="eyebrow">Getting started</p><h2 class="section-title">One message is <em>enough</em></h2><p class="lede">Pick a way in. Mo replies herself, usually within minutes.</p></div>
+    <div class="steps">
+      <button class="step rv" type="button" data-consult><span class="eyebrow" style="margin:0">Step 1</span><b>Book a consultation</b><span>Tell Mo your goals and she builds a plan around them.</span></button>
+      <a class="step rv" href="properties.html?kind=sale" style="text-decoration:none"><span class="eyebrow" style="margin:0">Step 2</span><b>Book an inspection</b><span>Choose a listing and a time for a guided visit.</span></a>
+      <a class="step rv" data-wa data-wa-text="Hello Mo, please send me your current property listings." target="_blank" rel="noopener" href="#" style="text-decoration:none"><span class="eyebrow" style="margin:0">Or</span><b>Ask for listings</b><span>Get Mo's latest verified land and homes on WhatsApp.</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap about">
+    <div class="about-photo rv"><img src="assets/mo.jpg" alt="Moyinoluwa Johnson-Oladipo, known as Mo" width="900" height="1349" loading="lazy" decoding="async"></div>
+    <div class="rv">
+      <p class="eyebrow">Meet Mo</p>
+      <h2>Your <em>partner</em> in Lagos property</h2>
+      <blockquote>Invest smart, invest safe, and build lasting wealth through real estate.</blockquote>
+      <p class="muted">Moyinoluwa Johnson-Oladipo is a realtor and lead consultant with an MBA in Marketing. She has sold more than 500 plots across Nigeria, delivered over 20 houses and worked with 100+ clients, at home and in the diaspora.</p>
+      <p class="muted">She is known for plain answers, honest numbers and showing up on site.</p>
+      <p style="margin-top:22px"><a class="btn btn-primary" href="#consult" data-consult>Work with Mo</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap center rv">
+    <p class="eyebrow">Follow along</p>
+    <h2 class="section-title">See the latest <em>listings</em></h2>
+    <div class="socials" id="socials" style="justify-content:center;margin-top:20px"></div>
+  </div>
+</section>
+
+</main>
+<div id="ftr"></div>
+<script type="module" src="assets/home.js?v=202611040819"></script>
+</body>
+</html>

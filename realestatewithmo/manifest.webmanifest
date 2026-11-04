@@ -1,0 +1,13 @@
+{
+  "name": "RealEstateWithMo",
+  "short_name": "Mo",
+  "description": "Lagos shortlets, land and homes with Mo.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0612",
+  "theme_color": "#0b0612",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
