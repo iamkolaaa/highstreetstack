@@ -1,19 +1,12 @@
 # High Street Stack
 
-Portfolio site for High Street Stack, Solutions Architect, Milton Keynes. Live at https://highstreetstack.com.
+Portfolio site for High Street Stack: web development, automation and solutions architecture, Milton Keynes. Live at https://highstreetstack.com.
 
-## Update the project board
+## Work cards and uptime dots
 
-Edit `data/projects.json` on github.com (pencil icon works on a phone). One object per project.
+The work cards are written straight into `index.html`. Each card has a `data-project` id.
 
-| Field | Values |
-|---|---|
-| `status` | `live`, `in_progress`, `in_talks`, `paused` (paused rows are hidden) |
-| `start`, `target`, `went_live` | `YYYY-MM-DD` or `null` |
-| `now_note` | one sentence shown in the "Now building" panel (in_progress rows only) |
-| `featured` | `true` gives the row a case-study block (prose lives in `index.html`) |
-
-Commit to `main`. The site updates within about a minute.
+`data/projects.json` lists the sites the daily uptime check visits (`.github/workflows/ping.yml`). The result goes to `data/status.json`, and a card gets a green dot when its id is marked up there. To add a project: add a card to `index.html` and a row with the same `id` and a `live_url` to `projects.json`.
 
 ## Run locally
 

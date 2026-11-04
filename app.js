@@ -1,124 +1,20 @@
-import { progress, pickNow, groupRows, isUp, fmtDate, STATUS_ORDER } from './lib/board.js';
+import { isUp } from './lib/board.js';
 
 export const ENQUIRY_URL = 'https://script.google.com/macros/s/AKfycbzyyZ09tSvfzT12O3PaPwFx92hih4zh2iQ4U_0cxT7oNXhNqJxwRlLOxvtFIePpUCjN/exec';
 
-const GROUP_LABEL = { in_progress: 'In progress', live: 'Live', in_talks: 'In progress' };
 const $ = id => document.getElementById(id);
 
-function el(tag, cls, text) {
-  const n = document.createElement(tag);
-  if (cls) n.className = cls;
-  if (text != null) n.textContent = text;
-  return n;
-}
-
-function cell(label, value) {
-  const c = el('div', 'c');
-  if (!value) return c;
-  c.textContent = label;
-  c.appendChild(el('b', null, value));
-  return c;
-}
-
-function link(href, text, cls) {
-  const a = el('a', cls, text + ' ↗');
-  a.href = href; a.rel = 'noopener'; a.target = '_blank';
-  return a;
-}
-
-function renderNow(rows, today) {
-  const row = pickNow(rows);
-  const panel = $('now');
-  if (!row) { panel.classList.add('idle'); return; }
-  panel.classList.remove('idle');
-  const p = progress(row, today);
-  $('now-name').textContent = row.name;
-  $('now-note').textContent = row.now_note || row.type || '';
-  $('now-days').textContent = p.total > 0 ? `day ${p.day} of ${p.total}` : `day ${p.day}`;
-  $('now-bar').style.width = p.pct + '%';
-  $('now-start').textContent = row.start ? 'Started ' + fmtDate(row.start) : '';
-  $('now-target').textContent = row.target ? 'Target ' + fmtDate(row.target) : '';
-}
-
-function renderRow(row, status, today) {
-  const up = row.status === 'live' && isUp(status, row.id);
-  const talks = row.status === 'in_talks';
-  const r = el('div', 'row ' + (row.status === 'in_progress' ? 'prog' : up ? 'live' : talks ? 'talks' : ''));
-  r.appendChild(el('span', 'd'));
-  const name = el('div', 'name');
-  if (talks) {
-    // Name is blurred until the project is signed; screen readers get the placeholder instead.
-    const blur = el('span', 'redact', row.name);
-    blur.setAttribute('aria-hidden', 'true');
-    name.appendChild(blur);
-    name.appendChild(el('span', 'sr-only', 'Business name withheld until the project starts'));
-  } else {
-    name.textContent = row.name;
-  }
-  if (row.client_line) name.appendChild(el('small', null, row.client_line));
-  r.appendChild(name);
-  if (row.status === 'in_progress') {
-    const p = progress(row, today);
-    r.appendChild(cell('Started', fmtDate(row.start)));
-    r.appendChild(cell('Target', fmtDate(row.target)));
-    r.appendChild(cell('Progress', p.total > 0 ? `Day ${p.day} of ${p.total}` : `Day ${p.day}`));
-  } else if (row.status === 'live') {
-    r.appendChild(cell('Type', row.type));
-    r.appendChild(cell('Went live', fmtDate(row.went_live)));
-    r.appendChild(cell('Stack', row.stack));
-  } else {
-    r.appendChild(cell('Type', row.type));
-    r.appendChild(cell('Stage', row.stage));
-    r.appendChild(cell('Estimate', row.estimate));
-  }
-  const links = el('div', 'links');
-  // In-talks rows carry no outbound links: a Maps or Instagram link would name the business.
-  if (talks) { r.appendChild(links); return r; }
-  if (row.live_url) links.appendChild(link(row.live_url, row.live_url.replace(/^https?:\/\//, ''), up ? 'on' : ''));
-  if (row.repo_url) links.appendChild(link(row.repo_url, 'Code'));
-  if (row.link_url) links.appendChild(link(row.link_url, row.link_label || 'Link'));
-  r.appendChild(links);
-  return r;
-}
-
-function renderBoard(rows, status, today) {
-  const box = $('board-list');
-  box.innerHTML = '';
-  const groups = groupRows(rows, m => console.warn(m));
-  for (const key of STATUS_ORDER) {
-    const list = groups[key];
-    if (!list.length) continue;
-    const h = el('div', 'grp', GROUP_LABEL[key]);
-    h.appendChild(el('span', 'n', String(list.length)));
-    box.appendChild(h);
-    list.forEach(row => box.appendChild(renderRow(row, status, today)));
-  }
-  if (!box.children.length) box.appendChild(el('div', 'empty', 'Nothing on the board yet.'));
-  box.setAttribute('aria-busy', 'false');
-  $('board-updated').textContent = status && status.checked_at ? 'Checked ' + fmtDate(status.checked_at.slice(0, 10)) : '';
-}
-
-function boardUnavailable() {
-  const box = $('board-list');
-  box.innerHTML = '';
-  box.appendChild(el('div', 'empty', 'Board unavailable, try again shortly.'));
-  box.setAttribute('aria-busy', 'false');
-}
-
-async function loadJSON(path) {
-  const res = await fetch(path, { cache: 'no-store' });
-  if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
-  return res.json();
-}
-
-export async function render(today = new Date()) {
-  let rows;
-  try { rows = await loadJSON('data/projects.json'); }
-  catch (e) { console.error(e); boardUnavailable(); return; }
-  let status = null;
-  try { status = await loadJSON('data/status.json'); } catch (e) { console.warn('status.json unavailable', e); }
-  renderNow(rows, today);
-  renderBoard(rows, status, today);
+// Light the dot on each work card whose site answered the daily uptime check.
+export async function markLive() {
+  let status;
+  try {
+    const res = await fetch('data/status.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    status = await res.json();
+  } catch (e) { console.warn('status.json unavailable', e); return; }
+  document.querySelectorAll('[data-project]').forEach(card => {
+    card.classList.toggle('up', isUp(status, card.dataset.project));
+  });
 }
 
 function setMsg(text, isError) {
@@ -157,5 +53,4 @@ async function submitEnquiry(e) {
 
 $('enquiry').addEventListener('submit', submitEnquiry);
 ['name', 'email'].forEach(id => $(id).addEventListener('input', () => { $('form-msg').hidden = true; }));
-window.HSS = { render };
-render();
+markLive();

@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>High Street Stack · Solutions Architect, Milton Keynes</title>
-<meta name="description" content="Websites, automation and a CRM you own, for local businesses in Bletchley and Milton Keynes. £0 to run.">
+<title>High Street Stack · Web developer and solutions architect, Milton Keynes</title>
+<meta name="description" content="Kola Salau builds websites, booking systems, payments and automations for small businesses, including AI steps where they save time. Based in Milton Keynes.">
 <meta property="og:title" content="High Street Stack">
-<meta property="og:description" content="The tech stack for the high street. Websites, automation and a CRM you own.">
+<meta property="og:description" content="Websites, bookings, payments and automation for businesses still running on WhatsApp and paper.">
 <meta property="og:url" content="https://highstreetstack.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -15,39 +15,129 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <div><b>High Street Stack</b> &nbsp;·&nbsp; Solutions Architect &nbsp;·&nbsp; Milton Keynes</div>
-    <nav><a href="#board">Board</a><a href="#stack">Stack</a><a href="#contact">Contact</a><a href="https://github.com/iamkolaaa">GitHub</a></nav>
+    <div><b>High Street Stack</b> &nbsp;·&nbsp; Web developer &amp; solutions architect &nbsp;·&nbsp; Milton Keynes</div>
+    <nav><a href="#work">Work</a><a href="#automation">Automation</a><a href="#approach">Approach</a><a href="#contact">Contact</a></nav>
   </header>
 
   <section class="hero" aria-labelledby="h1">
     <div>
-      <div class="eyebrow">Websites, automation and a CRM you own</div>
-      <h1 id="h1">The tech stack for the <em>high street</em>.</h1>
-      <p class="lede">I build the website, the enquiry system and the automations for local businesses that don't have one yet. It all runs on free tiers and you keep the keys.</p>
-      <div class="pills"><span class="pill">Website</span><span class="pill">CRM you control</span><span class="pill">Automation</span><span class="pill">£0 to run</span></div>
+      <div class="eyebrow">Web development · AI and automation · Solutions architecture</div>
+      <h1 id="h1">Websites and systems for businesses still running on <em>WhatsApp and paper</em>.</h1>
+      <p class="lede">I'm Kola, a developer in Milton Keynes. I work out how your business runs today, then build the website, bookings, payments and automations around it. Most of what I build costs nothing a month to run, and it sits in accounts you own.</p>
+      <div class="pills"><span class="pill">Websites and web apps</span><span class="pill">Bookings and payments</span><span class="pill">AI and automation</span><span class="pill">Systems you own</span></div>
+      <p class="cta"><a class="btn" href="#contact">Start a project</a><a class="ghost" href="#work">See the work</a></p>
     </div>
-    <aside class="now idle" id="now" aria-live="polite">
-      <div class="k"><span><span class="dot">●</span> <span id="now-label">Now building</span></span><span id="now-days"></span></div>
-      <h2 id="now-name">Next slot open</h2>
-      <p class="sub" id="now-note">Ready to start a new build. <a href="#contact">Start a project</a>.</p>
-      <div class="bar"><i id="now-bar" style="width:0%"></i></div>
-      <div class="meta"><span id="now-start"></span><span id="now-target"></span></div>
+    <aside class="steps" aria-label="How a project runs">
+      <div class="k">How a project runs</div>
+      <ol>
+        <li><b>A conversation</b>How you take bookings, payments and paperwork today, and where it goes wrong.</li>
+        <li><b>A working demo</b>Built with your prices, photos and opening hours, so you can try it before you decide.</li>
+        <li><b>Build and launch</b>Usually two to three weeks for a site with bookings.</li>
+        <li><b>Handover</b>Your domain, your data, your accounts. I remove my access in writing.</li>
+      </ol>
     </aside>
   </section>
 
-  <section id="board-section">
-    <div class="sh"><h3 id="board">Project board</h3><span id="board-updated"></span></div>
-    <div class="board" id="board-list" aria-busy="true"><div class="empty">Loading board…</div></div>
-    <p class="note">Green dot means the live site answered the last daily check.</p>
+  <section id="work">
+    <div class="sh"><h3>Work</h3><span>Green dot: the site answered this morning's check</span></div>
+    <div class="work">
+      <article class="case" data-project="mozamaas">
+        <div class="tagline"><span class="d"></span>Live</div>
+        <h4>Moza Maas pre-orders</h4>
+        <p class="who">YO! Sushi and Panku kiosks in Lancashire. My own franchise company.</p>
+        <dl>
+          <dt>Problem</dt><dd>Customers could only buy what was on the shelf that day, and offices had no way to order for a team.</dd>
+          <dt>Built</dt><dd>Full menu with photos and allergens, pre-orders for collection, a workplace ordering page, discount codes, card payment up front and a kitchen screen that shows staff what to make.</dd>
+          <dt>Stack</dt><dd class="mono">Static site · Supabase Edge Functions · Stripe</dd>
+        </dl>
+        <a class="go" href="https://highstreetstack.com/mozamaas/" rel="noopener" target="_blank">highstreetstack.com/mozamaas ↗</a>
+      </article>
+
+      <article class="case" data-project="cranecheck">
+        <div class="tagline"><span class="d"></span>On trial</div>
+        <h4>CraneCheck</h4>
+        <p class="who">Bennetts Cranes. On trial on a tower crane in Oxford.</p>
+        <dl>
+          <dt>Problem</dt><dd>Daily crane inspections and drivers' timesheets were paper forms that had to be signed, collected and typed up.</dd>
+          <dt>Built</dt><dd>A phone app for drivers, defect alerts to the office with photos, timesheets the site agent approves from an email link, and a PDF of every record filed in Drive for inspectors.</dd>
+          <dt>Stack</dt><dd class="mono">Installable web app · Google Apps Script · Sheets · Drive</dd>
+        </dl>
+        <a class="go" href="https://highstreetstack.com/cranecheck/tour.html" rel="noopener" target="_blank">Take the five-minute tour ↗</a>
+      </article>
+
+      <article class="case" data-project="realestatewithmo">
+        <div class="tagline"><span class="d"></span>Preview</div>
+        <h4>Real Estate with Mo</h4>
+        <p class="who">Property broker in Lagos. Shortlets, land and homes.</p>
+        <dl>
+          <dt>Problem</dt><dd>Every listing, question and booking went through one WhatsApp number.</dd>
+          <dt>Built</dt><dd>Listings with photos and a map, a booking calendar for each shortlet, an admin page where Mo adds properties, and share links: one link with her top pick plus a few alternatives for each client.</dd>
+          <dt>Stack</dt><dd class="mono">Static site · Google Apps Script · Sheets · Drive</dd>
+        </dl>
+        <a class="go" href="https://highstreetstack.com/realestatewithmo/" rel="noopener" target="_blank">Preview with sample listings ↗</a>
+      </article>
+
+      <article class="case" data-project="nlb">
+        <div class="tagline"><span class="d"></span>Live since August 2026</div>
+        <h4>Nobody Left Behind</h4>
+        <p class="who">Community run club, Milton Keynes.</p>
+        <dl>
+          <dt>Problem</dt><dd>Sign-ups, event tickets and the weekly timetable were spread across Instagram posts and messages.</dd>
+          <dt>Built</dt><dd>Club website, member registration, paid event tickets and an events calendar that feeds the founder's Google Calendar.</dd>
+          <dt>Stack</dt><dd class="mono">React · Supabase · Stripe · Apps Script</dd>
+        </dl>
+        <a class="go" href="https://nlbuk.com" rel="noopener" target="_blank">nlbuk.com ↗</a>
+      </article>
+
+      <article class="case" data-project="clone">
+        <div class="tagline"><span class="d"></span>Own product</div>
+        <h4>Clone Capture</h4>
+        <p class="who">Full-body scanning in the phone browser.</p>
+        <dl>
+          <dt>Problem</dt><dd>AI avatar and virtual try-on tools need clean photos of a person from every angle, and most people can't take them.</dd>
+          <dt>Built</dt><dd>The camera guides you through a 360° turn, checks each angle as it goes and exports a package those tools can read. Nothing leaves the phone.</dd>
+          <dt>Stack</dt><dd class="mono">Installable web app · on-device processing</dd>
+        </dl>
+        <a class="go" href="https://highstreetstack.com/clone/" rel="noopener" target="_blank">highstreetstack.com/clone ↗</a>
+      </article>
+
+      <article class="case concept">
+        <div class="tagline">Concept builds</div>
+        <h4>Built for local businesses I've pitched</h4>
+        <p class="who">Names left off until they sign. Happy to demo either in person.</p>
+        <dl>
+          <dt>Garage</dt><dd>Online MOT and service booking that keeps a bay free for walk-ins, a staff screen for the day's jobs, registration lookup, and photos of old paper records stored against each car.</dd>
+          <dt>Barbers</dt><dd>Booking site, a PIN app where each barber sees their own diary and earnings, QR payments for walk-ins, and WhatsApp rebooking that understands "Saturday at 2 with Nathan".</dd>
+        </dl>
+      </article>
+    </div>
   </section>
 
-  <section id="stack">
-    <div class="sh"><h3>What every client gets</h3><span>Same stack, tuned per business</span></div>
+  <section id="automation">
+    <div class="sh"><h3>AI and automation</h3><span>For the jobs people forget to do</span></div>
+    <div class="split">
+      <div>
+        <p class="body">Small businesses lose money on reminders nobody sent, enquiries nobody answered and numbers nobody looked at. I set up the automation that does those jobs, and add AI where it saves someone real time: reading messages, photos and documents, and turning them into something a person can act on.</p>
+        <p class="tools"><span>n8n</span><span>Supabase Edge Functions</span><span>Google Apps Script</span><span>Stripe</span><span>WhatsApp links</span><span>Telegram bots</span><span>Claude and Gemini APIs</span><span>Hugging Face models</span></p>
+      </div>
+      <ul class="jobs">
+        <li>Booking confirmations, next-day reminders and "you're due a visit" messages</li>
+        <li>Free-text requests like "tomorrow after work" turned into a real booking slot</li>
+        <li>Weekly sales and staffing reports pulled from till and rota exports, sent to your phone on Monday morning</li>
+        <li>Photos of forms, receipts and paper records read into a spreadsheet</li>
+        <li>Virtual try-on from a customer photo and a product image</li>
+        <li>Enquiries sorted and a reply drafted for you to check and send</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="approach">
+    <div class="sh"><h3>Approach</h3><span>The solutions architect part</span></div>
     <div class="stack">
-      <div><h5>A fast website</h5><p>Static, mobile-first, hosted free. Your domain, your Google Business listing linked.</p><div class="cost">£0 hosting</div></div>
-      <div><h5>A CRM you control</h5><p>Enquiries and bookings land in a system you own and can open from your phone. Views for today, this week, unanswered.</p><div class="cost">£0, your account</div></div>
-      <div><h5>Automation</h5><p>Email confirmations, next-day reminders, WhatsApp follow-up links.</p><div class="cost">£0 to run</div></div>
-      <div><h5>Handover</h5><p>You own the accounts. I remove my access when we're done, in writing, with the GDPR paperwork.</p><div class="cost">Monthly care plan optional</div></div>
+      <div><h5>Start with how you work</h5><p>I map how bookings, payments and paperwork move through the business now. The system follows that, so staff don't have to learn a new way of working.</p></div>
+      <div><h5>Cheapest stack that does the job</h5><p>Fast static front end, a backend on Supabase or Google Apps Script, Stripe for payments. Most builds run on free tiers.</p><div class="cost">£0 a month plus card fees</div></div>
+      <div><h5>You own all of it</h5><p>Domain, code, data and accounts are in your name. When we're done I remove my access, in writing, with the GDPR paperwork.</p></div>
+      <div><h5>Support after launch</h5><p>Changes, new features and a check that everything is still running.</p><div class="cost">Monthly care plan optional</div></div>
     </div>
   </section>
 
@@ -58,7 +148,7 @@
       <label>Business<input id="biz" name="biz" type="text" autocomplete="organization" placeholder="Patel Motors, Bletchley"></label>
       <label>Email<input id="email" name="email" type="email" autocomplete="email" placeholder="jay@patelmotors.co.uk" required></label>
       <label>Phone, optional<input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="07700 900123"></label>
-      <label class="full">What do you need?<textarea id="msg" name="msg" placeholder="No website yet. We take bookings on WhatsApp and lose track."></textarea></label>
+      <label class="full">What do you need?<textarea id="msg" name="msg" placeholder="We take bookings on WhatsApp and lose track. Would like people to book and pay online."></textarea></label>
       <label class="sr-only" aria-hidden="true">Leave empty<input id="hss_ref" name="hss_ref" type="text" tabindex="-1" autocomplete="off"></label>
       <button type="submit" id="send">Send enquiry</button>
     </form>

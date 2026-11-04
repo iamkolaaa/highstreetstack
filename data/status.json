@@ -1,6 +1,10 @@
 {
-  "checked_at": "2026-11-04T14:56:53.193Z",
+  "checked_at": "2026-11-04T19:30:14.649Z",
   "up": {
-    "nlb": true
+    "mozamaas": true,
+    "cranecheck": true,
+    "realestatewithmo": true,
+    "nlb": true,
+    "clone": true
   }
 }
