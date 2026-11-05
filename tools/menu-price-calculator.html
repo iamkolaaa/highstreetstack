@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Menu price and gross profit calculator | High Street Stack</title><meta name="description" content="Work out what to charge for a dish from its ingredient cost and the gross profit you want, with and without VAT.">
+<meta name="theme-color" content="#f4efe6">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=202611051431"></head><body>
+<header class="site"><div class="wrap"><a class="brand" href="index.html"><i></i>High Street Stack</a>
+<nav class="main" aria-label="Main"><a href="index.html" aria-current="page">Free tools</a><a href="../shop/">Shop</a></nav></div></header>
+<main>
+<div class="wrap"><div class="hero"><h1>Menu price and gross profit calculator</h1>
+<p class="lead">Type in what a portion costs you and the gross profit you want. You get the price to put on the menu, with and without VAT.</p></div>
+<div class="tool">
+<form class="panel" id="f" onsubmit="return false" novalidate><h2>Your portion</h2>
+<label for="cost">Ingredient cost per portion (£)<small>Everything on the plate, ex VAT</small></label>
+<input id="cost" type="number" inputmode="decimal" min="0" step="0.01" value="2.40">
+<label for="gp">Target gross profit (%)<small>Share of the ex-VAT selling price you keep after ingredients</small></label>
+<input id="gp" type="number" inputmode="decimal" min="1" max="99" step="0.1" value="70">
+<label class="check"><input id="vat" type="checkbox" checked> Add VAT at 20%</label>
+<label for="cur">Price you charge now, if any (£)<small>Optional. Inc VAT if the box above is ticked. Shows what you make on it today.</small></label>
+<input id="cur" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 8.95">
+</form>
+<div><div class="receipt" id="out" aria-live="polite"></div></div></div>
+<details class="maths panel" id="maths" open><summary>The maths, step by step</summary><ol id="steps"></ol></details>
+<section class="explain"><h2>How to use the number</h2>
+<p>Gross profit (GP) is what is left of the selling price once you take off the ingredients. Pubs and cafes usually aim for 65 to 75% on food. Takeaways and kiosks with cheap ingredients often hit 75% or more; a steak will not.</p>
+<p>The percentage is worked out on the price without VAT, because the VAT is not yours. If a portion costs £2.40 and you want 70%, the ex-VAT price is £2.40 divided by 0.30, which is £8.00. Add 20% VAT and the menu says £9.60.</p>
+<p>The last line in the box, cash margin, is your GP as a share of the money the customer hands over. It is always lower than your GP % when VAT is on, which is why a 70% dish feels like it makes 58p in the pound at the till.</p>
+<p class="note">Assumes every portion is sold and nothing is wasted. Real GP is lower once you count waste, staff meals and portions that go out heavy.</p></section>
+<div class="next"><h2>Do this for the whole menu</h2><p>The Cost of Food and GP template holds every dish, recipe and supplier price in one sheet, and updates the selling price when a supplier changes theirs.</p><a class="btn" href="../shop/">See it in the shop</a></div></div>
+</main>
+<footer class="site"><div class="wrap"><p><strong>High Street Stack</strong> &middot; <a href="mailto:help@highstreetstack.com">help@highstreetstack.com</a></p>
+<p><a href="index.html">Free tools</a> &nbsp; <a href="../shop/">Shop</a></p></div></footer>
+<script src="gp.js?v=202611051431"></script><script>
+(function(){
+var $=function(i){return document.getElementById(i)},gbp=function(n){return "£"+n.toFixed(2)};
+function run(){
+ var cost=parseFloat($("cost").value),g=parseFloat($("gp").value),vat=$("vat").checked,cur=parseFloat($("cur").value);
+ var out=$("out"),steps=$("steps");
+ var r=GP.gpPrice(cost,g,vat);
+ if(!r){out.innerHTML='<div class="msg err">Enter a cost of £0 or more and a gross profit between 1 and 99%.</div>';steps.innerHTML="";return}
+ var h='<div class="big">'+gbp(r.gross)+'<small>'+(vat?"menu price including VAT":"menu price (no VAT)")+'</small></div><dl class="lines">'
+ +'<div><dt>Selling price ex VAT</dt><dd>'+gbp(r.net)+'</dd></div>'
+ +(vat?'<div><dt>VAT at 20%</dt><dd>'+gbp(r.vat)+'</dd></div>':'')
+ +'<div><dt>Ingredient cost</dt><dd>'+gbp(r.cost)+'</dd></div>'
+ +'<div class="total"><dt>Gross profit per portion</dt><dd class="good">'+gbp(r.gp)+' ('+r.gpPct.toFixed(1)+'%)</dd></div>'
+ +'<div><dt>Cash margin on what the customer pays</dt><dd>'+r.cashMarginPct.toFixed(1)+'%</dd></div></dl>';
+ if(cur>0){var c=GP.checkPrice(cost,cur,vat);
+  h+='<h3 style="margin-top:18px">At your current '+gbp(cur)+'</h3><dl class="lines"><div><dt>Gross profit per portion</dt><dd>'+gbp(c.gp)+'</dd></div><div><dt>Gross profit</dt><dd>'+c.gpPct.toFixed(1)+'%</dd></div></dl>';
+  if(c.gpPct<g)h+='<div class="msg">Below your target by '+(g-c.gpPct).toFixed(1)+' points. You would need to charge '+gbp(r.gross)+'.</div>';
+  else h+='<div class="msg">Already at or above your target.</div>';}
+ out.innerHTML=h;
+ var s=['Selling price ex VAT = cost &divide; (1 &minus; GP%) = '+gbp(cost)+' &divide; (1 &minus; '+(g/100).toFixed(3)+') = <strong>'+gbp(r.net)+'</strong>'];
+ s.push(vat?'Price with VAT = ex-VAT price &times; 1.20 = '+gbp(r.net)+' &times; 1.20 = <strong>'+gbp(r.gross)+'</strong>':'VAT is off, so the menu price is the ex-VAT price: <strong>'+gbp(r.gross)+'</strong>');
+ s.push('Gross profit = ex-VAT price &minus; cost = '+gbp(r.net)+' &minus; '+gbp(cost)+' = <strong>'+gbp(r.gp)+'</strong>');
+ s.push('GP % = '+gbp(r.gp)+' &divide; '+gbp(r.net)+' = <strong>'+r.gpPct.toFixed(1)+'%</strong>');
+ s.push('Cash margin = '+gbp(r.gp)+' &divide; '+gbp(r.gross)+' (what the customer pays) = <strong>'+r.cashMarginPct.toFixed(1)+'%</strong>');
+ steps.innerHTML=s.map(function(x){return "<li>"+x+"</li>"}).join("");
+}
+["cost","gp","vat","cur"].forEach(function(i){$(i).addEventListener("input",run);$(i).addEventListener("change",run)});run();
+})();</script></body></html>
