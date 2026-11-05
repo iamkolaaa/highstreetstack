@@ -1,10 +1,11 @@
 {
-  "checked_at": "2026-11-04T19:30:14.649Z",
+  "checked_at": "2026-11-05T10:48:01.890Z",
   "up": {
     "mozamaas": true,
     "cranecheck": true,
     "realestatewithmo": true,
     "nlb": true,
+    "vowandverse": true,
     "clone": true
   }
 }
