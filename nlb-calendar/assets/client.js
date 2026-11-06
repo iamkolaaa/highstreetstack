@@ -1,7 +1,7 @@
 /* The client booking page: ?c=<link key>. Pick a day and time, hold it for 2 minutes, pay by card or ask to pay on the day. */
-import { api, errMsg } from './api.js?v=202611061344';
-import { MOCK } from './config.js?v=202611061344';
-import { $, $$, esc, DAYS, MONTHS, todayLondon, addDays, weekday, fmtDayLong, fmtDay, money, clock, store, randomToken, toast } from './util.js?v=202611061344';
+import { api, errMsg } from './api.js?v=202611061354';
+import { MOCK } from './config.js?v=202611061354';
+import { $, $$, esc, DAYS, MONTHS, todayLondon, addDays, weekday, fmtDayLong, fmtDay, money, clock, store, randomToken, toast } from './util.js?v=202611061354';
 
 const KEY_TOKEN = 'pt_client_token', KEY_ME = 'pt_client_details';
 const app = $('#app');
@@ -82,7 +82,7 @@ function render() {
 
 function hero(full = true, title = 'Nearly there.') {
   return `<section class="hero"><div class="hero-in"><p class="kicker">Book with ${esc(coach())}</p><h1>${full ? 'Pick a time that suits you.' : esc(title)}</h1>` +
-    (full ? `<ul class="trust"><li>Your time is held for 2 minutes while you check out</li><li>Pay by card now, or on the day once ${esc(coach())} confirms</li></ul>` : '') + `</div></section>`;
+    (full ? `<ul class="trust"><li>Your time is held for 2 minutes while you check out</li><li>${cfg && cfg.card_enabled ? `Pay by card now, or on the day once ${esc(coach())} confirms` : `Pay on the day once ${esc(coach())} confirms`}</li></ul>` : '') + `</div></section>`;
 }
 function banner() { return S.msg ? `<div class="banner ${S.msgKind}" role="alert">${esc(S.msg)}</div>` : ''; }
 
@@ -112,7 +112,7 @@ function renderPick() {
       ${list.length ? `<div class="slots">${list.map(slotBtn).join('')}</div><p class="fine">${cfg.slot_minutes} minute sessions. Greyed times are taken.</p>` : `<p class="empty">No times on this day. Pick another day.</p>`}`}
     </section>
   </div>
-  <p class="foot">Card payments are handled by Stripe. ${esc(cfg.business_name)} never sees your card number.</p>`;
+  ${cfg.card_enabled ? `<p class="foot">Card payments are handled by Stripe. ${esc(cfg.business_name)} never sees your card number.</p>` : ''}`;
 }
 
 async function pickSlot(start) {
@@ -235,7 +235,7 @@ async function mountCheckout() {
   if (MOCK) {
     box.innerHTML = `<div class="fake"><p class="fake-tag">Demo payment form</p><div class="fake-card"><span>Card number</span><b>4242 4242 4242 4242</b></div><div class="fake-row"><div class="fake-card"><span>Expiry</span><b>12 / 34</b></div><div class="fake-card"><span>CVC</span><b>123</b></div></div>
       <div class="actions"><button class="btn primary" id="fakepay">Pay (test) ${money(S.hold.price_pence)}</button><button class="btn ghost" id="fakecancel">Cancel</button></div></div>`;
-    $('#fakepay').onclick = async () => { (await import('./mock.js?v=202611061344')).mockPay(S.hold.id); onPaid(); };
+    $('#fakepay').onclick = async () => { (await import('./mock.js?v=202611061354')).mockPay(S.hold.id); onPaid(); };
     $('#fakecancel').onclick = () => backToDetails();
     return;
   }
