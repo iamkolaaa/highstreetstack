@@ -1,7 +1,7 @@
 /* Demo data for ?mock. Same replies as the real backend (see docs/API.md), kept in memory.
    Client link key: demo. Admin passphrase: demo-pass. */
-import { ApiError } from './api.js?v=202611061853';
-import { todayLondon, addDays, weekday, pad, fmtDay } from './util.js?v=202611061853';
+import { ApiError } from './api.js?v=202611061900';
+import { todayLondon, addDays, weekday, pad, fmtDay } from './util.js?v=202611061900';
 
 const HOLD = Math.min(120, Math.max(3, +new URLSearchParams(location.search).get('hold') || 120));   // ?hold=5 shortens the demo clock
 const BAD_LINK = "This booking link isn't valid. Ask Chadrack for a new one.";

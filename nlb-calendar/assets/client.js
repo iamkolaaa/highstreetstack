@@ -1,7 +1,7 @@
 /* The client booking page: ?c=<link key>. Pick a day and time, hold it for 2 minutes, pay by card or ask to pay on the day. */
-import { api, errMsg } from './api.js?v=202611061853';
-import { MOCK } from './config.js?v=202611061853';
-import { $, $$, esc, DAYS, MONTHS, todayLondon, addDays, weekday, fmtDayLong, fmtDay, money, clock, store, randomToken, toast } from './util.js?v=202611061853';
+import { api, errMsg } from './api.js?v=202611061900';
+import { MOCK } from './config.js?v=202611061900';
+import { $, $$, esc, DAYS, MONTHS, todayLondon, addDays, weekday, fmtDayLong, fmtDay, money, clock, store, randomToken, toast } from './util.js?v=202611061900';
 
 const KEY_TOKEN = 'pt_client_token', KEY_ME = 'pt_client_details';
 const app = $('#app');
@@ -118,7 +118,7 @@ function renderPick() {
 async function pickSlot(start) {
   if (S.busy) return;
   S.busy = true; S.msg = '';
-  $$('.slot').forEach(b => { b.disabled = true; });
+  $$('.slot').forEach(b => { b.disabled = true; if (b.dataset.start === start) { b.classList.add('holding'); const p = b.querySelector('.p'); if (p) p.textContent = 'Holding...'; } });
   try {
     const r = await call('hold', { client_token: getToken(), date: S.sel, start });
     S.hold = r.booking; startClock(r.booking.seconds_left); S.phase = 'details'; S.secret = '';
@@ -235,7 +235,7 @@ async function mountCheckout() {
   if (MOCK) {
     box.innerHTML = `<div class="fake"><p class="fake-tag">Demo payment form</p><div class="fake-card"><span>Card number</span><b>4242 4242 4242 4242</b></div><div class="fake-row"><div class="fake-card"><span>Expiry</span><b>12 / 34</b></div><div class="fake-card"><span>CVC</span><b>123</b></div></div>
       <div class="actions"><button class="btn primary" id="fakepay">Pay (test) ${money(S.hold.price_pence)}</button><button class="btn ghost" id="fakecancel">Cancel</button></div></div>`;
-    $('#fakepay').onclick = async () => { (await import('./mock.js?v=202611061853')).mockPay(S.hold.id); onPaid(); };
+    $('#fakepay').onclick = async () => { (await import('./mock.js?v=202611061900')).mockPay(S.hold.id); onPaid(); };
     $('#fakecancel').onclick = () => backToDetails();
     return;
   }

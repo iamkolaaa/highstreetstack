@@ -1,5 +1,5 @@
 /* Plain inline SVG for the dashboard. Colours come from CSS variables (--c1, --c2, --c3), so dark mode just works. */
-import { esc, MONTHS, money } from './util.js?v=202611061853';
+import { esc, MONTHS, money } from './util.js?v=202611061900';
 
 const W = 600, H = 280, ML = 46, MR = 8, MT = 12, MB = 30;
 const label = ym => MONTHS[+ym.slice(5, 7) - 1];
