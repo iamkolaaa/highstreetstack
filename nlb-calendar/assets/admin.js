@@ -1,7 +1,7 @@
 /* The admin page: ?admin. Passphrase first. Bookings, hours, prices, dashboard, settings. */
-import { api, errMsg } from './api.js?v=202611061354';
-import { $, $$, esc, DAYS, DAYS_LONG, todayLondon, fmtDay, fmtDayLong, fmtMonth, fmtStamp, money, poundsToPence, penceToPounds, store, toast, copyText } from './util.js?v=202611061354';
-import { chartSvg, tableHtml } from './charts.js?v=202611061354';
+import { api, errMsg } from './api.js?v=202611061853';
+import { $, $$, esc, DAYS, DAYS_LONG, todayLondon, fmtDay, fmtDayLong, fmtMonth, fmtStamp, money, poundsToPence, penceToPounds, store, toast, copyText } from './util.js?v=202611061853';
+import { chartSvg, tableHtml } from './charts.js?v=202611061853';
 
 const PASS_KEY = 'pt_admin_pass';
 const app = $('#app');
