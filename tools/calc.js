@@ -1,0 +1,262 @@
+/* High Street Stack calculators: the maths only, no page code. Rates come from rates.js. */
+(function (root) {
+"use strict";
+var R = (typeof module !== "undefined" && module.exports) ? require("./rates.js") : root.HSS_RATES;
+var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var DAY = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var MONTHS = { jan:0, feb:1, mar:2, apr:3, may:4, jun:5, jul:6, aug:7, sep:8, oct:9, nov:10, dec:11 };
+
+function num(v) {
+  if (typeof v === "number") return isFinite(v) ? v : 0;
+  var n = parseFloat(String(v == null ? "" : v).replace(/[£,\s]/g, ""));
+  return isFinite(n) ? n : 0;
+}
+function r2(x) { return Math.round((x + Number.EPSILON) * 100) / 100; }
+function pos(x) { return Math.max(0, num(x)); }
+function gbp(n) {
+  var s = Math.abs(n).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (n < 0 ? "-" : "") + "£" + s;
+}
+function gbpw(n) { return "£" + Math.abs(n).toLocaleString("en-GB", { maximumFractionDigits: 2 }); }
+function pc(x, d) { return (x * 100).toFixed(d == null ? 1 : d).replace(/\.0+$/, "") + "%"; }
+function utc(y, m, d) { return new Date(Date.UTC(y, m - 1, d)); }
+function fdate(d) { return d.getUTCDate() + " " + MON[d.getUTCMonth()] + " " + d.getUTCFullYear(); }
+function fday(d) { return DAY[d.getUTCDay()]; }
+function todayUTC(now) { now = now || new Date(); return utc(now.getFullYear(), now.getMonth() + 1, now.getDate()); }
+function parseISO(s) { var p = s.split("-"); return utc(+p[0], +p[1], +p[2]); }
+
+/* ---------- Making Tax Digital checker ---------- */
+var M = R.making_tax_digital_income_tax;
+var TIERS = [M.start_2026_04_06, M.start_2027_04_06, M.start_2028_04_06].map(function (t) {
+  return { start: parseISO(t.date), threshold: t.threshold, tested: t.return_tested };
+});
+
+function dueDate(due, taxYearStart) {
+  // "7 Aug", "7 May following year": Aug and Nov fall in the year the tax year starts, Feb and May in the next.
+  var m = /^(\d+)\s+([A-Za-z]{3})/.exec(due);
+  var mon = MONTHS[m[2].toLowerCase()];
+  return utc(mon >= 7 ? taxYearStart : taxYearStart + 1, mon + 1, +m[1]);
+}
+function periodText(period, taxYearStart) {
+  var parts = period.split(" to "); // "6 Apr to 5 Jul"
+  var endMon = MONTHS[parts[1].split(" ")[1].toLowerCase()];
+  var endYear = (endMon >= 5 && endMon <= 11) ? taxYearStart : taxYearStart + 1; // Jul, Oct are in the start year; Jan, Apr in the next
+  return parts[0] + " " + taxYearStart + " to " + parts[1] + " " + endYear;
+}
+function deadlines(startDate, today, count) {
+  var y0 = startDate.getUTCFullYear(), all = [], i, p, ty;
+  for (ty = y0; ty < y0 + 4; ty++) {
+    for (i = 0; i < M.quarterly_standard_periods.length; i++) {
+      p = M.quarterly_standard_periods[i];
+      all.push({ due: dueDate(p.due, ty), period: periodText(p.period, ty), taxYear: ty + "/" + String(ty + 1).slice(2), taxYearStart: ty });
+    }
+  }
+  var upcoming = all.filter(function (d) { return d.due >= today; }).slice(0, count || 4);
+  var yearEnd = utc(y0 + 1, 4, 5);
+  var missed = today <= yearEnd ? all.filter(function (d) { return d.taxYearStart === y0 && d.due < today; }) : [];
+  return { upcoming: upcoming, missed: missed };
+}
+function mtdCheck(inputs, sharePct, today) {
+  today = today || todayUTC();
+  var share = Math.min(100, Math.max(0, num(sharePct == null || sharePct === "" ? 100 : sharePct))) / 100;
+  var tests = TIERS.map(function (t) {
+    var i = inputs[t.tested] || {};
+    var se = pos(i.se), pg = pos(i.prop), ps = r2(pg * share), q = r2(se + ps);
+    return { start: t.start, threshold: t.threshold, tested: t.tested, se: se, propGross: pg, propShare: ps, qualifying: q, over: q > t.threshold };
+  });
+  var hit = null, k;
+  for (k = 0; k < tests.length; k++) { if (tests[k].over) { hit = tests[k]; break; } }
+  var out = { tests: tests, share: share, inScope: !!hit, tier: hit, start: hit ? hit.start : null, started: hit ? hit.start <= today : false };
+  if (hit) {
+    var d = deadlines(hit.start, today, 4);
+    out.upcoming = d.upcoming; out.missed = d.missed;
+    out.finalDeclaration = utc(hit.start.getUTCFullYear() + 2, 1, 31);
+    out.firstTaxYear = hit.start.getUTCFullYear() + "/" + String(hit.start.getUTCFullYear() + 1).slice(2);
+  }
+  return out;
+}
+
+/* ---------- Income tax, NI, student loan ---------- */
+var IT = R.income_tax_rUK_2026_27;
+var SC = R.income_tax_scotland_2026_27;
+
+function personalAllowance(income) {
+  var pa = IT.personal_allowance;
+  if (income > IT.taper_start) pa = Math.max(0, pa - (income - IT.taper_start) / 2);
+  return pa;
+}
+function bandList(region) {
+  if (region === "scotland") {
+    var s = [SC.starter, SC.basic, SC.intermediate, SC.higher, SC.advanced], pa = SC.personal_allowance, names = ["Starter","Basic","Intermediate","Higher","Advanced"], out = [], prev = 0, i, lim;
+    for (i = 0; i < s.length; i++) {
+      // gov.uk prints gross ranges; taxable limits are the gross limit less the standard allowance.
+      // The advanced band ends at the point the top rate starts (£125,140, where the allowance is nil).
+      lim = (i === s.length - 1) ? SC.top.from - 1 : s[i].to - pa;
+      out.push({ name: names[i], rate: s[i].rate, width: lim - prev }); prev = lim;
+    }
+    out.push({ name: "Top", rate: SC.top.rate, width: Infinity });
+    return out;
+  }
+  return [
+    { name: "Basic", rate: IT.basic_rate, width: IT.basic_band_width },
+    { name: "Higher", rate: IT.higher_rate, width: IT.higher_band_top - IT.basic_band_width },
+    { name: "Additional", rate: IT.additional_rate, width: Infinity }
+  ];
+}
+function incomeTax(income, region) {
+  income = pos(income);
+  var pa = personalAllowance(income), taxable = Math.max(0, income - pa), left = taxable, bands = [], tax = 0, bl = bandList(region), i, amt, t;
+  for (i = 0; i < bl.length; i++) {
+    amt = Math.min(left, bl[i].width); if (amt < 0) amt = 0;
+    t = amt * bl[i].rate; tax += t; left -= amt;
+    bands.push({ name: bl[i].name, rate: bl[i].rate, amount: r2(amt), tax: r2(t) });
+  }
+  return { tax: r2(tax), pa: pa, taxable: r2(taxable), bands: bands };
+}
+var N = R.national_insurance_self_employed;
+function class4(profit) {
+  profit = pos(profit);
+  var lo = N.class4_lower_profits_limit_2026_27, hi = N.class4_upper_profits_limit_2026_27;
+  var main = Math.max(0, Math.min(profit, hi) - lo) * N.class4_main_rate_2026_27;
+  var add = Math.max(0, profit - hi) * N.class4_additional_rate_2026_27;
+  return { main: r2(main), additional: r2(add), tax: r2(main + add) };
+}
+function class2Voluntary(profit, wanted) {
+  var thr = N.class2_small_profits_threshold_2026_27, weekly = N.class2_voluntary_weekly_rate_2026_27;
+  if (!wanted) return { amount: 0, state: "off" };
+  if (pos(profit) >= thr) return { amount: 0, state: "treated-as-paid" };
+  return { amount: r2(weekly * 52), state: "added" };
+}
+var SL = R.student_loans_2026_27;
+function studentLoanThreshold(plan) {
+  return { "1": SL.plan_1_threshold, "2": SL.plan_2_threshold, "4": SL.plan_4_threshold, "5": SL.plan_5_threshold }[plan];
+}
+function studentLoan(income, plan, postgrad) {
+  income = pos(income); var t = 0, thr;
+  thr = studentLoanThreshold(plan);
+  if (thr != null) t += Math.max(0, income - thr) * SL.plan_rate;
+  if (postgrad) t += Math.max(0, income - SL.postgraduate_threshold) * SL.postgraduate_rate;
+  return r2(t);
+}
+
+function soleTrader(o) {
+  var profit = pos(o.profit), other = pos(o.other), region = o.region === "scotland" ? "scotland" : "ruk";
+  var all = incomeTax(profit + other, region), oth = incomeTax(other, region);
+  var itProfit = r2(all.tax - oth.tax);
+  var c4 = class4(profit), c2 = class2Voluntary(profit, o.class2);
+  var slAll = studentLoan(profit + other, o.plan, o.postgrad), slOth = studentLoan(other, o.plan, o.postgrad);
+  var sl = r2(slAll - slOth);
+  var total = r2(itProfit + c4.tax + c2.amount + sl);
+  var res = { profit: profit, other: other, region: region, incomeTax: itProfit, incomeTaxAll: all, class4: c4, class2: c2, studentLoan: sl, total: total,
+    takeHome: r2(profit - total), setAsidePct: profit > 0 ? total / profit : 0, monthly: r2(total / 12), takeHomeMonthly: r2((profit - total) / 12) };
+  var steps = [], i, b;
+  steps.push("Total income " + gbp(profit + other) + (other ? " (profit " + gbp(profit) + " plus other income " + gbp(other) + ")" : "") + ".");
+  steps.push("Personal allowance " + gbp(all.pa) + (all.pa < IT.personal_allowance ? " (cut back because income is over " + gbpw(IT.taper_start) + ")" : "") + ", so taxable income is " + gbp(all.taxable) + ".");
+  for (i = 0; i < all.bands.length; i++) { b = all.bands[i]; if (b.amount > 0) steps.push(b.name + " rate: " + gbp(b.amount) + " at " + pc(b.rate, 0) + " = " + gbp(b.tax) + "."); }
+  if (other) steps.push("Tax on your other income alone is " + gbp(oth.tax) + ", so the tax caused by your profit is " + gbp(all.tax) + " - " + gbp(oth.tax) + " = " + gbp(itProfit) + ".");
+  steps.push("Class 4 National Insurance: " + pc(N.class4_main_rate_2026_27, 0) + " on profit between " + gbpw(N.class4_lower_profits_limit_2026_27) + " and " + gbpw(N.class4_upper_profits_limit_2026_27) + " = " + gbp(c4.main) + (c4.additional ? ", plus " + pc(N.class4_additional_rate_2026_27, 0) + " on the rest = " + gbp(c4.additional) : "") + ".");
+  if (c2.state === "added") steps.push("Voluntary Class 2: " + gbp(N.class2_voluntary_weekly_rate_2026_27) + " a week for 52 weeks = " + gbp(c2.amount) + ".");
+  if (c2.state === "treated-as-paid") steps.push("Class 2: profit is at or over " + gbpw(N.class2_small_profits_threshold_2026_27) + ", so it is treated as paid and nothing is added.");
+  if (sl) steps.push("Student loan: repayment on income over the threshold for your plan = " + gbp(sl) + ".");
+  steps.push("Total set aside " + gbp(total) + ", which is " + pc(res.setAsidePct, 1) + " of profit. Take-home " + gbp(res.takeHome) + ".");
+  res.steps = steps;
+  return res;
+}
+
+/* ---------- Mileage ---------- */
+var S = R.simplified_expenses;
+var CAR_BAND = 10000; // the "first 10,000 miles" band named in simplified_expenses.car_van_first_10000_miles_*
+function mileage(o) {
+  var miles = pos(o.miles), before = pos(o.before), year = o.year === "2025-26" ? "2025-26" : "2026-27";
+  var r1 = year === "2025-26" ? S.car_van_first_10000_miles_2025_26 : S.car_van_first_10000_miles_2026_27;
+  var r = { miles: miles, before: before, year: year, vehicle: o.vehicle === "moto" ? "moto" : "car" };
+  if (r.vehicle === "moto") {
+    r.parts = [{ miles: miles, rate: S.motorcycle }]; r.amount = r2(miles * S.motorcycle); r.remaining = null;
+  } else {
+    var first = Math.max(0, Math.min(CAR_BAND, before + miles) - before), rest = miles - first;
+    r.parts = [{ miles: first, rate: r1 }, { miles: rest, rate: S.car_van_after_10000_miles }];
+    r.amount = r2(first * r1 + rest * S.car_van_after_10000_miles);
+    r.remaining = Math.max(0, CAR_BAND - (before + miles));
+  }
+  return r;
+}
+function mileageRunning(trips, o) {
+  var prevClaim = 0, rows = [], sum = 0, i, m, c;
+  for (i = 0; i < trips.length; i++) {
+    m = pos(trips[i]); sum += m;
+    c = mileage({ miles: sum, before: o.before, vehicle: o.vehicle, year: o.year });
+    rows.push({ miles: m, totalMiles: r2(pos(o.before) + sum), claim: r2(c.amount - prevClaim), runningClaim: c.amount });
+    prevClaim = c.amount;
+  }
+  return { rows: rows, total: mileage({ miles: sum, before: o.before, vehicle: o.vehicle, year: o.year }), miles: sum };
+}
+
+/* ---------- Landlord with Section 24 ---------- */
+var LL = R.landlords;
+function landlord(o) {
+  var sh = Math.min(100, Math.max(0, num(o.share == null || o.share === "" ? 100 : o.share))) / 100;
+  var rent = r2(pos(o.rent) * sh), exp = r2(pos(o.expenses) * sh), fin = r2(pos(o.interest) * sh), other = pos(o.other);
+  var profitBefore = r2(rent - exp);
+  var s24Profit = Math.max(0, profitBefore);
+  var oldProfit = Math.max(0, r2(profitBefore - fin));
+  var base = incomeTax(other, "ruk");
+  var s24 = incomeTax(other + s24Profit, "ruk");
+  var old = incomeTax(other + oldProfit, "ruk");
+  var aboveAllowance = Math.max(0, other + s24Profit - s24.pa);
+  var limit = Math.min(fin, s24Profit, aboveAllowance);
+  var credit = r2(limit * LL.section_24_reduction_rate);
+  var beforeRed = r2(s24.tax - base.tax);
+  var after = r2(Math.max(0, s24.tax - credit) - base.tax);
+  var oldTax = r2(old.tax - base.tax);
+  var res = { share: sh, rent: rent, expenses: exp, finance: fin, other: other, profitBefore: profitBefore, s24Profit: s24Profit, oldProfit: oldProfit,
+    taxBeforeReduction: beforeRed, limit: limit, reduction: credit, taxAfterReduction: after, taxOldRules: oldTax,
+    cost: r2(after - oldTax), carriedForward: r2(fin - limit), loss: profitBefore < 0 };
+  var steps = [];
+  if (sh < 1) steps.push("Your " + pc(sh, 0) + " share: rent " + gbp(rent) + ", expenses " + gbp(exp) + ", finance costs " + gbp(fin) + ".");
+  steps.push("Profit before finance costs = rent " + gbp(rent) + " - expenses " + gbp(exp) + " = " + gbp(profitBefore) + ".");
+  steps.push("Section 24 rules: you are taxed on " + gbp(s24Profit) + " (mortgage interest is not deducted). With other income of " + gbp(other) + ", the extra tax is " + gbp(beforeRed) + ".");
+  steps.push("Reduction = " + pc(LL.section_24_reduction_rate, 0) + " of the lowest of finance costs " + gbp(fin) + ", property profit " + gbp(s24Profit) + " and income above your allowance " + gbp(aboveAllowance) + ", which is " + pc(LL.section_24_reduction_rate, 0) + " of " + gbp(limit) + " = " + gbp(credit) + ".");
+  steps.push("Tax after the reduction " + gbp(beforeRed) + " - " + gbp(credit) + " = " + gbp(after) + ".");
+  steps.push("Rules before 2017 let you deduct the interest: taxable profit " + gbp(oldProfit) + ", extra tax " + gbp(oldTax) + ".");
+  steps.push("Section 24 costs you " + gbp(after) + " - " + gbp(oldTax) + " = " + gbp(res.cost) + " this year.");
+  if (res.carriedForward > 0) steps.push("Finance costs not used this year, " + gbp(res.carriedForward) + ", carry forward to later years of the same property business.");
+  res.steps = steps;
+  return res;
+}
+
+/* ---------- Payments on account ---------- */
+var P = R.payments_on_account;
+function monthsBetween(today, due) { return Math.max(1, Math.round((due - today) / 86400000 / 30.4375)); }
+function paymentsOnAccount(o) {
+  var bill = pos(o.bill), src = pos(o.atSource), last = pos(o.lastBill);
+  var hasOverride = o.paid != null && o.paid !== "";
+  var totalTax = bill + src, share = totalTax > 0 ? src / totalTax : 0;
+  var passesSource = share <= P.paid_elsewhere_rule;
+  var applies = bill >= P.threshold && passesSource;
+  var each = applies ? r2(bill / 2) : 0;
+  var priorPaid = hasOverride ? pos(o.paid) : (last >= P.threshold ? last : 0);
+  var balancing = r2(bill - priorPaid);
+  var janTotal = r2(balancing + each);
+  var today = o.today || todayUTC();
+  var janYear = +/(\d{4})$/.exec(R.self_assessment_deadlines.online_return)[1];
+  var janDue = utc(janYear, 1, 31), julDue = utc(janYear, 7, 31);
+  var res = { bill: bill, atSource: src, atSourceShare: share, passesThreshold: bill >= P.threshold, passesSource: passesSource, applies: applies, each: each,
+    priorPaid: priorPaid, priorAssumed: !hasOverride, balancing: balancing, janTotal: janTotal, janPay: Math.max(0, janTotal), jul: each,
+    janDue: janDue, julDue: julDue, monthsToJan: monthsBetween(today, janDue) };
+  res.perMonth = r2(res.janPay / res.monthsToJan);
+  var steps = [];
+  steps.push("Test 1: your " + R.tax_year.previous.replace("-", "/") + " bill is " + gbp(bill) + ". Under " + gbpw(P.threshold) + " means no payments on account. " + (res.passesThreshold ? "Yours is not under, so this test is passed." : "Yours is under, so none apply."));
+  steps.push("Test 2: tax collected at source is " + gbp(src) + ", which is " + pc(share, 1) + " of the total tax of " + gbp(totalTax) + ". More than " + pc(P.paid_elsewhere_rule, 0) + " means none apply. " + (passesSource ? "Yours is not over, so this test is passed." : "Yours is over, so none apply."));
+  if (applies) steps.push("Each payment on account is half the bill: " + gbp(bill) + " / 2 = " + gbp(each) + ".");
+  steps.push("Balancing payment for " + R.tax_year.previous.replace("-", "/") + " = bill " + gbp(bill) + " - payments on account already made " + gbp(priorPaid) + (res.priorAssumed ? " (assumed to be last year's bill, paid in two halves)" : "") + " = " + gbp(balancing) + ".");
+  steps.push("Due " + fdate(janDue) + ": " + gbp(balancing) + " + first payment on account " + gbp(each) + " = " + gbp(janTotal) + ".");
+  steps.push("Due " + fdate(julDue) + ": second payment on account " + gbp(each) + ".");
+  res.steps = steps;
+  return res;
+}
+
+var API = { R: R, num: num, r2: r2, gbp: gbp, gbpw: gbpw, pc: pc, fdate: fdate, fday: fday, utc: utc, todayUTC: todayUTC,
+  mtdCheck: mtdCheck, deadlines: deadlines, incomeTax: incomeTax, class4: class4, class2Voluntary: class2Voluntary, studentLoan: studentLoan,
+  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, personalAllowance: personalAllowance };
+if (typeof module !== "undefined" && module.exports) { module.exports = API; } else { root.HSS = API; }
+})(typeof self !== "undefined" ? self : this);

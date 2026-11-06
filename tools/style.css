@@ -24,7 +24,7 @@ nav.main a:hover,nav.main a[aria-current]{text-decoration:underline;text-decorat
 label{display:block;font-weight:700;margin:14px 0 4px}
 label small{font-weight:400;color:#4a524d;display:block}
 input[type=number],input[type=text],select{width:100%;font:inherit;padding:9px 10px;border:2px solid var(--ink);background:var(--input);border-radius:0;color:var(--ink)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}
 .check{display:flex;gap:10px;align-items:center;font-weight:700;margin:16px 0 0}
 .check input{width:20px;height:20px;accent-color:var(--tomato)}
 .btn{display:inline-block;font:700 1rem "Atkinson Hyperlegible",sans-serif;background:var(--tomato);color:#fff;border:2px solid var(--ink);padding:10px 18px;cursor:pointer;text-decoration:none;box-shadow:4px 4px 0 var(--ink)}
@@ -89,3 +89,57 @@ footer.site p{margin:0}
 .debts tbody td[data-label]::before{content:attr(data-label);display:block;font-size:.8rem;font-weight:700;margin:0 0 3px}
 }
 .debts tbody td:last-child .btn{width:100%;height:100%}
+/* calculators */
+:root{--sage-ink:#3e6250}
+.yr{border:2px solid var(--ink);background:#fff;padding:6px 14px 14px;margin:14px 0 0;min-width:0}
+.yr legend{font:700 1.1rem "Bricolage Grotesque",sans-serif;padding:0 6px}
+.yr legend small{font:400 .9rem "Atkinson Hyperlegible",sans-serif;color:#4a524d;margin-left:6px}
+.money{position:relative}
+.money>span{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-weight:700;pointer-events:none}
+.money input{padding-left:26px}
+.seg{display:flex;border:2px solid var(--ink);background:var(--input)}
+.seg label{flex:1;margin:0;font-weight:700;position:relative}
+.seg input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.seg span{display:block;text-align:center;padding:9px 6px;line-height:1.25}
+.seg input:checked+span{background:var(--ink);color:var(--paper)}
+.seg input:focus-visible+span{outline:3px solid var(--tomato);outline-offset:-3px}
+.answer{border:2px solid var(--ink);padding:18px;background:#fff}
+.answer.yes{background:var(--tomato-ink);color:#fff}
+.answer.no{background:var(--sage-ink);color:#fff}
+.answer .big{color:inherit;font-size:clamp(1.7rem,6.5vw,2.3rem);margin:0 0 8px}
+.answer p{margin:0}
+.answer p+p{margin-top:6px}
+.result>*+*{margin-top:18px}
+.result h3{margin:0 0 8px}
+ul.dates{list-style:none;margin:0;padding:0}
+ul.dates li{padding:9px 0;border-bottom:1px dashed var(--line);display:grid;gap:2px}
+ul.dates strong{font-size:1.1rem}
+ul.dates span{font-size:.93rem;color:#3d4540}
+table.work{width:100%;border-collapse:collapse;font-size:.93rem;font-variant-numeric:tabular-nums}
+table.work th,table.work td{padding:6px 5px;text-align:left;border-bottom:1px dashed var(--line);vertical-align:top}
+table.work th{font-weight:700;border-bottom:2px solid var(--ink)}
+table.work td.n,table.work th.n{text-align:right}
+.tag{display:inline-block;font-weight:700;padding:1px 7px;border:2px solid var(--ink);font-size:.85rem}
+.tag.y{background:var(--tomato-ink);color:#fff}.tag.n{background:#fff}
+.honest{border:2px solid var(--ink);background:var(--input);padding:14px 18px;margin:28px 0 0}
+.honest p{margin:0;max-width:44em}.honest p+p{margin-top:6px}
+.checked{margin:10px 0 0;font-size:.95rem}
+.faq{margin:44px 0 0}
+.faq h3{margin:22px 0 4px}
+.faq p{max-width:42em;margin:0}
+.soon{font-size:.95rem;margin:18px 0 0}
+.card.lead-card{background:#fff}
+@media(min-width:760px){.card.lead-card{grid-column:1/-1;flex-direction:row;align-items:center;gap:24px}.card.lead-card>div{flex:1}.card.lead-card h3{font-size:1.5rem}.card.lead-card p{margin:0}}
+.answerbar{display:none}
+@media(max-width:859px){
+.answerbar.show{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--ink);color:#fff;padding:10px 16px;gap:12px;align-items:center;justify-content:space-between;border-top:3px solid var(--tomato)}
+.answerbar a{color:#fff;font-weight:700;white-space:nowrap}
+.answerbar b{font-family:"Bricolage Grotesque",sans-serif;font-size:1.05rem;line-height:1.2}
+body.has-bar{padding-bottom:64px}
+}
+.trips{list-style:none;margin:10px 0 0;padding:0}
+.trips li{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.trips li span{flex:1}
+.hide{display:none!important}
+dl.lines dd{white-space:nowrap}
+.check input{flex:none}

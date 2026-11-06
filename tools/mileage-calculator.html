@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HMRC mileage claim calculator 2026/27 | High Street Stack</title><meta name="description" content="Work out your HMRC simplified expenses mileage claim for cars, vans and motorbikes. 55p for the first 10,000 miles in 2026/27, then 25p. One-off or running total.">
+<link rel="canonical" href="https://highstreetstack.com/tools/mileage-calculator.html"><meta name="theme-color" content="#f4efe6">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=202611061242">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why did the rate change from 45p to 55p?", "acceptedAnswer": {"@type": "Answer", "text": "The first 10,000 business miles in a car or van pay 55p a mile for the 2026/27 tax year, up from 45p before 6 April 2026. Miles after 10,000 stay at 25p. Motorbikes pay 24p a mile."}}, {"@type": "Question", "name": "Can I claim mileage and also fuel and repairs?", "acceptedAnswer": {"@type": "Answer", "text": "Not for the same vehicle. The flat rate is instead of claiming the actual running costs. Pick one method for each vehicle, and keep to it."}}, {"@type": "Question", "name": "Which trips count as business miles?", "acceptedAnswer": {"@type": "Answer", "text": "Driving for the business, such as to a customer, a supplier or a property you let. Ordinary travel between home and a regular place of work is not a business trip."}}, {"@type": "Question", "name": "When does the 10,000 miles start again?", "acceptedAnswer": {"@type": "Answer", "text": "Each tax year, which runs from 6 April to 5 April. Use the box for miles already claimed if you are part way through the year."}}]}</script></head><body>
+<header class="site"><div class="wrap"><a class="brand" href="index.html"><i></i>High Street Stack</a><nav class="main" aria-label="Main"><a href="index.html">Free tools</a><a href="../shop/">Shop</a></nav></div></header>
+<main><div class="wrap">
+<p class="crumb"><a href="index.html">All free tools</a></p>
+<div class="hero"><h1>HMRC mileage claim calculator</h1><p class="lead">Work out what you can claim for business miles in your car, van or motorbike. Use it for one trip, or keep a running total through the tax year.</p></div>
+<div class="tool">
+<form id="calc" class="panel" autocomplete="off"><h2>Your business miles</h2><label>Mode</label><div class="seg" role="radiogroup"><label><input type="radio" name="mode" value="one" checked><span>One-off</span></label><label><input type="radio" name="mode" value="run"><span>Running total</span></label></div><label>Vehicle</label><div class="seg" role="radiogroup"><label><input type="radio" name="veh" value="car" checked><span>Car or van</span></label><label><input type="radio" name="veh" value="moto"><span>Motorbike</span></label></div><label for="year">Tax year</label><select id="year"><option value="2026-27">2026/27</option><option value="2025-26">2025/26</option></select><label for="before">Business miles already claimed this tax year<small>Leave empty if this is your first claim of the year.</small></label><input id="before" type="number" min="0" step="any" inputmode="decimal" placeholder="0"><div id="oneBox"><label for="miles">Business miles to claim</label><input id="miles" type="number" min="0" step="any" inputmode="decimal" placeholder="0"></div><div id="runBox" class="hide"><label for="trip">Add a trip<small>Type the miles, then press Add.</small></label><div class="row"><input id="trip" type="number" min="0" step="any" inputmode="decimal" placeholder="Miles"><button type="button" class="btn small" id="add">Add trip</button></div><ul class="trips" id="trips"></ul></div></form>
+<div id="result" class="panel result" aria-live="polite" tabindex="-1"><p><strong>Your result shows here.</strong> It updates as you type.</p></div>
+</div>
+<div class="honest"><p>This does not send anything to HMRC. You type the totals into HMRC-recognised software or a bridging tool.</p><p>Figures are estimates for planning. They are not tax advice.</p><p class="checked">Rates checked on gov.uk on 6 November 2026.</p></div>
+<div class="next"><h2>Log every trip in a spreadsheet</h2><p>The HMRC Mileage Log and Simplified Expenses Calculator is being finished. It keeps your trips, switches rate at 10,000 miles for you, and prints a monthly page. It will be in the shop.</p><a class="btn" href="../shop/">See the shop</a></div>
+<section class="faq"><h2>Questions people ask</h2><h3>Why did the rate change from 45p to 55p?</h3><p>The first 10,000 business miles in a car or van pay 55p a mile for the 2026/27 tax year, up from 45p before 6 April 2026. Miles after 10,000 stay at 25p. Motorbikes pay 24p a mile.</p><h3>Can I claim mileage and also fuel and repairs?</h3><p>Not for the same vehicle. The flat rate is instead of claiming the actual running costs. Pick one method for each vehicle, and keep to it.</p><h3>Which trips count as business miles?</h3><p>Driving for the business, such as to a customer, a supplier or a property you let. Ordinary travel between home and a regular place of work is not a business trip.</p><h3>When does the 10,000 miles start again?</h3><p>Each tax year, which runs from 6 April to 5 April. Use the box for miles already claimed if you are part way through the year.</p></section>
+<p class="soon">Deadline reminders by email are coming.</p>
+</div></main>
+<footer class="site"><div class="wrap"><p><strong>High Street Stack</strong> &middot; <a href="mailto:help@highstreetstack.com">help@highstreetstack.com</a></p><p><a href="index.html">Free tools</a> &nbsp; <a href="../shop/">Shop</a></p></div></footer>
+<script src="rates.js?v=202611061242"></script><script src="calc.js?v=202611061242"></script><script src="ui.js?v=202611061242"></script>
+<script>
+(function(){
+var H=window.HSS,U=window.UI,trips=[],KEY="hss-mileage-trips";
+try{var s=JSON.parse(localStorage.getItem(KEY)||"[]");if(Array.isArray(s))trips=s.map(Number).filter(function(n){return n>0})}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(trips))}catch(e){}}
+function run(){return U.radio("mode")==="run"}
+function listHtml(){U.$("trips").innerHTML=trips.map(function(m,i){return '<li><span>Trip '+(i+1)+': '+m.toLocaleString("en-GB")+' miles</span><button type="button" class="btn alt small" data-i="'+i+'" aria-label="Remove trip '+(i+1)+'">Remove</button></li>'}).join("")}
+function render(){
+ var isRun=run();U.$("oneBox").className=isRun?"hide":"";U.$("runBox").className=isRun?"":"hide";
+ var o={vehicle:U.radio("veh"),year:U.$("year").value,before:U.num("before")},r,h,rows=[];
+ if(isRun){
+  listHtml();
+  if(!trips.length){U.put("result","<p><strong>Your running total shows here.</strong> Add each trip as you go. The total keeps the 10,000-mile switch in the right place.</p>");return}
+  var rr=H.mileageRunning(trips,o);r=rr.total;
+  h='<div class="receipt"><div class="big">'+H.gbp(r.amount)+'<small>claim for '+rr.miles.toLocaleString("en-GB")+' business miles'+(o.before?' (plus '+o.before.toLocaleString("en-GB")+' already claimed)':'')+'</small></div>';
+  rows=rr.rows.map(function(x,i){return ["Trip "+(i+1)+": "+x.miles.toLocaleString("en-GB")+" miles",H.gbp(x.claim)]});
+  rows.push(["Total claim",H.gbp(r.amount),"total"]);
+  h+=U.lines(rows)+"</div>";
+ }else{
+  if(!U.filled(["miles"])){U.put("result","<p><strong>Your claim shows here.</strong> Type your business miles to see what you can claim.</p>");return}
+  r=H.mileage({miles:U.num("miles"),vehicle:o.vehicle,year:o.year,before:o.before});
+  h='<div class="receipt"><div class="big">'+H.gbp(r.amount)+'<small>claim for '+r.miles.toLocaleString("en-GB")+' business miles</small></div>';
+  r.parts.forEach(function(p){if(p.miles>0)rows.push([p.miles.toLocaleString("en-GB")+" miles at "+(p.rate*100).toFixed(0)+"p",H.gbp(H.r2(p.miles*p.rate))])});
+  rows.push(["Total claim",H.gbp(r.amount),"total"]);
+  h+=U.lines(rows)+"</div>";
+ }
+ if(r.vehicle==="car"&&r.remaining!=null){
+  var first=r.year==="2025-26"?"45p":"55p";
+  h+='<p class="note">'+(r.remaining>0?r.remaining.toLocaleString("en-GB")+" miles are left at the "+first+" rate this tax year.":"You are past 10,000 miles, so every extra mile this tax year is 25p.")+'</p>';
+ }
+ var steps=[];
+ if(r.vehicle==="moto")steps.push("Motorbikes get a flat 24p a mile: "+r.miles.toLocaleString("en-GB")+" x 24p = "+H.gbp(r.amount)+".");
+ else{steps.push("Cars and vans get "+first+" a mile for the first 10,000 business miles in the tax year, then 25p.");
+  r.parts.forEach(function(p){if(p.miles>0)steps.push(p.miles.toLocaleString("en-GB")+" miles x "+(p.rate*100).toFixed(0)+"p = "+H.gbp(H.r2(p.miles*p.rate))+".")});
+  if(r.before)steps.push("The "+r.before.toLocaleString("en-GB")+" miles you already claimed count towards the 10,000 first.")}
+ steps.push("Total "+H.gbp(r.amount)+".");
+ h+=U.steps(steps);
+ if(r.year==="2026-27")h+='<p class="note">Before 6 April 2026 the first 10,000 miles paid 45p. Pick 2025/26 above to price older trips.</p>';
+ U.put("result",h);
+}
+U.$("add").addEventListener("click",function(){var n=U.num("trip");if(n>0){trips.push(n);save();U.$("trip").value="";render();U.$("trip").focus()}});
+U.$("trips").addEventListener("click",function(e){var i=e.target.getAttribute&&e.target.getAttribute("data-i");if(i!=null){trips.splice(+i,1);save();render()}});
+U.$("trip").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();U.$("add").click()}});
+U.watch(render);
+})();
+</script>
+</body></html>

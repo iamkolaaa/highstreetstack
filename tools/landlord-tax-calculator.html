@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Landlord tax calculator with Section 24 | High Street Stack</title><meta name="description" content="Free landlord tax calculator. Enter rent, costs, mortgage interest and ownership share to see taxable profit, the 20% finance-cost reduction and what Section 24 costs you.">
+<link rel="canonical" href="https://highstreetstack.com/tools/landlord-tax-calculator.html"><meta name="theme-color" content="#f4efe6">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=202611061242">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Section 24?", "acceptedAnswer": {"@type": "Answer", "text": "Since 6 April 2020, landlords of residential property cannot deduct mortgage interest from their rent before working out tax. Instead you take a tax reduction of 20% of your finance costs."}}, {"@type": "Question", "name": "Who does it cost money?", "acceptedAnswer": {"@type": "Answer", "text": "Mostly higher-rate taxpayers, and basic-rate taxpayers whose rental profit pushes them into the higher rate. If you pay basic rate either way, the 20% reduction matches the 20% tax you would have saved, and the cost is nil."}}, {"@type": "Question", "name": "How do joint owners work it out?", "acceptedAnswer": {"@type": "Answer", "text": "Each owner takes their own share of the rent, costs and interest, and is taxed on that share with their own other income. Type your ownership share and use the full property figures."}}, {"@type": "Question", "name": "Can I use the £1,000 property allowance as well?", "acceptedAnswer": {"@type": "Answer", "text": "Not if you claim the finance cost reduction on residential property. You also cannot use it with Rent a Room. If you take the allowance, you cannot deduct actual expenses."}}]}</script></head><body>
+<header class="site"><div class="wrap"><a class="brand" href="index.html"><i></i>High Street Stack</a><nav class="main" aria-label="Main"><a href="index.html">Free tools</a><a href="../shop/">Shop</a></nav></div></header>
+<main><div class="wrap">
+<p class="crumb"><a href="index.html">All free tools</a></p>
+<div class="hero"><h1>Landlord tax calculator with Section 24</h1><p class="lead">See your taxable rental profit, the tax after the 20% finance-cost reduction, and how much more you pay than under the rules before 2017.</p></div>
+<div class="tool">
+<form id="calc" class="panel" autocomplete="off"><h2>Your rental figures for the year</h2><label for="rent">Rent received<small>All the rent from the property, before costs</small></label><div class="money"><span>£</span><input id="rent" type="number" min="0" step="any" inputmode="decimal" placeholder="0"></div><label for="exp">Allowable expenses<small>Repairs, agent fees, insurance. Do not include mortgage interest.</small></label><div class="money"><span>£</span><input id="exp" type="number" min="0" step="any" inputmode="decimal" placeholder="0"></div><label for="int">Mortgage interest and finance costs<small>Interest on a mortgage or loan for a residential let</small></label><div class="money"><span>£</span><input id="int" type="number" min="0" step="any" inputmode="decimal" placeholder="0"></div><label for="oth">Your other income<small>Salary, pension or self-employed profit</small></label><div class="money"><span>£</span><input id="oth" type="number" min="0" step="any" inputmode="decimal" placeholder="0"></div><label for="share">Your ownership share, %<small>100 if you own it alone. Enter the full rent and costs above: the share is applied for you.</small></label><input id="share" type="number" min="0" max="100" step="any" inputmode="decimal" value="100"></form>
+<div id="result" class="panel result" aria-live="polite" tabindex="-1"><p><strong>Your result shows here.</strong> It updates as you type.</p></div>
+</div>
+<div class="honest"><p>This does not send anything to HMRC. You type the totals into HMRC-recognised software or a bridging tool.</p><p>Figures are estimates for planning. They are not tax advice.</p><p class="checked">Rates checked on gov.uk on 6 November 2026.</p></div>
+<div class="next"><h2>Keep your rental records in a spreadsheet</h2><p>The Landlord MTD Record Book is being finished. It splits finance costs out for Section 24, handles joint ownership and shows the totals for each quarterly update. It will be in the shop.</p><a class="btn" href="../shop/">See the shop</a></div>
+<section class="faq"><h2>Questions people ask</h2><h3>What is Section 24?</h3><p>Since 6 April 2020, landlords of residential property cannot deduct mortgage interest from their rent before working out tax. Instead you take a tax reduction of 20% of your finance costs.</p><h3>Who does it cost money?</h3><p>Mostly higher-rate taxpayers, and basic-rate taxpayers whose rental profit pushes them into the higher rate. If you pay basic rate either way, the 20% reduction matches the 20% tax you would have saved, and the cost is nil.</p><h3>How do joint owners work it out?</h3><p>Each owner takes their own share of the rent, costs and interest, and is taxed on that share with their own other income. Type your ownership share and use the full property figures.</p><h3>Can I use the £1,000 property allowance as well?</h3><p>Not if you claim the finance cost reduction on residential property. You also cannot use it with Rent a Room. If you take the allowance, you cannot deduct actual expenses.</p></section>
+<p class="soon">Deadline reminders by email are coming.</p>
+</div></main>
+<footer class="site"><div class="wrap"><p><strong>High Street Stack</strong> &middot; <a href="mailto:help@highstreetstack.com">help@highstreetstack.com</a></p><p><a href="index.html">Free tools</a> &nbsp; <a href="../shop/">Shop</a></p></div></footer>
+<script src="rates.js?v=202611061242"></script><script src="calc.js?v=202611061242"></script><script src="ui.js?v=202611061242"></script>
+<script>
+(function(){
+var H=window.HSS,U=window.UI;
+function render(){
+ if(!U.filled(["rent","exp","int","oth"])){U.put("result","<p><strong>Your result shows here.</strong> Type the rent and costs to see the tax before and after the 20% reduction.</p>");return}
+ var r=H.landlord({rent:U.num("rent"),expenses:U.num("exp"),interest:U.num("int"),other:U.num("oth"),share:U.raw("share")});
+ var worse=r.cost>0.005;
+ var h='<div class="answer '+(worse?"yes":"no")+'"><p class="big">'+(worse?"Section 24 costs you "+H.gbp(r.cost)+" this year.":"Section 24 costs you nothing extra here.")+'</p><p>Taxable rental profit: '+H.gbp(r.s24Profit)+'. Under the pre-2017 rules it would have been '+H.gbp(r.oldProfit)+'.</p></div>';
+ h+='<div class="receipt">'+U.lines([
+  ["Taxable rental profit",H.gbp(r.s24Profit)],
+  ["Extra tax before the reduction",H.gbp(r.taxBeforeReduction)],
+  ["Less the 20% finance-cost reduction","-"+H.gbp(r.reduction)],
+  ["Extra tax after the reduction",H.gbp(r.taxAfterReduction),"total"],
+  ["Extra tax under pre-2017 rules",H.gbp(r.taxOldRules)],
+  ["Cost of Section 24",H.gbp(r.cost),"total"]])+'</div>';
+ if(r.loss)h+='<div class="msg">Your costs are more than your rent, so there is no profit to tax. The loss can be carried forward against later profits from the same property business.</div>';
+ if(r.carriedForward>0)h+='<p class="note">Finance costs of '+H.gbp(r.carriedForward)+' were not used this year. They carry forward.</p>';
+ h+='<p class="note">England, Wales and Northern Ireland tax bands. "Extra tax" is the tax caused by the rental profit, on top of the tax on your other income.</p>';
+ h+=U.steps(r.steps);
+ U.put("result",h);
+}
+U.watch(render);
+})();
+</script>
+</body></html>
