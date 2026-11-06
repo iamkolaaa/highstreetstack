@@ -1,7 +1,7 @@
 {
-  "name": "Diary",
-  "short_name": "Diary",
-  "description": "NLB club sessions and PT clients in one private diary",
+  "name": "Book a session",
+  "short_name": "Book PT",
+  "description": "Book a personal training session with Chadrack",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
