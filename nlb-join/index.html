@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d2240">
+<title>Join NLB | Milton Keynes run club and fitness community</title>
+<meta name="description" content="Nobody Left Behind is a free-to-join run club and fitness community in Milton Keynes. A run leader always stays at the back, so nobody finishes on their own.">
+<meta property="og:title" content="Join NLB: Milton Keynes run club and fitness community">
+<meta property="og:description" content="Free to join. A run leader always stays at the back, so nobody finishes on their own.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&display=swap">
+<link rel="stylesheet" href="assets/join.css?v=202611061519">
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <span class="mark" aria-hidden="true"></span>
+    <span class="brand">Nobody Left Behind</span>
+    <span class="where">Milton Keynes</span>
+  </header>
+
+  <main class="grid">
+    <section class="pitch">
+      <h1>
+        <span class="h1-a">Milton Keynes' run club and fitness community.</span>
+        <span class="h1-b">Free to join, and a run leader always stays at the back, so nobody finishes on their own.</span>
+      </h1>
+
+      <div class="line" role="img" aria-label="A line of runners with the run leader at the back">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lead"></i>
+        <span class="tag">run leader</span>
+      </div>
+
+      <ul class="sessions">
+        <li><b>Monday evenings</b><span>Furzton Lake</span></li>
+        <li><b>Saturday mornings</b><span>A different venue each week</span></li>
+        <li><b>Also</b><span>Lift, boxing and track</span></li>
+      </ul>
+    </section>
+
+    <section class="join" id="join" aria-labelledby="join-title">
+      <form id="form" novalidate>
+        <h2 id="join-title">Come to your first session</h2>
+        <p class="sub">Four quick questions. Someone will message you today.</p>
+
+        <label class="f">
+          <span>First name</span>
+          <input name="first_name" type="text" autocomplete="given-name" maxlength="60" required>
+        </label>
+
+        <label class="f">
+          <span>Mobile number</span>
+          <input name="mobile" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="07..." required>
+        </label>
+
+        <fieldset class="f">
+          <legend>What do you want to do?</legend>
+          <div class="chips">
+            <label><input type="radio" name="goal" value="Start running" required><span>Start running</span></label>
+            <label><input type="radio" name="goal" value="Get faster"><span>Get faster</span></label>
+            <label><input type="radio" name="goal" value="Lift"><span>Lift</span></label>
+            <label><input type="radio" name="goal" value="Boxing"><span>Boxing</span></label>
+            <label><input type="radio" name="goal" value="Coaching"><span>Coaching</span></label>
+          </div>
+        </fieldset>
+
+        <label class="f">
+          <span>Which session do you want to try first?</span>
+          <select name="session" required>
+            <option value="" selected disabled>Choose one</option>
+            <option>Monday evening at Furzton Lake</option>
+            <option>Saturday morning</option>
+            <option>Lift</option>
+            <option>Boxing</option>
+            <option>Track</option>
+            <option>Not sure yet</option>
+          </select>
+        </label>
+
+        <!-- Spam trap: people never see or fill this in. -->
+        <div class="hp" aria-hidden="true">
+          <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+
+        <!-- Ad details from the link the visitor came from, filled in by join.js. -->
+        <input type="hidden" name="utm_source">
+        <input type="hidden" name="utm_campaign">
+        <input type="hidden" name="utm_content">
+        <input type="hidden" name="fbclid">
+
+        <p class="err" id="err" role="alert" hidden></p>
+        <button type="submit" id="go">Join for free</button>
+        <p class="fine">We only use your number to message you about NLB. Ask us and we will delete it.</p>
+      </form>
+
+      <div class="thanks" id="thanks" hidden tabindex="-1">
+        <span class="tick" aria-hidden="true"></span>
+        <h2 id="thanks-title">You're in.</h2>
+        <p>Someone from NLB will message you today with the session details.</p>
+        <p class="fine">Keep an eye on your phone. Can't wait? Say hello on Instagram: <a href="https://www.instagram.com/nlb.uk/" rel="noopener">@nlb.uk</a></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="consent" id="consent" hidden>
+  <p>We use the Meta Pixel to see which of our ads work. OK with that?</p>
+  <div><button type="button" id="c-yes">Yes, fine</button><button type="button" id="c-no" class="ghost">No thanks</button></div>
+</div>
+
+<noscript><p style="padding:16px;color:#fff">This page needs JavaScript to work. Message us on Instagram @nlb.uk instead.</p></noscript>
+<script src="assets/config.js?v=202611061519"></script>
+<script src="assets/join.js?v=202611061519"></script>
+</body>
+</html>
