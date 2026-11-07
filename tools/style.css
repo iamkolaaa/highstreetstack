@@ -153,3 +153,4 @@ dl.lines dd{white-space:nowrap}
 .signup input[aria-invalid=true]{border-color:var(--tomato)}
 .signup .small{font-size:.9rem;margin:10px 0 0}
 .signup .done .btn{margin-top:8px}
+.guides-h{margin:36px 0 0}
