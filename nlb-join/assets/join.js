@@ -25,6 +25,14 @@
 
   /* ---- Meta Pixel: loads only when PIXEL_ID is set and the visitor said yes ---- */
   var pixelOn = false;
+  function cookie(name) {
+    var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+  function newEventId() {
+    try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+    return 'e' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+  }
   function loadPixel() {
     if (pixelOn || !PIXEL_ID) return;
     pixelOn = true;
@@ -97,7 +105,12 @@
       utm_source: f.utm_source.value, utm_campaign: f.utm_campaign.value,
       utm_content: f.utm_content.value, fbclid: f.fbclid.value,
       website: f.website.value,
-      t: Date.now() - shownAt
+      t: Date.now() - shownAt,
+      event_id: newEventId(),
+      fbp: cookie('_fbp'), fbc: cookie('_fbc'),
+      ua: navigator.userAgent,
+      page_url: location.origin + location.pathname,
+      consent: pixelOn && window.fbq ? 'yes' : 'no'
     };
     var bad = localCheck(data);
     if (bad) return showError(MESSAGES[bad[0]], bad[1]);
@@ -105,7 +118,7 @@
     go.disabled = true; go.textContent = 'Sending';
 
     function done(res) {
-      if (pixelOn && !res.duplicate && window.fbq) fbq('track', 'Lead');
+      if (pixelOn && !res.duplicate && window.fbq) fbq('track', 'Lead', {}, { eventID: data.event_id });
       showThanks(data.first_name);
     }
     if (!API_URL) { setTimeout(function () { done({}); }, 400); return; } // demo mode
