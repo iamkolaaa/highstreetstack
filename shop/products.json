@@ -1,5 +1,14 @@
 [
   {
+    "slug": "cafe-food-cost-gp-calculator",
+    "name": "UK Caf\u00e9 and Takeaway Food Cost and GP Calculator",
+    "short": "Cost every dish, work out GP on the price before VAT, and see what delivery app commission does to it.",
+    "price_gbp": 14.99,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/cafe-food-cost-gp-calculator.png"
+  },
+  {
     "slug": "sole-trader-mtd-record-book",
     "name": "Sole Trader MTD Record Book 2026/27",
     "short": "Income, expense and mileage log with year-to-date totals for each MTD quarterly update.",
