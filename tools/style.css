@@ -166,3 +166,6 @@ table.eg{width:100%;max-width:560px;border-collapse:collapse;margin:14px 0 6px;b
 table.eg th,table.eg td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
 table.eg .n{text-align:right;white-space:nowrap}table.eg tr.tot td{border-top:2px solid var(--ink);font-weight:700;background:var(--input)}
 table.eg caption{text-align:left;font-weight:700;padding:0 0 6px}
+table.eg.wide{max-width:none}table.eg.wide td,table.eg.wide th{vertical-align:top}
+.vatlink{margin:18px 0 0}
+@media(max-width:620px){table.eg.wide,table.eg.wide tbody{display:block}table.eg.wide tr:first-child{display:none}table.eg.wide tr{display:block;padding:10px 12px;border-bottom:1px solid var(--line)}table.eg.wide td{display:block;padding:0;border:0}table.eg.wide td:first-child{font-weight:700}table.eg.wide td:nth-child(2){color:var(--tomato-ink);font-weight:700;margin:2px 0}table.eg.wide caption{display:block}}
