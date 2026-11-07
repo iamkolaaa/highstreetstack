@@ -143,3 +143,13 @@ body.has-bar{padding-bottom:64px}
 .hide{display:none!important}
 dl.lines dd{white-space:nowrap}
 .check input{flex:none}
+
+.signup{border:2px solid var(--ink);background:#fff;padding:20px;margin:32px 0}
+.signup h2{margin:0 0 8px}
+.signup p{max-width:38em}
+.signup label{display:block;font-weight:700;margin:12px 0 6px}
+.signup .row{display:flex;gap:10px;flex-wrap:wrap}
+.signup input{flex:1 1 220px;min-width:0;font:inherit;padding:12px;border:2px solid var(--ink);background:var(--paper)}
+.signup input[aria-invalid=true]{border-color:var(--tomato)}
+.signup .small{font-size:.9rem;margin:10px 0 0}
+.signup .done .btn{margin-top:8px}
