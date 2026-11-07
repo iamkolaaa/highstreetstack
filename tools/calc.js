@@ -255,8 +255,52 @@ function paymentsOnAccount(o) {
   return res;
 }
 
+/* ---------- Café and takeaway GP calculator ---------- */
+var V = R.vat_catering;
+function foodCost(o) {
+  o = o || {};
+  var vatOn = !!o.vat, rate = V.standard_rate, k = vatOn ? 1 + rate : 1;
+  var price = pos(o.price), commission = Math.min(0.99, pos(o.commission) / 100), target = o.target == null ? 0.7 : Math.min(0.99, pos(o.target) / 100);
+  var lines = [], cost = 0;
+  (o.lines || []).forEach(function (l, i) {
+    var pack = pos(l.pack), size = pos(l.size), used = pos(l.used);
+    if (pack > 0 && size > 0 && used > 0) { var c = pack / size * used; lines.push({ n: i + 1, pack: pack, size: size, used: used, cost: c }); cost += c; }
+  });
+  var extra = pos(o.extra); cost += extra; cost = r2(cost);
+  var net = price / k, vat = price - net;
+  var gp = net - cost, gpPct = net > 0 ? gp / net : 0, foodPct = net > 0 ? cost / net : 0;
+  var comm = price * commission, gpAfter = gp - comm, gpAfterPct = net > 0 ? gpAfter / net : 0;
+  // price needed: net x (1 - target) = cost, so net = cost / (1 - target); with commission on the VAT-inclusive price,
+  // net x (1 - target) - commission x net x k = cost, so net = cost / (1 - target - commission x k)
+  var netNeed = cost > 0 && target < 1 ? cost / (1 - target) : 0;
+  var needBefore = r2(Math.ceil(netNeed * k * 100 - 1e-9) / 100);
+  var den = 1 - target - commission * k, needAfter = null;
+  if (cost > 0 && den > 0.005) needAfter = r2(Math.ceil(cost / den * k * 100 - 1e-9) / 100);
+  var res = { vatOn: vatOn, vatRate: rate, price: price, net: net, vat: vat, cost: cost, lines: lines, extra: extra, gp: gp, gpPct: gpPct, foodPct: foodPct,
+    commissionPct: commission, commission: comm, gpAfter: gpAfter, gpAfterPct: gpAfterPct, target: target, needBefore: needBefore, needAfter: needAfter,
+    hasCommission: commission > 0, unreachable: commission > 0 && cost > 0 && den <= 0.005 };
+  var shown = commission > 0 ? gpAfterPct : gpPct;
+  res.shownPct = shown; res.meets = shown + 1e-9 >= target;
+  var steps = [];
+  lines.forEach(function (l) { steps.push("Ingredient " + l.n + ": " + gbp(l.pack) + " / " + l.size + " x " + l.used + " used = " + gbp(r2(l.cost)) + "."); });
+  if (extra) steps.push("Other costs per portion: " + gbp(extra) + ".");
+  steps.push("Ingredient cost per portion: " + gbp(cost) + ".");
+  if (vatOn) steps.push("VAT-exclusive price: " + gbp(price) + " / " + (1 + rate).toFixed(2) + " = " + gbp(net) + " (VAT " + gbp(vat) + ").");
+  else steps.push("No VAT on this dish, so the price you charge is the price that counts: " + gbp(net) + ".");
+  steps.push("Gross profit: " + gbp(net) + " - " + gbp(cost) + " = " + gbp(gp) + ". GP % = " + gbp(gp) + " / " + gbp(net) + " = " + pc(gpPct, 1) + ".");
+  steps.push("Food cost % = " + gbp(cost) + " / " + gbp(net) + " = " + pc(foodPct, 1) + ".");
+  if (commission > 0) steps.push("Delivery commission: " + pc(commission, 1) + " of the VAT-inclusive price " + gbp(price) + " = " + gbp(comm) + ". GP after commission = " + gbp(gp) + " - " + gbp(comm) + " = " + gbp(gpAfter) + ", which is " + pc(gpAfterPct, 1) + " of " + gbp(net) + ".");
+  if (cost > 0) {
+    steps.push("Price for " + pc(target, 0) + " GP: " + gbp(cost) + " / (1 - " + target.toFixed(2) + ") = " + gbp(r2(netNeed)) + " before VAT" + (vatOn ? ", x " + (1 + rate).toFixed(2) + " = " + gbp(needBefore) + " with VAT." : "."));
+    if (commission > 0) steps.push(needAfter == null ? "With " + pc(commission, 1) + " commission taken on the VAT-inclusive price, no menu price reaches " + pc(target, 0) + " GP: the commission and the target leave nothing for the food." :
+      "With commission: " + gbp(cost) + " / (1 - " + target.toFixed(2) + " - " + commission.toFixed(2) + (vatOn ? " x " + k.toFixed(2) : "") + ") = " + gbp(r2(cost / den)) + " before VAT" + (vatOn ? ", x " + k.toFixed(2) + " = " + gbp(needAfter) + " with VAT." : "."));
+  }
+  res.steps = steps;
+  return res;
+}
+
 var API = { R: R, num: num, r2: r2, gbp: gbp, gbpw: gbpw, pc: pc, fdate: fdate, fday: fday, utc: utc, todayUTC: todayUTC,
   mtdCheck: mtdCheck, deadlines: deadlines, incomeTax: incomeTax, class4: class4, class2Voluntary: class2Voluntary, studentLoan: studentLoan,
-  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, personalAllowance: personalAllowance };
+  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, foodCost: foodCost, personalAllowance: personalAllowance };
 if (typeof module !== "undefined" && module.exports) { module.exports = API; } else { root.HSS = API; }
 })(typeof self !== "undefined" ? self : this);

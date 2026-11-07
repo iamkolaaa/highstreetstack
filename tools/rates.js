@@ -217,6 +217,13 @@
   "postgraduate_rate": 0.06,
   "plan_3": null
  },
+ "vat_catering": {
+  "standard_rate": 0.2,
+  "eat_in": "Food and drink supplied for eating on the premises is always charged VAT at the standard rate.",
+  "hot_takeaway": "Hot takeaway food and drink that meets the tests in the notice is standard-rated. Something is hot if it is above the ambient air temperature when provided to the customer.",
+  "cold_takeaway": "Cold takeaway food and drink is zero-rated, unless it is a type that is always standard-rated (for example potato crisps, sweets and some drinks such as bottled water).",
+  "delivery_apps": null
+ },
  "_sources": {
   "tax_year.current": "https://www.gov.uk/income-tax-rates",
   "tax_year.start": "https://www.gov.uk/income-tax-rates",
@@ -330,7 +337,12 @@
   "student_loans_2026_27.postgraduate_threshold": "https://www.gov.uk/guidance/rates-and-thresholds-for-employers-2026-to-2027",
   "student_loans_2026_27.plan_rate": "https://www.gov.uk/guidance/rates-and-thresholds-for-employers-2026-to-2027",
   "student_loans_2026_27.postgraduate_rate": "https://www.gov.uk/guidance/rates-and-thresholds-for-employers-2026-to-2027",
-  "student_loans_2026_27.plan_3": "https://www.gov.uk/repaying-your-student-loan/what-you-pay"
+  "student_loans_2026_27.plan_3": "https://www.gov.uk/repaying-your-student-loan/what-you-pay",
+  "vat_catering.standard_rate": "https://www.gov.uk/vat-rates",
+  "vat_catering.eat_in": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091",
+  "vat_catering.hot_takeaway": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091",
+  "vat_catering.cold_takeaway": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091",
+  "vat_catering.delivery_apps": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091"
  }
 };
 if(typeof module!=="undefined"&&module.exports){module.exports=R}else{root.HSS_RATES=R}

@@ -154,3 +154,15 @@ dl.lines dd{white-space:nowrap}
 .signup .small{font-size:.9rem;margin:10px 0 0}
 .signup .done .btn{margin-top:8px}
 .guides-h{margin:36px 0 0}
+.ing{display:grid;grid-template-columns:22px 1fr 1fr 1fr;gap:6px;align-items:center;margin:0 0 6px}
+.ing .ingn{font-weight:700;text-align:center}
+.ing input{min-width:0;padding:9px 6px}
+.ingh{margin:6px 0 4px;font-size:.85rem}
+details.more{margin:6px 0 0}details.more summary{cursor:pointer;font-weight:700;margin:4px 0 8px}
+.receipt.second{margin-top:26px}.receipt.second h3{margin:0 0 10px}
+.vatnote{margin:12px 0 0;font-size:.95rem}.vatnote p{margin:0}
+.soon{font-weight:700}
+table.eg{width:100%;max-width:560px;border-collapse:collapse;margin:14px 0 6px;background:var(--card);border:2px solid var(--ink)}
+table.eg th,table.eg td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
+table.eg .n{text-align:right;white-space:nowrap}table.eg tr.tot td{border-top:2px solid var(--ink);font-weight:700;background:var(--input)}
+table.eg caption{text-align:left;font-weight:700;padding:0 0 6px}
