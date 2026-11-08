@@ -229,6 +229,69 @@
   "cold_takeaway": "Cold takeaway food and drink is zero-rated, unless it is a type that is always standard-rated (for example potato crisps, sweets and some drinks such as bottled water).",
   "delivery_apps": null
  },
+ "selling_fees": {
+  "checked": "8 November 2026",
+  "ebay_private": {
+   "name": "eBay (private seller)",
+   "fvf": 0.0,
+   "postage": "No",
+   "other": 0.0,
+   "fixed_lo": 0.0,
+   "limit": null,
+   "fixed_hi": null,
+   "proc_pct": 0.0,
+   "proc_fixed": 0.0,
+   "listing": 0.0
+  },
+  "ebay_business": {
+   "name": "eBay (business seller)",
+   "fvf": 0.119,
+   "postage": "Yes",
+   "other": 0.0035,
+   "fixed_lo": 0.3,
+   "limit": 10.0,
+   "fixed_hi": 0.4,
+   "proc_pct": 0.0,
+   "proc_fixed": 0.0,
+   "listing": 0.3
+  },
+  "etsy": {
+   "name": "Etsy",
+   "fvf": 0.065,
+   "postage": "Yes",
+   "other": 0.0048,
+   "fixed_lo": 0.0,
+   "limit": null,
+   "fixed_hi": null,
+   "proc_pct": 0.04,
+   "proc_fixed": 0.2,
+   "listing": null
+  },
+  "depop": {
+   "name": "Depop",
+   "fvf": 0.0,
+   "postage": "No",
+   "other": 0.0,
+   "fixed_lo": 0.0,
+   "limit": null,
+   "fixed_hi": null,
+   "proc_pct": 0.029,
+   "proc_fixed": 0.3,
+   "listing": 0.0
+  },
+  "vinted": {
+   "name": "Vinted",
+   "fvf": 0.0,
+   "postage": "No",
+   "other": 0.0,
+   "fixed_lo": 0.0,
+   "limit": null,
+   "fixed_hi": null,
+   "proc_pct": 0.0,
+   "proc_fixed": 0.0,
+   "listing": 0.0
+  }
+ },
  "_sources": {
   "tax_year.current": "https://www.gov.uk/income-tax-rates",
   "tax_year.start": "https://www.gov.uk/income-tax-rates",
@@ -352,7 +415,13 @@
   "vat_catering.eat_in": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091",
   "vat_catering.hot_takeaway": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091",
   "vat_catering.cold_takeaway": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091",
-  "vat_catering.delivery_apps": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091"
+  "vat_catering.delivery_apps": "https://www.gov.uk/guidance/catering-takeaway-food-and-vat-notice-7091",
+  "selling_fees.checked": "products/platform-fee-profit-calculator/data_example.py",
+  "selling_fees.ebay_private": "https://www.ebay.co.uk/help/selling/fees-credits-invoices/selling-fees?id=4822",
+  "selling_fees.ebay_business": "https://www.ebay.co.uk/help/selling/fees-credits-invoices/fees-business-sellers?id=4809",
+  "selling_fees.etsy": "https://www.etsy.com/uk/legal/fees",
+  "selling_fees.depop": "https://depophelp.zendesk.com/hc/en-gb/articles/360001791127-Seller-fees-and-charges",
+  "selling_fees.vinted": "https://www.vinted.co.uk/help/26-selling-basics"
  }
 };
 if(typeof module!=="undefined"&&module.exports){module.exports=R}else{root.HSS_RATES=R}

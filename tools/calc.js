@@ -318,8 +318,55 @@ function cisYearToDate(list) {
   var t = 0; (list || []).forEach(function (x) { t += pos(x); }); return r2(t);
 }
 
+/* ---------- Cake pricing calculator (same maths as products/cake-pricing-calculator) ---------- */
+function cakePrice(o) {
+  o = o || {};
+  var ing = pos(o.ingredients), pack = pos(o.packaging), hrs = pos(o.hours), rate = pos(o.rate), oven = pos(o.ovenHours), ovr = pos(o.overhead);
+  var target = Math.min(0.99, pos(o.target) / 100), servings = pos(o.servings), mine = pos(o.myPrice);
+  var labour = hrs * rate, overhead = oven * ovr, cost = ing + pack + labour + overhead;
+  var minimum = cost, price = cost / (1 - target);
+  var res = { ingredients: ing, packaging: pack, labour: labour, overhead: overhead, cost: cost, minimum: minimum, target: target, price: price, profit: price - cost,
+    servings: servings, perServing: servings > 0 ? price / servings : null, costPerServing: servings > 0 ? cost / servings : null, myPrice: mine, flag: "" };
+  if (mine > 0) res.flag = mine < cost - 0.005 ? "below" : (mine < price - 0.005 ? "under" : "ok");
+  if (mine > 0) { res.myProfit = mine - cost; res.myPct = (mine - cost) / mine; }
+  var steps = [];
+  steps.push("Labour: " + hrs + " hours x " + gbp(rate) + " = " + gbp(r2(labour)) + ". Overhead: " + oven + " oven hours x " + gbp(ovr) + " = " + gbp(r2(overhead)) + ".");
+  steps.push("Total cost: " + gbp(r2(ing)) + " ingredients + " + gbp(r2(pack)) + " packaging + " + gbp(r2(labour)) + " labour + " + gbp(r2(overhead)) + " overhead = " + gbp(r2(cost)) + ".");
+  steps.push("Minimum price: the total cost, " + gbp(r2(minimum)) + ". Charge less than that and you lose money.");
+  steps.push("Price at " + pc(target, 0) + " profit: " + gbp(r2(cost)) + " / (1 - " + target.toFixed(2) + ") = " + gbp(r2(price)) + ". Profit is " + gbp(r2(price - cost)) + ", which is " + pc(target, 0) + " of the price.");
+  if (servings > 0) steps.push("Price per serving: " + gbp(r2(price)) + " / " + servings + " = " + gbp(r2(price / servings)) + ".");
+  res.steps = steps;
+  return res;
+}
+
+/* ---------- Selling fee calculator (fee figures from rates.json selling_fees; blank fees are left out) ---------- */
+var SF = R.selling_fees;
+var SF_KEYS = ["ebay_private", "ebay_business", "etsy", "depop", "vinted"];
+var SF_REQ = { fvf: "selling fee", other: "regulatory fee", fixed_lo: "per-order fee", proc_pct: "payment processing", proc_fixed: "payment processing (fixed)", listing: "listing fee" };
+function sellingFees(o) {
+  o = o || {};
+  var price = pos(o.price), pin = pos(o.postageIn), pout = pos(o.postageOut), pack = pos(o.packaging), cost = pos(o.cost);
+  var total = price + pin;
+  var rows = SF_KEYS.map(function (k) {
+    var p = SF[k], g = function (f) { return p[f] || 0; };
+    var base = p.postage === "Yes" ? total : price;
+    var fixed = (g("limit") > 0 && total > g("limit")) ? g("fixed_hi") : g("fixed_lo");
+    var fvfFee = g("fvf") * base, reg = g("other") * base, proc = g("proc_pct") * total + g("proc_fixed"), listing = g("listing");
+    var fees = fvfFee + reg + fixed + proc + listing;
+    var blanks = Object.keys(SF_REQ).filter(function (f) { return p[f] === null || p[f] === undefined; }).map(function (f) { return SF_REQ[f]; });
+    var steps = [];
+    if (g("fvf")) steps.push("selling fee " + pc(g("fvf"), 1) + " x " + gbp(base) + " = " + gbp(r2(fvfFee)));
+    if (g("other")) steps.push("regulatory fee " + pc(g("other"), 2) + " x " + gbp(base) + " = " + gbp(r2(reg)));
+    if (fixed) steps.push("per-order fee " + gbp(fixed));
+    if (g("proc_pct") || g("proc_fixed")) steps.push("payment processing " + pc(g("proc_pct"), 1) + " x " + gbp(total) + " + " + gbp(g("proc_fixed")) + " = " + gbp(r2(proc)));
+    if (listing) steps.push("listing fee " + gbp(listing));
+    return { key: k, name: p.name, fees: r2(fees), profit: r2(total - fees - pout - pack - cost), blanks: blanks, steps: steps, postageInBase: p.postage === "Yes" };
+  });
+  return { price: price, postageIn: pin, postageOut: pout, packaging: pack, cost: cost, revenue: r2(total), rows: rows, checked: SF.checked };
+}
+
 var API = { R: R, num: num, r2: r2, gbp: gbp, gbpw: gbpw, pc: pc, fdate: fdate, fday: fday, utc: utc, todayUTC: todayUTC,
   mtdCheck: mtdCheck, deadlines: deadlines, incomeTax: incomeTax, class4: class4, class2Voluntary: class2Voluntary, studentLoan: studentLoan,
-  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, foodCost: foodCost, cisDeduction: cisDeduction, cisYearToDate: cisYearToDate, personalAllowance: personalAllowance };
+  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, foodCost: foodCost, cisDeduction: cisDeduction, cakePrice: cakePrice, sellingFees: sellingFees, cisYearToDate: cisYearToDate, personalAllowance: personalAllowance };
 if (typeof module !== "undefined" && module.exports) { module.exports = API; } else { root.HSS = API; }
 })(typeof self !== "undefined" ? self : this);

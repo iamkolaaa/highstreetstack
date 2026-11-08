@@ -144,6 +144,15 @@
     "image": "img/platform-fee-profit-calculator.png"
   },
   {
+    "slug": "postage-shipping-log",
+    "name": "Postage Cost Comparer and Shipping Log UK",
+    "short": "Type a parcel's size and weight to see which carrier is cheapest, then log what you paid and charged for postage. Editable rate card, checked 8 November 2026.",
+    "price_gbp": 4,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/postage-shipping-log.png"
+  },
+  {
     "slug": "recipe-costing-sheet",
     "name": "Recipe Costing Spreadsheet UK",
     "short": "Cost a batch, price every jar and check your wholesale margin. For small UK food producers.",
