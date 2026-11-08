@@ -59,8 +59,35 @@
     "short": "Income by client and payment method, costs by type, monthly cash, transfer and card totals and year-to-date totals for each MTD quarterly update.",
     "price_gbp": 12,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/VIQLq",
     "image": "img/cleaner-record-book.png"
+  },
+  {
+    "slug": "cleaning-business-bundle",
+    "name": "Cleaning Business Bundle UK",
+    "short": "Five UK cleaning tools in one zip: quote calculator, client rota, checklists and job sheets, supplies tracker and self-employed record book, with example and BLANK copies.",
+    "price_gbp": 24,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/DQLyq",
+    "image": "img/cleaning-business-bundle.png"
+  },
+  {
+    "slug": "cleaning-checklists-job-sheets",
+    "name": "Cleaning Checklists and Job Sheets UK (printable)",
+    "short": "Printable A4 checklists for regular, deep, end of tenancy, Airbnb turnover and office cleans, plus a signed job sheet, key and alarm handover record and before and after notes. Editable Excel included.",
+    "price_gbp": 5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/V8MXP",
+    "image": "img/cleaning-checklists-job-sheets.png"
+  },
+  {
+    "slug": "cleaning-client-rota",
+    "name": "Cleaning Client Schedule and Rota UK",
+    "short": "Client list, weekly rota for each cleaner and the monthly value of every client, with skips, closed dates and a missed visit log.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/R0w1r",
+    "image": "img/cleaning-client-rota.png"
   },
   {
     "slug": "cleaning-quote-calculator",
@@ -68,8 +95,17 @@
     "short": "Price a regular clean three ways, an end of tenancy and an Airbnb turnover, see the hourly rate each pays, print a quote and track your win rate.",
     "price_gbp": 10,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/6kCoL",
     "image": "img/cleaning-quote-calculator.png"
+  },
+  {
+    "slug": "cleaning-supplies-tracker",
+    "name": "Cleaning Supplies Stock and Cost per Clean UK",
+    "short": "Cost per use for every product, stock with a reorder flag, the product cost of each type of clean and spend by month.",
+    "price_gbp": 6,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/HT8ax",
+    "image": "img/cleaning-supplies-tracker.png"
   },
   {
     "slug": "food-business-bundle",
