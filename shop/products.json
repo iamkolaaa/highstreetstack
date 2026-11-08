@@ -27,6 +27,15 @@
     "image": "img/cafe-food-cost-gp-calculator.png"
   },
   {
+    "slug": "cafe-weekly-numbers",
+    "name": "Caf\u00e9 Weekly Numbers: sales vs target, labour % and GP (UK)",
+    "short": "One page a week: sales against target, labour % and GP for a UK caf\u00e9, kiosk or takeaway, with a 52-week tracker.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/Vplda",
+    "image": "img/cafe-weekly-numbers.png"
+  },
+  {
     "slug": "cake-pricing-calculator",
     "name": "Cake and Bake Pricing Calculator UK",
     "short": "Cost every bake from your own shop prices, scale it by tin size and see the price per serving.",
@@ -104,7 +113,7 @@
     "short": "Estimate the tax on your rental profit with the Section 24 mortgage interest rule worked through, what to set aside each month, and your payments on account. Up to 10 properties.",
     "price_gbp": 6.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/4TJL7",
     "image": "img/landlord-tax-calculator-2026-27.png"
   },
   {
