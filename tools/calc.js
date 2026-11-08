@@ -365,8 +365,49 @@ function sellingFees(o) {
   return { price: price, postageIn: pin, postageOut: pout, packaging: pack, cost: cost, revenue: r2(total), rows: rows, checked: SF.checked };
 }
 
+/* ---------- Cleaning quote calculator (same maths as products/cleaning-quote-calculator) ---------- */
+var CLEAN_ROOM_MIN = [20, 30, 40, 25, 15, 15];
+var CLEAN_ROOM_NAMES = ["Bedroom", "Bathroom", "Kitchen", "Living room", "Hall and stairs", "Other room"];
+function cleaningQuote(o) {
+  o = o || {};
+  var method = o.method || "hours", rate = pos(o.rate), prodRate = pos(o.prod), minCharge = pos(o.minCharge);
+  var mins = o.roomMin || CLEAN_ROOM_MIN, hours = 0, cleaning = 0, steps = [];
+  if (o.eot) {
+    var bedMin = o.bedMin == null ? 60 : pos(o.bedMin), bathMin = o.bathMin == null ? 75 : pos(o.bathMin), baseMin = o.baseMin == null ? 150 : pos(o.baseMin);
+    var beds = pos(o.beds), baths = pos(o.baths), uplift = pos(o.uplift) / 100;
+    var tm = beds * bedMin + baths * bathMin + baseMin;
+    hours = tm / 60 * (1 + uplift); cleaning = hours * rate;
+    steps.push("End of tenancy time: " + beds + " x " + bedMin + " + " + baths + " x " + bathMin + " + " + baseMin + " = " + tm + " minutes" + (uplift ? ", x " + (1 + uplift).toFixed(2) + " deep-clean uplift" : "") + " = " + (Math.round(hours * 100) / 100) + " hours. Cleaning: " + (Math.round(hours * 100) / 100) + " x " + gbp(rate) + " = " + gbp(r2(cleaning)) + ".");
+  } else if (method === "rooms") {
+    var tmr = 0; (o.rooms || []).forEach(function (n, i) { tmr += pos(n) * (mins[i] || 0); });
+    hours = tmr / 60; cleaning = hours * rate;
+    steps.push("Room time: " + tmr + " minutes = " + (Math.round(hours * 100) / 100) + " hours x " + gbp(rate) + " = " + gbp(r2(cleaning)) + ".");
+  } else if (method === "area") {
+    hours = pos(o.hours); cleaning = pos(o.area) * pos(o.perM2);
+    steps.push("Cleaning by area: " + pos(o.area) + " m2 x " + gbp(pos(o.perM2)) + " = " + gbp(r2(cleaning)) + ". Your hours (" + hours + ") are used for products and your hourly rate.");
+  } else {
+    hours = pos(o.hours); cleaning = hours * rate;
+    steps.push("Cleaning: " + hours + " hours x " + gbp(rate) + " = " + gbp(r2(cleaning)) + ".");
+  }
+  var products = hours * prodRate;
+  var travel = o.travelMode === "flat" ? pos(o.flat) : pos(o.miles) * pos(o.perMile);
+  var pre = cleaning + products + travel, net = Math.max(pre, minCharge), top = net - pre;
+  var eqHours = (method === "rooms" && !o.eot && pos(o.hours) > 0) ? pos(o.hours) : hours;
+  var eq = eqHours > 0 ? (net - travel - products) / eqHours : null;
+  steps.push("Products: " + (Math.round(hours * 100) / 100) + " hours x " + gbp(prodRate) + " = " + gbp(r2(products)) + ". Travel " + gbp(r2(travel)) + ".");
+  steps.push("Price before any minimum: " + gbp(r2(cleaning)) + " + " + gbp(r2(products)) + " + " + gbp(r2(travel)) + " = " + gbp(r2(pre)) + ".");
+  if (top > 0.005) steps.push("Your minimum charge is " + gbp(minCharge) + ", so the price rises by " + gbp(r2(top)) + " to " + gbp(r2(net)) + ".");
+  if (eq != null) steps.push("Equivalent hourly rate: (" + gbp(r2(net)) + " - " + gbp(r2(travel)) + " travel - " + gbp(r2(products)) + " products) / " + (Math.round(eqHours * 100) / 100) + " hours = " + gbp(r2(eq)) + ".");
+  var disc = o.disc || [0, 0, 0], vpm = [52 / 12, 26 / 12, 13 / 12], names = ["Weekly", "Fortnightly", "Every 4 weeks"];
+  var monthly = names.map(function (n, i) {
+    var d = Math.min(0.99, pos(disc[i]) / 100), visit = r2(Math.max(net * (1 - d), minCharge));
+    return { name: n, discount: d, visit: visit, month: r2(visit * vpm[i]), visits: vpm[i] };
+  });
+  return { hours: hours, cleaning: cleaning, products: products, travel: travel, pre: pre, minCharge: minCharge, top: top, price: net, equivalent: eq, monthly: monthly, steps: steps };
+}
+
 var API = { R: R, num: num, r2: r2, gbp: gbp, gbpw: gbpw, pc: pc, fdate: fdate, fday: fday, utc: utc, todayUTC: todayUTC,
   mtdCheck: mtdCheck, deadlines: deadlines, incomeTax: incomeTax, class4: class4, class2Voluntary: class2Voluntary, studentLoan: studentLoan,
-  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, foodCost: foodCost, cisDeduction: cisDeduction, cakePrice: cakePrice, sellingFees: sellingFees, cisYearToDate: cisYearToDate, personalAllowance: personalAllowance };
+  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, foodCost: foodCost, cisDeduction: cisDeduction, cakePrice: cakePrice, cleaningQuote: cleaningQuote, CLEAN_ROOM_NAMES: CLEAN_ROOM_NAMES, CLEAN_ROOM_MIN: CLEAN_ROOM_MIN, sellingFees: sellingFees, cisYearToDate: cisYearToDate, personalAllowance: personalAllowance };
 if (typeof module !== "undefined" && module.exports) { module.exports = API; } else { root.HSS = API; }
 })(typeof self !== "undefined" ? self : this);

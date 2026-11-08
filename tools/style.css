@@ -175,3 +175,5 @@ table.eg.wide.cat small{font-weight:400;color:#4a524d}
 .ytdh{margin:24px 0 0}
 ul.trips{list-style:none;padding:0;margin:10px 0 0}
 table.eg.sf{max-width:none;border:0;margin:14px 0 0}table.eg.sf td,table.eg.sf th{padding:8px 6px;border-bottom:1px solid var(--line)}
+.rooms{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}.rooms label{margin:8px 0 3px;font-weight:400}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.row3 label{margin:8px 0 3px;font-weight:400}

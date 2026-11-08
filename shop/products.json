@@ -54,6 +54,24 @@
     "image": "img/cis-subcontractor-record-book.png"
   },
   {
+    "slug": "cleaner-record-book",
+    "name": "Cleaner Self-Employed Record Book 2026/27",
+    "short": "Income by client and payment method, costs by type, monthly cash, transfer and card totals and year-to-date totals for each MTD quarterly update.",
+    "price_gbp": 12,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/cleaner-record-book.png"
+  },
+  {
+    "slug": "cleaning-quote-calculator",
+    "name": "Cleaning Quote and Pricing Calculator UK",
+    "short": "Price a regular clean three ways, an end of tenancy and an Airbnb turnover, see the hourly rate each pays, print a quote and track your win rate.",
+    "price_gbp": 10,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/cleaning-quote-calculator.png"
+  },
+  {
     "slug": "food-business-bundle",
     "name": "Food Business Spreadsheet Bundle UK (cafes, bakers, market traders)",
     "short": "Four UK food business spreadsheets in one zip: cafe food cost and GP calculator, cake pricing calculator, recipe costing sheet and bakery order and market stall tracker, each with an example and a BLANK copy.",
