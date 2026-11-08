@@ -172,3 +172,5 @@ table.eg.wide{max-width:none}table.eg.wide td,table.eg.wide th{vertical-align:to
 table.eg.wide.cat td:nth-child(2){color:inherit;font-weight:400}
 table.eg.wide.cat small{font-weight:400;color:#4a524d}
 @media(max-width:620px){table.eg.wide.cat td[data-label]+td[data-label]::before,table.eg.wide.cat td:nth-child(2)::before,table.eg.wide.cat td:nth-child(3)::before{content:attr(data-label);display:block;font-size:.8rem;font-weight:700;margin-top:6px}table.eg.wide.cat td:nth-child(2){margin:0}}
+.ytdh{margin:24px 0 0}
+ul.trips{list-style:none;padding:0;margin:10px 0 0}

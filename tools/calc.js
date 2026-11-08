@@ -299,8 +299,27 @@ function foodCost(o) {
   return res;
 }
 
+/* ---------- CIS deduction calculator ---------- */
+var C = R.cis;
+var CIS_STATUS = { registered: { rate: C.registered, label: "registered" }, unregistered: { rate: C.unregistered, label: "not registered" }, gross: { rate: C.gross_payment_status, label: "gross payment status" } };
+function cisDeduction(o) {
+  o = o || {};
+  var st = CIS_STATUS[o.status] || CIS_STATUS.registered;
+  var labour = pos(o.labour), materials = pos(o.materials), vat = pos(o.vat);
+  var total = r2(labour + materials + vat), deduction = r2(labour * st.rate), net = r2(total - deduction);
+  var steps = [];
+  steps.push("Invoice total: " + gbp(labour) + " labour + " + gbp(materials) + " materials + " + gbp(vat) + " VAT = " + gbp(total) + ".");
+  steps.push("Materials and VAT are taken out before the CIS rate is applied, so the deduction is worked out on the " + gbp(labour) + " labour only.");
+  steps.push(st.rate > 0 ? "CIS rate for " + st.label + " subcontractors: " + pc(st.rate, 0) + ". " + gbp(labour) + " x " + pc(st.rate, 0) + " = " + gbp(deduction) + " deducted." : "With gross payment status the rate is 0%, so nothing is deducted.");
+  steps.push("Net payment: " + gbp(total) + " - " + gbp(deduction) + " = " + gbp(net) + ".");
+  return { status: o.status in CIS_STATUS ? o.status : "registered", rate: st.rate, label: st.label, labour: labour, materials: materials, vat: vat, total: total, deduction: deduction, net: net, steps: steps };
+}
+function cisYearToDate(list) {
+  var t = 0; (list || []).forEach(function (x) { t += pos(x); }); return r2(t);
+}
+
 var API = { R: R, num: num, r2: r2, gbp: gbp, gbpw: gbpw, pc: pc, fdate: fdate, fday: fday, utc: utc, todayUTC: todayUTC,
   mtdCheck: mtdCheck, deadlines: deadlines, incomeTax: incomeTax, class4: class4, class2Voluntary: class2Voluntary, studentLoan: studentLoan,
-  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, foodCost: foodCost, personalAllowance: personalAllowance };
+  soleTrader: soleTrader, mileage: mileage, mileageRunning: mileageRunning, landlord: landlord, paymentsOnAccount: paymentsOnAccount, foodCost: foodCost, cisDeduction: cisDeduction, cisYearToDate: cisYearToDate, personalAllowance: personalAllowance };
 if (typeof module !== "undefined" && module.exports) { module.exports = API; } else { root.HSS = API; }
 })(typeof self !== "undefined" ? self : this);

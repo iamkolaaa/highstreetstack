@@ -191,7 +191,12 @@
  "cis": {
   "registered": 0.2,
   "unregistered": 0.3,
-  "gross_payment_status": 0.0
+  "gross_payment_status": 0.0,
+  "deduction_base": "Start with the total (gross) amount of the subcontractor's invoice and take away what the subcontractor paid for, including VAT, consumable stores, fuel (except travel), plant hire, manufacturing or prefabricating materials and materials paid for directly. The CIS rate is applied to what remains.",
+  "payment_statement": "If you make deductions, you must give the subcontractor a payment and deduction statement within 14 days of the end of each tax month.",
+  "deductions_are_advance_tax": "The deductions a contractor takes under CIS are advance payments towards your tax.",
+  "claim_back_self_assessment": "Sole traders and partners report total pay before deductions as income and the deductions as CIS deductions on the Self Assessment return. HMRC works out the tax owed and takes off the deductions; if a refund is due, HMRC pays it back.",
+  "keep_statements": "Keep the monthly payment and deduction statements you get from contractors."
  },
  "self_assessment_deadlines": {
   "register_by": "5 October 2026",
@@ -320,6 +325,11 @@
   "cis.registered": "https://www.gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors",
   "cis.unregistered": "https://www.gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors",
   "cis.gross_payment_status": "https://www.gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors",
+  "cis.deduction_base": "https://www.gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors",
+  "cis.payment_statement": "https://www.gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors",
+  "cis.deductions_are_advance_tax": "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/pay-tax-and-claim-back-deductions",
+  "cis.claim_back_self_assessment": "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/pay-tax-and-claim-back-deductions",
+  "cis.keep_statements": "https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/pay-tax-and-claim-back-deductions",
   "self_assessment_deadlines.register_by": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
   "self_assessment_deadlines.paper_return": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
   "self_assessment_deadlines.online_return": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
