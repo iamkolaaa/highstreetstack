@@ -18,6 +18,15 @@
     "image": "img/cis-subcontractor-record-book.png"
   },
   {
+    "slug": "hmrc-mileage-log",
+    "name": "HMRC Mileage Log and Simplified Expenses Calculator 2026/27",
+    "short": "Trip log with the 55p to 25p switch after 10,000 miles, quarterly totals for MTD updates and use of home flat rates.",
+    "price_gbp": 5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/KRB8e",
+    "image": "img/hmrc-mileage-log.png"
+  },
+  {
     "slug": "landlord-mtd-record-book",
     "name": "Landlord MTD Record Book 2026/27",
     "short": "Rent, expense and mortgage interest log for up to 10 properties, with year-to-date totals for each MTD quarterly update and the Section 24 tax reduction.",
