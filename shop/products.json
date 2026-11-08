@@ -1,5 +1,14 @@
 [
   {
+    "slug": "btl-yield-roi-calculator",
+    "name": "Buy to Let Yield and ROI Calculator UK",
+    "short": "Analyse a buy to let before you buy: Stamp Duty, total cash in, yields, cash flow, cash-on-cash return, a rate stress test and up to ten deals compared.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/btl-yield-roi-calculator.png"
+  },
+  {
     "slug": "cafe-food-cost-gp-calculator",
     "name": "UK Caf\u00e9 and Takeaway Food Cost and GP Calculator",
     "short": "Cost every dish, work out GP on the price before VAT, and see what delivery app commission does to it.",
@@ -45,6 +54,15 @@
     "image": "img/hmrc-mileage-log.png"
   },
   {
+    "slug": "landlord-maintenance-inventory-log",
+    "name": "Landlord Maintenance Log and Property Inventory Template UK",
+    "short": "Maintenance log, planned maintenance flags, contractor list and a room-by-room check-in and check-out inventory with a printable A4 report, for up to 10 rental properties.",
+    "price_gbp": 6,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/landlord-maintenance-inventory-log.png"
+  },
+  {
     "slug": "landlord-mtd-record-book",
     "name": "Landlord MTD Record Book 2026/27",
     "short": "Rent, expense and mortgage interest log for up to 10 properties, with year-to-date totals for each MTD quarterly update and the Section 24 tax reduction.",
@@ -59,8 +77,44 @@
     "short": "Stock and sales log with profit per item, platform reporting check, trading allowance check and tax year summary.",
     "price_gbp": 7.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/wj0CM",
     "image": "img/online-seller-tax-record.png"
+  },
+  {
+    "slug": "platform-fee-profit-calculator",
+    "name": "Selling Fee and Profit Calculator UK",
+    "short": "See what you make on each platform side by side, and the price you need for a target profit. Editable fee table, checked 8 November 2026.",
+    "price_gbp": 6,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/s59rc",
+    "image": "img/platform-fee-profit-calculator.png"
+  },
+  {
+    "slug": "recipe-costing-sheet",
+    "name": "Recipe Costing Spreadsheet UK",
+    "short": "Cost a batch, price every jar and check your wholesale margin. For small UK food producers.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/recipe-costing-sheet.png"
+  },
+  {
+    "slug": "rental-portfolio-tracker",
+    "name": "Rental Property Portfolio Tracker UK",
+    "short": "Dashboard for up to 20 rental properties: yield, cash flow, loan to value, return on cash, voids, arrears, year-to-date profit and compliance dates.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/rental-portfolio-tracker.png"
+  },
+  {
+    "slug": "reseller-inventory-log",
+    "name": "Reseller Inventory and Sourcing Log UK",
+    "short": "Stock control and sourcing log for Vinted, eBay and Depop sellers: SKUs, ageing flags, sourcing trips, sold profit and a dashboard.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/e1pLi",
+    "image": "img/reseller-inventory-log.png"
   },
   {
     "slug": "self-employed-tax-estimate-planner",
@@ -133,5 +187,14 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/nldrL",
     "image": "img/trades-van-tool-log.png"
+  },
+  {
+    "slug": "trading-allowance-checker",
+    "name": "Trading Allowance Checker UK 2026/27",
+    "short": "Side hustle income against the \u00a31,000 trading allowance: do you tell HMRC, and is the allowance or actual expenses better.",
+    "price_gbp": 3.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/FBUvY",
+    "image": "img/trading-allowance-checker.png"
   }
 ]
