@@ -1,11 +1,20 @@
 [
   {
+    "slug": "bakery-order-takings-tracker",
+    "name": "Bakery Order Tracker and Market Stall Takings Log UK",
+    "short": "Track cake orders, print a 7-day bake list, see busy days on a calendar and work out what each market day earned.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/bakery-order-takings-tracker.png"
+  },
+  {
     "slug": "btl-yield-roi-calculator",
     "name": "Buy to Let Yield and ROI Calculator UK",
     "short": "Analyse a buy to let before you buy: Stamp Duty, total cash in, yields, cash flow, cash-on-cash return, a rate stress test and up to ten deals compared.",
     "price_gbp": 6.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/h13WA",
     "image": "img/btl-yield-roi-calculator.png"
   },
   {
@@ -23,7 +32,7 @@
     "short": "Cost every bake from your own shop prices, scale it by tin size and see the price per serving.",
     "price_gbp": 6.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/tHl5k",
     "image": "img/cake-pricing-calculator.png"
   },
   {
@@ -59,7 +68,7 @@
     "short": "Maintenance log, planned maintenance flags, contractor list and a room-by-room check-in and check-out inventory with a printable A4 report, for up to 10 rental properties.",
     "price_gbp": 6,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/mO12t",
     "image": "img/landlord-maintenance-inventory-log.png"
   },
   {
@@ -95,7 +104,7 @@
     "short": "Cost a batch, price every jar and check your wholesale margin. For small UK food producers.",
     "price_gbp": 6.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/dHWCf",
     "image": "img/recipe-costing-sheet.png"
   },
   {
@@ -104,7 +113,7 @@
     "short": "Dashboard for up to 20 rental properties: yield, cash flow, loan to value, return on cash, voids, arrears, year-to-date profit and compliance dates.",
     "price_gbp": 7.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/g2ZNn",
     "image": "img/rental-portfolio-tracker.png"
   },
   {
