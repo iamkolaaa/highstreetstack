@@ -86,7 +86,7 @@
     "short": "Five sole trader spreadsheets for 2026/27: MTD record book, mileage log, invoice and quote pack, VAT record book and tax estimate planner, each with an example and a BLANK copy.",
     "price_gbp": 24,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/KmxuE",
     "image": "img/mtd-ready-bundle.png"
   },
   {
@@ -178,6 +178,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/6CSHO",
     "image": "img/sole-trader-vat-record-book.png"
+  },
+  {
+    "slug": "trades-bundle",
+    "name": "Trades Business Bundle UK",
+    "short": "Five UK trades spreadsheets in one zip: job costing and quote, timesheet, van and tool log, CIS record book and cash flow forecast, each with an example and a BLANK copy.",
+    "price_gbp": 24,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/ih2YS",
+    "image": "img/trades-bundle.png"
   },
   {
     "slug": "trades-job-costing-quote",
