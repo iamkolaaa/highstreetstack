@@ -5,7 +5,7 @@
     "short": "Track cake orders, print a 7-day bake list, see busy days on a calendar and work out what each market day earned.",
     "price_gbp": 6.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/Bm8Vi",
     "image": "img/bakery-order-takings-tracker.png"
   },
   {
@@ -79,6 +79,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/ZRicB",
     "image": "img/landlord-mtd-record-book.png"
+  },
+  {
+    "slug": "mtd-ready-bundle",
+    "name": "MTD Ready Bundle 2026/27 for UK sole traders",
+    "short": "Five sole trader spreadsheets for 2026/27: MTD record book, mileage log, invoice and quote pack, VAT record book and tax estimate planner, each with an example and a BLANK copy.",
+    "price_gbp": 24,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/mtd-ready-bundle.png"
   },
   {
     "slug": "online-seller-tax-record",
