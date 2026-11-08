@@ -149,7 +149,7 @@
     "short": "Type a parcel's size and weight to see which carrier is cheapest, then log what you paid and charged for postage. Editable rate card, checked 8 November 2026.",
     "price_gbp": 4,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/0biN9",
     "image": "img/postage-shipping-log.png"
   },
   {
