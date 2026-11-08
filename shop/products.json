@@ -9,6 +9,15 @@
     "image": "img/cafe-food-cost-gp-calculator.png"
   },
   {
+    "slug": "cis-subcontractor-record-book",
+    "name": "CIS Subcontractor Record Book 2026/27",
+    "short": "Contractor payments split into labour, materials and VAT, the CIS deduction on each, monthly statement tracker and year-to-date totals for each MTD quarterly update.",
+    "price_gbp": 12,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/Y1DbQ",
+    "image": "img/cis-subcontractor-record-book.png"
+  },
+  {
     "slug": "landlord-mtd-record-book",
     "name": "Landlord MTD Record Book 2026/27",
     "short": "Rent, expense and mortgage interest log for up to 10 properties, with year-to-date totals for each MTD quarterly update and the Section 24 tax reduction.",
