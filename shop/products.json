@@ -9,6 +9,15 @@
     "image": "img/cafe-food-cost-gp-calculator.png"
   },
   {
+    "slug": "landlord-mtd-record-book",
+    "name": "Landlord MTD Record Book 2026/27",
+    "short": "Rent, expense and mortgage interest log for up to 10 properties, with year-to-date totals for each MTD quarterly update and the Section 24 tax reduction.",
+    "price_gbp": 12,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/ZRicB",
+    "image": "img/landlord-mtd-record-book.png"
+  },
+  {
     "slug": "sole-trader-mtd-record-book",
     "name": "Sole Trader MTD Record Book 2026/27",
     "short": "Income, expense and mileage log with year-to-date totals for each MTD quarterly update.",
