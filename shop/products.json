@@ -18,6 +18,15 @@
     "image": "img/cis-subcontractor-record-book.png"
   },
   {
+    "slug": "hair-beauty-barber-record-book",
+    "name": "Hair, Beauty and Barber Self-Employed Record Book 2026/27",
+    "short": "Takings by service and payment method, tips, costs by type, monthly card and cash totals and year-to-date totals for each MTD quarterly update.",
+    "price_gbp": 12,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/QFKPh",
+    "image": "img/hair-beauty-barber-record-book.png"
+  },
+  {
     "slug": "hmrc-mileage-log",
     "name": "HMRC Mileage Log and Simplified Expenses Calculator 2026/27",
     "short": "Trip log with the 55p to 25p switch after 10,000 miles, quarterly totals for MTD updates and use of home flat rates.",
