@@ -9,6 +9,15 @@
     "image": "img/cafe-food-cost-gp-calculator.png"
   },
   {
+    "slug": "cake-pricing-calculator",
+    "name": "Cake and Bake Pricing Calculator UK",
+    "short": "Cost every bake from your own shop prices, scale it by tin size and see the price per serving.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/cake-pricing-calculator.png"
+  },
+  {
     "slug": "cis-subcontractor-record-book",
     "name": "CIS Subcontractor Record Book 2026/27",
     "short": "Contractor payments split into labour, materials and VAT, the CIS deduction on each, monthly statement tracker and year-to-date totals for each MTD quarterly update.",
@@ -43,6 +52,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/ZRicB",
     "image": "img/landlord-mtd-record-book.png"
+  },
+  {
+    "slug": "online-seller-tax-record",
+    "name": "Online Seller Profit and Tax Record 2026/27 (Vinted, eBay, Etsy, Depop)",
+    "short": "Stock and sales log with profit per item, platform reporting check, trading allowance check and tax year summary.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/online-seller-tax-record.png"
   },
   {
     "slug": "self-employed-tax-estimate-planner",
@@ -95,7 +113,7 @@
     "short": "Cost jobs line by line, see profit and margin, print a one-page quote, check actual costs against the quote and track your win rate.",
     "price_gbp": 10,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/T1YBW",
     "image": "img/trades-job-costing-quote.png"
   },
   {
@@ -104,7 +122,7 @@
     "short": "Daily log of hours and day rates for tradespeople and small firms, with weekly totals, invoice-ready summaries, optional CIS deduction and a year view.",
     "price_gbp": 6,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/U3R4w",
     "image": "img/trades-timesheet-day-rate.png"
   },
   {
@@ -113,7 +131,7 @@
     "short": "Tool register with insurer list, lent-out log, van MOT and service flags, fuel and mileage, and materials cost per job.",
     "price_gbp": 6,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/nldrL",
     "image": "img/trades-van-tool-log.png"
   }
 ]
