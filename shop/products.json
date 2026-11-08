@@ -45,6 +45,15 @@
     "image": "img/cis-subcontractor-record-book.png"
   },
   {
+    "slug": "food-business-bundle",
+    "name": "Food Business Spreadsheet Bundle UK (cafes, bakers, market traders)",
+    "short": "Four UK food business spreadsheets in one zip: cafe food cost and GP calculator, cake pricing calculator, recipe costing sheet and bakery order and market stall tracker, each with an example and a BLANK copy.",
+    "price_gbp": 21,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/zqA0d",
+    "image": "img/food-business-bundle.png"
+  },
+  {
     "slug": "hair-beauty-barber-record-book",
     "name": "Hair, Beauty and Barber Self-Employed Record Book 2026/27",
     "short": "Takings by service and payment method, tips, costs by type, monthly card and cash totals and year-to-date totals for each MTD quarterly update.",
@@ -63,6 +72,15 @@
     "image": "img/hmrc-mileage-log.png"
   },
   {
+    "slug": "landlord-bundle",
+    "name": "UK Landlord Spreadsheet Bundle 2026/27",
+    "short": "Four UK landlord spreadsheets for 2026/27 in one zip: MTD record book, rental portfolio tracker, buy to let yield and ROI calculator and maintenance log with inventory, each with an example and a BLANK copy.",
+    "price_gbp": 21,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/32KUX",
+    "image": "img/landlord-bundle.png"
+  },
+  {
     "slug": "landlord-maintenance-inventory-log",
     "name": "Landlord Maintenance Log and Property Inventory Template UK",
     "short": "Maintenance log, planned maintenance flags, contractor list and a room-by-room check-in and check-out inventory with a printable A4 report, for up to 10 rental properties.",
@@ -79,6 +97,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/ZRicB",
     "image": "img/landlord-mtd-record-book.png"
+  },
+  {
+    "slug": "landlord-tax-calculator-2026-27",
+    "name": "Landlord Tax Calculator UK 2026/27",
+    "short": "Estimate the tax on your rental profit with the Section 24 mortgage interest rule worked through, what to set aside each month, and your payments on account. Up to 10 properties.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/landlord-tax-calculator-2026-27.png"
   },
   {
     "slug": "mtd-ready-bundle",
@@ -124,6 +151,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/g2ZNn",
     "image": "img/rental-portfolio-tracker.png"
+  },
+  {
+    "slug": "reseller-bundle",
+    "name": "UK Reseller Bundle (Vinted, eBay, Depop)",
+    "short": "Four UK reseller spreadsheets in one zip: profit and tax record, inventory and sourcing log, selling fee calculator and trading allowance checker, each with an example and a BLANK copy.",
+    "price_gbp": 16,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/sJOSv",
+    "image": "img/reseller-bundle.png"
   },
   {
     "slug": "reseller-inventory-log",
