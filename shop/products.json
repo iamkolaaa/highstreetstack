@@ -45,6 +45,33 @@
     "image": "img/landlord-mtd-record-book.png"
   },
   {
+    "slug": "self-employed-tax-estimate-planner",
+    "name": "Self-Employed Tax Estimate and Payments on Account Planner 2026/27",
+    "short": "Estimate your 2026/27 tax, see what you pay on 31 January and 31 July, and work out what to set aside each month.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/NjTZ3",
+    "image": "img/self-employed-tax-estimate-planner.png"
+  },
+  {
+    "slug": "small-builder-pl-cashflow",
+    "name": "Small Builder Profit and Loss and Cash Flow Forecast (UK)",
+    "short": "12-month cash flow, profit and loss and job profitability for small building and trades firms, with staged payments, retention, VAT and CIS estimates.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/SP7TO",
+    "image": "img/small-builder-pl-cashflow.png"
+  },
+  {
+    "slug": "sole-trader-invoice-quote-pack",
+    "name": "Sole Trader Invoice and Quote Pack (UK)",
+    "short": "Printable quote and invoice with registers for each, overdue days, late payment interest and a monthly income summary.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/aqC8p",
+    "image": "img/sole-trader-invoice-quote-pack.png"
+  },
+  {
     "slug": "sole-trader-mtd-record-book",
     "name": "Sole Trader MTD Record Book 2026/27",
     "short": "Income, expense and mileage log with year-to-date totals for each MTD quarterly update.",
@@ -52,5 +79,41 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/7BNqs",
     "image": "img/sole-trader-mtd-record-book.png"
+  },
+  {
+    "slug": "sole-trader-vat-record-book",
+    "name": "Sole Trader VAT Record Book 2026/27",
+    "short": "Sales and purchases logs with the nine VAT return boxes for each quarter, standard accounting or Flat Rate Scheme.",
+    "price_gbp": 10,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/6CSHO",
+    "image": "img/sole-trader-vat-record-book.png"
+  },
+  {
+    "slug": "trades-job-costing-quote",
+    "name": "Job Costing and Quote Builder for UK Trades",
+    "short": "Cost jobs line by line, see profit and margin, print a one-page quote, check actual costs against the quote and track your win rate.",
+    "price_gbp": 10,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/trades-job-costing-quote.png"
+  },
+  {
+    "slug": "trades-timesheet-day-rate",
+    "name": "Timesheet and Day Rate Tracker for UK Trades",
+    "short": "Daily log of hours and day rates for tradespeople and small firms, with weekly totals, invoice-ready summaries, optional CIS deduction and a year view.",
+    "price_gbp": 6,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/trades-timesheet-day-rate.png"
+  },
+  {
+    "slug": "trades-van-tool-log",
+    "name": "Van, Tool and Materials Log for UK Trades",
+    "short": "Tool register with insurer list, lent-out log, van MOT and service flags, fuel and mileage, and materials cost per job.",
+    "price_gbp": 6,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/trades-van-tool-log.png"
   }
 ]
