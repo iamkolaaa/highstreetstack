@@ -139,6 +139,17 @@ table{border-collapse:collapse;width:100%}
 .flag b{font-weight:600}
 footer{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:14px}
 footer ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+
+/* 0 — left this month */
+.leftover{border:2px solid var(--accent);background:var(--surface);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.leftover .eyebrow{font:600 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.leftover .amt{font:700 44px/1 var(--f-display);letter-spacing:-.03em;color:var(--accent)}
+.leftover .to{font:600 17px/1.3 var(--f-display)}
+.leftover .num{white-space:nowrap}
+.windfall{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.windfall label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:var(--muted)}
+.windfall input{font:600 18px var(--f-num);padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.wf-out{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .4s ease}}
 
 [hidden]{display:none!important}
@@ -245,6 +256,12 @@ header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 
   </div>
 
   <!-- 1 -->
+  <section aria-labelledby="h-left">
+    <h2 id="h-left">Left this month</h2>
+    <div class="leftover" id="leftover"></div>
+    <div class="panel windfall" id="windfall"></div>
+  </section>
+
   <section aria-label="Today">
     <div class="today" id="today"></div>
     <div class="panel nextdd" id="nextdd" style="margin-top:10px"></div>
@@ -352,7 +369,7 @@ header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 
   <button type="button" role="tab" data-go="progress">Progress</button>
 </div></nav>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js" integrity="sha384-UagCvVPT5XXA0Hx+nJYUAGBFseHT9zBgpJMSebsAxl9lciTwbT+39j5VfRjdP5Tp" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.min.js" integrity="sha384-gnyZit14c5lnGcarmA166QQjjJXpucw25ogZXuwH3HxxY904zHkBqmxVpelsPorb" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script>
 window.renderDashboard = function(S){
@@ -576,6 +593,66 @@ const CF = cashflow(START, 14);
   const dl = daysBetween(TODAY, first.dt);
   $('nextdd').innerHTML = `<div class="row"><span class="small muted">Next card DD · ${dl===0?'today':dl===1?'tomorrow':'in '+dl+' days'}</span><span class="small muted">${fmtD(first.dt)}</span></div>` +
     cds.map(e=>`<div class="dd"><span><b>${esc(e.n)}</b></span><span style="display:flex;gap:8px;align-items:center"><span class="num">${gbp(-e.amt)}</span><span class="src ${e.acct}">${e.acct}</span></span></div>`).join('');
+})();
+
+/* ---------- left this month + windfall ---------- */
+// What is spare once this month's payments are covered, and which card it should go to (kill order; 0% balances wait).
+const promoNow = c => (c.promo||[]).filter(p=>iso(p.expires)>TODAY).reduce((s,p)=>s+p.amount,0);
+const payable = c => Math.max(0, (c.balance_live||0) - promoNow(c));
+const killTargets = () => D.cards.filter(c=>(c.balance_live||0)>0 && c.id in live.killed && payable(c)>0.5)
+  .sort((a,b)=>live.killed[a.id]-live.killed[b.id] || a.balance_live-b.balance_live);
+const MO_NOW = (TODAY.getFullYear()-2026)*12 + TODAY.getMonth() + 1 - 10 + 1;   // engine month index (1 = Oct 2026)
+function allocate(amount){
+  const out=[]; let left=amount;
+  for(const c of killTargets()){ if(left<0.5) break; const p=Math.min(left, payable(c)); out.push({c, p, clears: p>=payable(c)-0.5 && promoNow(c)<0.5}); left-=p; }
+  return {out, left};
+}
+function windfallEffect(amount){
+  const base = bufferLumps(); const l = {...base}; l[MO_NOW] = (l[MO_NOW]||0) + amount;
+  return runLive(overpayFromSo(cardsSoWeekly), {lumps:l});
+}
+(function(){
+  const monthEnd = new Date(TODAY.getFullYear(), TODAY.getMonth()+1, 0);
+  const span = Math.max(1, daysBetween(START, monthEnd) + 22);
+  const cf = cashflow(START, span);
+  const after = cf.filter(r=>r.dt>=monthEnd);
+  const low = after.length ? Math.min(...after.map(r=>r.m)) : OPENING.monzo;
+  const lowDay = after.find(r=>r.m===low);
+  const endRow = cf.find(r=>sameDay(r.dt, monthEnd));
+  const BUFFER = 50;
+  // Money that leaves Monzo but isn't in the dated schedule: bills paid from Monzo and the weekly trip-cover deposit.
+  const billsMonzo = B.bills_via_monzo ? (L.subs_insurance + L.bw_legal) * span / 30.44 : 0;
+  let tripCover = 0;
+  if(BUF) for(let d=START; d<=addDays(START, span); d=addDays(d,1)) if(d.getDay()===5 && d>=iso(BUF.first) && d<=iso(BUF.last)) tripCover += BUF.weekly;
+  const unscheduled = billsMonzo + tripCover;
+  const spare = Math.max(0, Math.floor((low - unscheduled - BUFFER)/5)*5);
+  const t = killTargets()[0];
+  const planned = overpayFromSo(cardsSoWeekly) + (bufferLumps()[MO_NOW]||0);
+  const mName = MON[TODAY.getMonth()];
+  $('leftover').innerHTML = !t ? `<div class="eyebrow">Left this month</div><div class="to">No card left to target 🎉</div>` : `
+    <div class="eyebrow">Left at the end of ${mName}</div>
+    <div class="amt num">${gbp0(spare)}</div>
+    <div class="to">${spare>0 ? `→ pay it to <b>${esc(cardName(t))}</b> on ${fmtD(monthEnd)}` : `Nothing spare this month. Monzo only covers what’s due.`}</div>
+    <div class="small muted">${esc(cardName(t))}: ${gbp(t.balance_live)} at ${t.apr!=null?(t.apr*100).toFixed(1)+'%':'?'} · clears ${monthLabel(2026,10,live.killed[t.id]-1)} on the plan.
+      ${spare>0?`Keeps ${gbp0(BUFFER)} in Monzo for the card payments in early ${MON[(TODAY.getMonth()+1)%12]}.`:''}</div>
+    <div class="sub-lines" style="margin-top:2px">
+      <div class="row"><span class="muted">Monzo at month end (scheduled money only)</span><span class="num">${endRow?gbp0(endRow.m):'—'}</span></div>
+      <div class="row"><span class="muted">Lowest point in the 3 weeks after</span><span class="num">${gbp0(low)}${lowDay?' · '+fmtD(lowDay.dt):''}</span></div>
+      <div class="row"><span class="muted">Less bills and trip cover from Monzo (not dated)</span><span class="num">−${gbp0(unscheduled)}</span></div>
+      <div class="row"><span class="muted">Planned surplus from the £${cardsSoWeekly}/wk SO</span><span class="num">${gbp0(planned)}/mo</span></div>
+    </div>`;
+  const draw = () => {
+    const amt = Math.max(0, parseFloat($('wfAmt').value)||0);
+    if(!amt){ $('wfOut').innerHTML = `<span class="muted small">Type an amount (a bonus, a sale, money paid back) to see where it goes.</span>`; return; }
+    const {out, left} = allocate(amt), r = windfallEffect(amt);
+    const sooner = live.months - r.months, saved = live.interest - r.interest;
+    $('wfOut').innerHTML = out.map(x=>`<div class="row"><span>${x.clears?'✓ Clears':'→ Pay'} <b>${esc(cardName(x.c))}</b></span><span class="num">${gbp(x.p)}</span></div>`).join('') +
+      (left>=0.5?`<div class="row"><span class="muted">Left over (all interest-bearing balances cleared)</span><span class="num">${gbp(left)}</span></div>`:'') +
+      `<div class="row" style="border-top:1px solid var(--line);padding-top:6px"><span><b>Debt-free</b></span><span class="num"><b>${r.label}</b> ${sooner>0?`<span class="chip good">${sooner} mo sooner</span>`:''}</span></div>
+       <div class="row"><span class="muted">Interest saved</span><span class="num down">${gbp0(saved)}</span></div>`;
+  };
+  $('windfall').innerHTML = `<label for="wfAmt">Got a windfall? Amount, £<input id="wfAmt" type="number" inputmode="decimal" min="0" step="1" placeholder="e.g. 1000"></label><div class="wf-out" id="wfOut"></div>`;
+  $('wfAmt').addEventListener('input', draw); draw();
 })();
 
 /* ---------- render: debt-free ---------- */
@@ -900,7 +977,7 @@ sb.auth.onAuthStateChange((event, s) => {
 function showAuth(){ $('authView').hidden = false; $('appView').hidden = true; $('tabbar').hidden = true; }
 
 /* ---------------- tabs ---------------- */
-const TAB_OF = { 'Today':'today', 'h-flags':'today', 'h-total':'debts', 'h-target':'debts', 'h-board':'debts',
+const TAB_OF = { 'h-left':'today', 'Today':'today', 'h-flags':'today', 'h-total':'debts', 'h-target':'debts', 'h-board':'debts',
   'h-cash':'cash', 'h-pots':'cash', 'h-budget':'budget', 'h-roadmap':'whatif', 'h-free':'progress' };
 function setupTabs(){
   document.querySelectorAll('#appView .wrap > section').forEach(s => {
