@@ -111,10 +111,19 @@
     "slug": "dog-groomer-record-book",
     "name": "Dog Groomer Self-Employed Record Book 2026/27",
     "short": "Income by owner, costs by type, monthly takings and MTD quarter totals for dog groomers.",
-    "price_gbp": 14,
+    "price_gbp": 11,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/8STJR",
+    "image": "img/dog-groomer-record-book.png"
+  },
+  {
+    "slug": "dog-grooming-client-pet-tracker",
+    "name": "Dog Grooming Client and Pet Tracker UK",
+    "short": "Owners, dogs, appointments, next groom due, vaccinations, no-shows and takings for UK groomers.",
+    "price_gbp": 9,
     "status": "ready",
     "buy_url": "",
-    "image": "img/dog-groomer-record-book.png"
+    "image": "img/dog-grooming-client-pet-tracker.png"
   },
   {
     "slug": "fitness-class-register",
@@ -133,6 +142,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/zqA0d",
     "image": "img/food-business-bundle.png"
+  },
+  {
+    "slug": "gallery-delivery-tracker",
+    "name": "Gallery Delivery Tracker UK",
+    "short": "Editing steps, turnaround deadlines, gallery expiry and print orders for photographers.",
+    "price_gbp": 7,
+    "status": "ready",
+    "buy_url": "",
+    "image": ""
   },
   {
     "slug": "hair-beauty-barber-record-book",
@@ -223,6 +241,24 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/T7i5G",
     "image": "img/photographer-record-book.png"
+  },
+  {
+    "slug": "photography-client-booking-tracker",
+    "name": "Photography Client Booking Tracker UK",
+    "short": "Enquiries, bookings, booking fees and balance due dates for self-employed photographers.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/NMgWP",
+    "image": "img/photography-client-booking-tracker.png"
+  },
+  {
+    "slug": "photography-pricing-calculator",
+    "name": "Photography Pricing Calculator UK",
+    "short": "Work out what to charge for weddings, sessions and prints from the take-home you want.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/TJz1X",
+    "image": "img/photography-pricing-calculator.png"
   },
   {
     "slug": "platform-fee-profit-calculator",
@@ -405,6 +441,15 @@
     "image": "img/trading-allowance-checker.png"
   },
   {
+    "slug": "tutor-hourly-rate-calculator",
+    "name": "Tutor Hourly Rate Calculator UK",
+    "short": "Work out what to charge per lesson from your costs, term weeks and the take-home you want.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/pln4T",
+    "image": "img/tutor-hourly-rate-calculator.png"
+  },
+  {
     "slug": "tutor-record-book",
     "name": "Tutor Record Book 2026/27",
     "short": "Income by pupil, costs by type, monthly takings and MTD quarterly update totals.",
@@ -412,5 +457,14 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/xgqU2",
     "image": "img/tutor-record-book.png"
+  },
+  {
+    "slug": "tutor-session-tracker",
+    "name": "Tutor Session Tracker UK",
+    "short": "Lessons, hours, payments owed and cancellations for self-employed private tutors.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/Q9KfJ",
+    "image": "img/tutor-session-tracker.png"
   }
 ]
