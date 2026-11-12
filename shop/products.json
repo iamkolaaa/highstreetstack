@@ -108,6 +108,24 @@
     "image": "img/cleaning-supplies-tracker.png"
   },
   {
+    "slug": "dog-groomer-record-book",
+    "name": "Dog Groomer Self-Employed Record Book 2026/27",
+    "short": "Income by owner, costs by type, monthly takings and MTD quarter totals for dog groomers.",
+    "price_gbp": 14,
+    "status": "ready",
+    "buy_url": "",
+    "image": "img/dog-groomer-record-book.png"
+  },
+  {
+    "slug": "fitness-class-register",
+    "name": "Fitness Class Register and Takings Tracker UK",
+    "short": "Register, drop-ins and block passes, with the profit each class makes after hire.",
+    "price_gbp": 5.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/xzlbP",
+    "image": "img/fitness-class-register.png"
+  },
+  {
     "slug": "food-business-bundle",
     "name": "Food Business Spreadsheet Bundle UK (cafes, bakers, market traders)",
     "short": "Four UK food business spreadsheets in one zip: cafe food cost and GP calculator, cake pricing calculator, recipe costing sheet and bakery order and market stall tracker, each with an example and a BLANK copy.",
@@ -189,6 +207,24 @@
     "image": "img/online-seller-tax-record.png"
   },
   {
+    "slug": "personal-trainer-record-book",
+    "name": "Personal Trainer Record Book 2026/27",
+    "short": "Personal trainer income by client and type, gym rent and CPD costs, MTD quarter totals.",
+    "price_gbp": 11,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/Czxoc",
+    "image": "img/personal-trainer-record-book.png"
+  },
+  {
+    "slug": "photographer-record-book",
+    "name": "Photographer Record Book 2026/27",
+    "short": "Photographer income, costs and VAT watch, with totals for each MTD quarterly update.",
+    "price_gbp": 11,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/T7i5G",
+    "image": "img/photographer-record-book.png"
+  },
+  {
     "slug": "platform-fee-profit-calculator",
     "name": "Selling Fee and Profit Calculator UK",
     "short": "See what you make on each platform side by side, and the price you need for a target profit. Editable fee table, checked 8 November 2026.",
@@ -205,6 +241,33 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/0biN9",
     "image": "img/postage-shipping-log.png"
+  },
+  {
+    "slug": "pt-client-progress-tracker",
+    "name": "Personal Trainer Client Progress Tracker UK",
+    "short": "Measurements, weekly check-ins, charts, programme blocks and a PAR-Q form for each client.",
+    "price_gbp": 5.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/ZYBFN",
+    "image": "img/pt-client-progress-tracker.png"
+  },
+  {
+    "slug": "pt-client-session-tracker",
+    "name": "PT Client and Session Tracker UK",
+    "short": "Session packs, attendance, payments and renewals due for self-employed personal trainers.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/csQPm",
+    "image": "img/pt-client-session-tracker.png"
+  },
+  {
+    "slug": "pt-pricing-calculator",
+    "name": "Personal Trainer Pricing Calculator UK",
+    "short": "Work out what to charge per session, pack and month from the take-home you want.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/FKT9X",
+    "image": "img/pt-pricing-calculator.png"
   },
   {
     "slug": "recipe-costing-sheet",
@@ -241,6 +304,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/e1pLi",
     "image": "img/reseller-inventory-log.png"
+  },
+  {
+    "slug": "reseller-listing-tracker",
+    "name": "Reseller Listing and Sales Tracker UK",
+    "short": "Listing tracker for Vinted, eBay, Depop, Etsy and Facebook Marketplace sellers: where each item is listed, every price drop, days to sell, profit and a summary.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/Ku8B9",
+    "image": "img/reseller-listing-tracker.png"
   },
   {
     "slug": "self-employed-tax-estimate-planner",
@@ -331,5 +403,14 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/FBUvY",
     "image": "img/trading-allowance-checker.png"
+  },
+  {
+    "slug": "tutor-record-book",
+    "name": "Tutor Record Book 2026/27",
+    "short": "Income by pupil, costs by type, monthly takings and MTD quarterly update totals.",
+    "price_gbp": 11,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/xgqU2",
+    "image": "img/tutor-record-book.png"
   }
 ]
