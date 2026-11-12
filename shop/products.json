@@ -120,10 +120,28 @@
     "slug": "dog-grooming-client-pet-tracker",
     "name": "Dog Grooming Client and Pet Tracker UK",
     "short": "Owners, dogs, appointments, next groom due, vaccinations, no-shows and takings for UK groomers.",
-    "price_gbp": 9,
+    "price_gbp": 7.5,
     "status": "ready",
-    "buy_url": "",
+    "buy_url": "https://payhip.com/b/7ZyG9",
     "image": "img/dog-grooming-client-pet-tracker.png"
+  },
+  {
+    "slug": "dog-grooming-forms-pack",
+    "name": "Dog Grooming Forms UK (printable)",
+    "short": "A4 forms for UK dog groomers: intake, pet record card, consent, vet release, policies. Excel included.",
+    "price_gbp": 5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/ER6nd",
+    "image": "img/dog-grooming-forms-pack.png"
+  },
+  {
+    "slug": "dog-grooming-price-calculator",
+    "name": "Dog Grooming Price Calculator UK",
+    "short": "A price for every dog size and coat, worked out from your costs and take-home goal.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/M5e3H",
+    "image": "img/dog-grooming-price-calculator.png"
   },
   {
     "slug": "fitness-class-register",
@@ -147,10 +165,10 @@
     "slug": "gallery-delivery-tracker",
     "name": "Gallery Delivery Tracker UK",
     "short": "Editing steps, turnaround deadlines, gallery expiry and print orders for photographers.",
-    "price_gbp": 7,
+    "price_gbp": 5.5,
     "status": "ready",
-    "buy_url": "",
-    "image": ""
+    "buy_url": "https://payhip.com/b/Ixeo1",
+    "image": "img/gallery-delivery-tracker.png"
   },
   {
     "slug": "hair-beauty-barber-record-book",
@@ -448,6 +466,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/pln4T",
     "image": "img/tutor-hourly-rate-calculator.png"
+  },
+  {
+    "slug": "tutor-lesson-student-tracker",
+    "name": "Tutor Planner and Student Tracker UK",
+    "short": "Topic checklist, lesson plans, mock scores, target grades and a parent report for tutors.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/faP5s",
+    "image": "img/tutor-lesson-student-tracker.png"
   },
   {
     "slug": "tutor-record-book",
