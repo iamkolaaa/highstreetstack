@@ -1,5 +1,41 @@
 [
   {
+    "slug": "airbnb-booking-income-tracker",
+    "name": "Airbnb Booking Income Tracker UK",
+    "short": "Income and expenses per booking, platform fees, occupancy, ADR and day counters for UK hosts.",
+    "price_gbp": 7.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/G1mUA",
+    "image": "img/airbnb-booking-income-tracker.png"
+  },
+  {
+    "slug": "airbnb-changeover-planner",
+    "name": "Airbnb Changeover Planner UK",
+    "short": "Turnover calendar, cleaner pay vs cleaning fee, linen, damage log and safety dates.",
+    "price_gbp": 5.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/WatNl",
+    "image": "img/airbnb-changeover-planner.png"
+  },
+  {
+    "slug": "airbnb-host-bundle",
+    "name": "Airbnb Host Bundle UK",
+    "short": "Five UK Airbnb host tools in one zip: pricing calculator, booking income tracker, changeover planner, holiday let record book and holiday let tax calculator, with example and BLANK copies.",
+    "price_gbp": 22,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/vnIgC",
+    "image": "img/airbnb-host-bundle.png"
+  },
+  {
+    "slug": "airbnb-pricing-calculator",
+    "name": "Airbnb Pricing Calculator UK",
+    "short": "Nightly rate by season, cleaning fee, break-even occupancy and profit per booking.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/qJ4d2",
+    "image": "img/airbnb-pricing-calculator.png"
+  },
+  {
     "slug": "bakery-order-takings-tracker",
     "name": "Bakery Order Tracker and Market Stall Takings Log UK",
     "short": "Track cake orders, print a 7-day bake list, see busy days on a calendar and work out what each market day earned.",
@@ -196,6 +232,24 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/KRB8e",
     "image": "img/hmrc-mileage-log.png"
+  },
+  {
+    "slug": "holiday-let-record-book",
+    "name": "Holiday Let Record Book 2026/27",
+    "short": "Airbnb and holiday let payouts, host costs and mortgage interest, with quarterly totals.",
+    "price_gbp": 11,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/GK6E2",
+    "image": "img/holiday-let-record-book.png"
+  },
+  {
+    "slug": "holiday-let-tax-calculator-2026-27",
+    "name": "Holiday Let Tax Calculator UK 2026/27",
+    "short": "Holiday let tax before and after FHL, Rent a Room check, private use split and VAT watch.",
+    "price_gbp": 6.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/P8M4N",
+    "image": "img/holiday-let-tax-calculator-2026-27.png"
   },
   {
     "slug": "landlord-bundle",
