@@ -117,6 +117,15 @@
     "image": "img/dog-groomer-record-book.png"
   },
   {
+    "slug": "dog-grooming-business-bundle",
+    "name": "Dog Grooming Business Bundle UK",
+    "short": "Four UK dog grooming tools in one zip: price calculator, client and pet tracker, printable forms pack and self-employed record book, with example and BLANK copies.",
+    "price_gbp": 22,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/vsdX7",
+    "image": "img/dog-grooming-business-bundle.png"
+  },
+  {
     "slug": "dog-grooming-client-pet-tracker",
     "name": "Dog Grooming Client and Pet Tracker UK",
     "short": "Owners, dogs, appointments, next groom due, vaccinations, no-shows and takings for UK groomers.",
@@ -241,6 +250,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/wj0CM",
     "image": "img/online-seller-tax-record.png"
+  },
+  {
+    "slug": "personal-trainer-bundle",
+    "name": "Personal Trainer Business Bundle UK",
+    "short": "Five UK personal trainer tools in one zip: pricing calculator, client and session tracker, progress tracker with PAR-Q form, class register and self-employed record book, with example and BLANK copies.",
+    "price_gbp": 22,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/NW4gA",
+    "image": "img/personal-trainer-bundle.png"
   },
   {
     "slug": "personal-trainer-record-book",
@@ -493,5 +511,14 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/Q9KfJ",
     "image": "img/tutor-session-tracker.png"
+  },
+  {
+    "slug": "tutoring-business-bundle",
+    "name": "Tutoring Business Bundle UK",
+    "short": "Four UK private tutor tools in one zip: hourly rate calculator, session tracker, lesson planner and student tracker, and self-employed record book, with example and BLANK copies.",
+    "price_gbp": 22,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/0vQjc",
+    "image": "img/tutoring-business-bundle.png"
   }
 ]
