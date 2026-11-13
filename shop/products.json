@@ -333,6 +333,15 @@
     "image": "img/photographer-record-book.png"
   },
   {
+    "slug": "photography-business-bundle",
+    "name": "Photography Business Bundle UK",
+    "short": "Five UK photographer tools in one zip: pricing calculator, client booking tracker, gallery delivery tracker, kit register and record book, with example and BLANK copies.",
+    "price_gbp": 22,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/cOJ28",
+    "image": "img/photography-business-bundle.png"
+  },
+  {
     "slug": "photography-client-booking-tracker",
     "name": "Photography Client Booking Tracker UK",
     "short": "Enquiries, bookings, booking fees and balance due dates for self-employed photographers.",
@@ -340,6 +349,15 @@
     "status": "ready",
     "buy_url": "https://payhip.com/b/NMgWP",
     "image": "img/photography-client-booking-tracker.png"
+  },
+  {
+    "slug": "photography-kit-register",
+    "name": "Photography Kit Register UK",
+    "short": "Serial numbers, warranties, insured values, repairs, hire and a shoot day checklist for photographers.",
+    "price_gbp": 5.5,
+    "status": "ready",
+    "buy_url": "https://payhip.com/b/CYtke",
+    "image": "img/photography-kit-register.png"
   },
   {
     "slug": "photography-pricing-calculator",
