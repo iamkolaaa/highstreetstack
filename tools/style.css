@@ -11,7 +11,7 @@ a{color:var(--tomato-ink)}a:hover{color:var(--ink)}
 header.site{border-bottom:2px solid var(--ink)}
 header.site .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}
 .brand{font:700 1.25rem "Bricolage Grotesque",sans-serif;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
-.brand i{display:inline-block;width:14px;height:14px;background:var(--tomato);box-shadow:5px 5px 0 var(--sage)}
+.brand .brand-mark{width:32px;height:32px;border-radius:50%;flex:none;display:block}
 nav.main a{margin-right:18px;color:var(--ink);text-decoration:none;font-weight:700}
 nav.main a:hover,nav.main a[aria-current]{text-decoration:underline;text-decoration-color:var(--tomato);text-decoration-thickness:3px;text-underline-offset:5px}
 .hero{padding:40px 0 20px}
@@ -75,6 +75,7 @@ footer.site{margin-top:60px;background:var(--ink);color:var(--paper);padding:28p
 footer.site a{color:var(--paper)}
 footer.site .wrap{display:flex;flex-wrap:wrap;gap:10px 28px;justify-content:space-between}
 footer.site p{margin:0}
+footer.site .tagline{margin:.35em 0 0;font-size:.95rem;opacity:.85}
 .note{font-size:.92rem;color:#3d4540}
 .sr{position:absolute;left:-9999px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
