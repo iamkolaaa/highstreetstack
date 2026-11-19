@@ -23,3 +23,17 @@ Edit the code, then Deploy → Manage deployments → pencil → Version: New �
 ## Limits
 
 Five enquiries per email address per hour. Google's free daily email quota applies (100 recipients per day).
+
+## Call bookings (highstreetstack.com/call/)
+
+The same script takes 20-minute call bookings. Each booking:
+
+- adds a row to the `Calls` tab (set Status to `Cancelled` to free the slot),
+- puts a 20-minute event in your main Google Calendar,
+- emails you, and sends a Telegram message if `TG_TOKEN` and `TG_CHAT` are set under Project Settings → Script properties.
+
+The page hides times already booked and times that clash with anything in your main calendar. All-day events don't block.
+
+Opening hours are `HOURS` near the bottom of `Code.gs` and in `lib/slots.js`. Change both together. Default: Mon–Fri 09:00–18:00, Sat 10:00–14:00, UK time, earliest slot 3 hours ahead, up to 14 days out.
+
+After pasting the new `Code.gs`, deploy a new version (see "Change later") and allow the Calendar permission when Google asks.

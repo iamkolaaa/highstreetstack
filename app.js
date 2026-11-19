@@ -1,6 +1,7 @@
 import { isUp } from './lib/board.js';
 
-export const ENQUIRY_URL = 'https://script.google.com/macros/s/AKfycbzyyZ09tSvfzT12O3PaPwFx92hih4zh2iQ4U_0cxT7oNXhNqJxwRlLOxvtFIePpUCjN/exec';
+export { ENQUIRY_URL } from './lib/config.js';
+import { ENQUIRY_URL } from './lib/config.js';
 
 const $ = id => document.getElementById(id);
 
