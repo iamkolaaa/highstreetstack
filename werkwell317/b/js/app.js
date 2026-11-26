@@ -499,6 +499,7 @@
         break;
     }
     st.innerHTML = '<div class="step' + (dir < 0 ? ' is-back' : '') + '">' + html + '</div>';
+    $$('.rv, .rv-pic', st).forEach(function (x) { x.classList.add('is-in'); });
     if (b.step === 7) { $('#steps').innerHTML = ''; $('#prog').style.transform = 'scaleX(1)'; $('#summary').hidden = true; setTimeout(function () { var tw = $('.ticket-wrap'); if (tw) tw.classList.add('is-party'); }, 50); return; }
     $('#summary').hidden = false;
     if (b.ahead) { var np = (b.picks || []).length; $('#summary').innerHTML = '<h3>Booking ahead</h3><dl>' + row('Classes', np ? String(np) : 'None picked yet') + row('Plan', isMember() ? 'Werk Club member' : '5 class pass, ' + creditsLeft() + ' credits left') + row('Where', 'Fearless Fit Hub') + row('Name', b.name) + '</dl>'; return; }
@@ -510,20 +511,46 @@
       ['yes', 'no'].map(function (o) { return '<label class="opt"><input type="radio" name="' + name + '" value="' + o + '"' + (val === o ? ' checked' : '') + '><span class="opt__dot"></span><span class="opt__body"><b>' + (o === 'yes' ? 'Yes' : 'No') + '</b></span></label>'; }).join('') + '</div></fieldset>';
   }
   function bookCollect() {
-    var st = $('#stage'), b = B, err = '';
+    var st = $('#stage'), b = B, err = '', bad = null;
     function val(n) { var el = $('[name="' + n + '"]:checked', st) || $('[name="' + n + '"]', st); return el ? (el.type === 'checkbox' ? el.checked : el.value) : ''; }
+    function fail(msg, name) { if (!err) { err = msg; bad = name; } }
     switch (b.step) {
-      case 0: var it = $('[name="item"]:checked', st); if (!it) err = 'Choose a class, an event or a private session.'; else { var p = it.value.split(':'); if (b.item !== p[1]) { b.date = null; b.pay = null; } b.kind = p[0]; b.item = p[1]; if (b.kind === 'event') b.date = evt(b.item).date; } break;
+      case 0: var it = $('[name="item"]:checked', st); if (!it) fail('Choose a class, an event or a private session.', 'item'); else { var p = it.value.split(':'); if (b.item !== p[1]) { b.date = null; b.pay = null; } b.kind = p[0]; b.item = p[1]; if (b.kind === 'event') b.date = evt(b.item).date; } break;
       case 1:
-        if (b.ahead) { b.picks = $$('[name="pick"]:checked', st).map(function (x) { return x.value; }); if (!b.picks.length) err = 'Pick at least one class.'; else if (!isMember() && b.picks.length > creditsLeft()) err = 'You have ' + creditsLeft() + ' credits left. Untick some, or buy a pass first.'; break; }
-        var d = $('[name="date"]:checked', st); if (!d) err = 'Choose a date.'; else b.date = d.value; break;
-      case 2: if (b.ahead) { b.pay = isMember() ? 'member' : 'wallet'; break; } var pp = $('[name="pay"]:checked', st); if (b.pay !== 'waitlist') { if (!pp) err = 'Choose how to pay.'; else b.pay = pp.value; } b.knee = !!val('knee'); break;
-      case 3: b.name = val('name').trim(); b.email = val('email').trim(); b.mobile = val('mobile').trim(); if (!b.name || !/^\S+@\S+\.\S+$/.test(b.email) || b.mobile.replace(/\D/g, '').length < 10) err = 'Add your name, a working email and a mobile number.'; break;
-      case 4: b.ec_name = val('ec_name'); b.ec_phone = val('ec_phone'); b.injury = val('injury'); b.injury_detail = val('injury_detail'); b.pregnant = val('pregnant'); b.confirms = !!val('confirms');
-        if (!b.ec_name || !b.ec_phone) err = 'Add an emergency contact and their number.'; else if (!b.injury || !b.pregnant) err = 'Answer both questions.'; else if (!b.confirms) err = 'Tick the box to confirm.'; break;
-      case 5: b.photo = val('photo'); b.marketing = val('marketing'); b.terms = !!val('terms'); if (!b.photo || !b.marketing) err = 'Choose an answer for photos and for news.'; else if (!b.terms) err = 'Tick the box to agree to the studio policies.'; break;
+        if (b.ahead) { b.picks = $$('[name="pick"]:checked', st).map(function (x) { return x.value; }); if (!b.picks.length) fail('Pick at least one class.', 'pick'); else if (!isMember() && b.picks.length > creditsLeft()) fail('You have ' + creditsLeft() + ' credits left. Untick some, or buy a pass first.', 'pick'); break; }
+        var d = $('[name="date"]:checked', st); if (!d) fail('Choose a date.', 'date'); else b.date = d.value; break;
+      case 2: if (b.ahead) { b.pay = isMember() ? 'member' : 'wallet'; break; } var pp = $('[name="pay"]:checked', st); if (b.pay !== 'waitlist') { if (!pp) fail('Choose how to pay.', 'pay'); else b.pay = pp.value; } b.knee = !!val('knee'); break;
+      case 3: b.name = val('name').trim(); b.email = val('email').trim(); b.mobile = val('mobile').trim();
+        if (!b.name) fail('Add your name.', 'name');
+        if (!/^\S+@\S+\.\S+$/.test(b.email)) fail('Add a working email address, like name@example.com.', 'email');
+        if (b.mobile.replace(/\D/g, '').length < 10) fail('Add your mobile number, at least 10 digits.', 'mobile');
+        break;
+      case 4: b.ec_name = val('ec_name').trim(); b.ec_phone = val('ec_phone').trim(); b.injury = val('injury'); b.injury_detail = val('injury_detail'); b.pregnant = val('pregnant'); b.confirms = !!val('confirms');
+        if (!b.ec_name) fail('Add the name of someone we can call in an emergency.', 'ec_name');
+        if (b.ec_phone.replace(/\D/g, '').length < 10) fail('Add your emergency contact’s phone number.', 'ec_phone');
+        if (!b.injury) fail('Answer the question about injuries or conditions.', 'injury');
+        if (!b.pregnant) fail('Answer the question about pregnancy.', 'pregnant');
+        if (!b.confirms) fail('Tick the box to confirm.', 'confirms');
+        break;
+      case 5: b.photo = val('photo'); b.marketing = val('marketing'); b.terms = !!val('terms');
+        if (!b.photo) fail('Choose an answer for photos and video.', 'photo');
+        if (!b.marketing) fail('Choose an answer for news by email.', 'marketing');
+        if (!b.terms) fail('Tick the box to agree to the studio policies.', 'terms');
+        break;
     }
-    var e = $('#err', st); if (e) e.textContent = err;
+    $$('[aria-invalid]', st).forEach(function (x) { x.removeAttribute('aria-invalid'); x.removeAttribute('aria-describedby'); });
+    $$('.field-err', st).forEach(function (x) { x.parentNode.removeChild(x); });
+    var e = $('#err', st); if (e) e.textContent = err ? 'Please check: ' + err : '';
+    if (bad) {
+      var fld = $('[name="' + bad + '"]', st), anchor = fld && (fld.closest('label.f') || fld.closest('fieldset') || fld.closest('.opt'));
+      if (fld) {
+        var msg = doc.createElement('p'); msg.className = 'field-err'; msg.id = 'fe-' + bad; msg.textContent = err;
+        if (anchor) anchor.parentNode.insertBefore(msg, anchor.nextSibling);
+        $$('[name="' + bad + '"]', st).forEach(function (x) { x.setAttribute('aria-invalid', 'true'); x.setAttribute('aria-describedby', 'fe-' + bad); });
+        (anchor || fld).scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+        try { fld.focus({ preventScroll: true }); } catch (x) { fld.focus(); }
+      }
+    }
     return !err;
   }
   function bookNext() { if (!bookCollect()) return; B.step++; if (B.step === 1 && B.kind === 'event') B.step = 2; if (B.ahead && B.step === 3) B.step = 6; bookRender(1); scrollToTop(); }
@@ -695,6 +722,7 @@
     var el = doc.createElement('div'); el.className = 'sheet'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
     el.innerHTML = '<div class="sheet__scrim" data-close></div><div class="sheet__panel"><button type="button" class="sheet__x" data-close aria-label="Close">&times;</button>' + html + '</div>';
     doc.body.appendChild(el);
+    $$('.rv, .rv-pic', el).forEach(function (x) { x.classList.add('is-in'); });
     var last = doc.activeElement;
     function close() { el.classList.add('is-closing'); setTimeout(function () { el.remove(); if (last && last.focus) last.focus(); }, reduced ? 0 : 300); doc.removeEventListener('keydown', onKey); }
     function onKey(e) { if (e.key === 'Escape') close(); }
@@ -817,6 +845,54 @@
       '<div class="strip" aria-hidden="true">' + pic('dancer-balance', '', '', { sizes: '34vw' }) + pic('millie-portrait', '', '', { sizes: '34vw' }) + pic('dancer-arm-pose', '', '', { sizes: '34vw' }) + '</div>';
   };
 
+  /* ----- Privacy and cookie policies ----- */
+  function legalBlock(lines) {
+    var out = '', list = [];
+    function mark(t) { return esc(t).replace(/\[([^\]]+)\]/g, '<mark class="blank">[$1]</mark>'); }
+    function flush() { if (list.length) { out += '<ul>' + list.map(function (l) { return '<li>' + mark(l) + '</li>'; }).join('') + '</ul>'; list = []; } }
+    lines.forEach(function (l) { if (l.indexOf('- ') === 0) list.push(l.slice(2)); else { flush(); out += '<p>' + mark(l) + '</p>'; } });
+    flush();
+    return out;
+  }
+  function legalPage(kind) {
+    var L = window.WW_LEGAL || { privacy: [], cookies: [] }, secs = L[kind], isP = kind === 'privacy';
+    return '<header class="phead legal-head"><h1>' + (isP ? 'Privacy policy' : 'Cookie policy') + '</h1>' +
+      '<p class="legal-note">Draft for you to check. This is not legal advice.</p>' +
+      '<p class="lead">' + (isP ? 'Each section shows your current wording, then my suggested wording for the new site. Words in square brackets are facts only you can fill in.' : 'You do not have a cookie policy yet. This is my suggested one for the new site.') + '</p>' +
+      '<p class="legal-links"><a class="tlink is-on" href="#/' + (isP ? 'cookies' : 'privacy') + '">' + (isP ? 'Cookie policy' : 'Privacy policy') + '</a><button type="button" class="tlink is-on tlink--btn" data-cookie-settings>Cookie settings</button></p></header>' +
+      '<div class="legal wrap">' + secs.map(function (sec, i) {
+        return '<section class="legal-sec rv" aria-labelledby="lg-' + i + '"><h2 id="lg-' + i + '">' + esc(sec.title) + '</h2><div class="legal-body">' +
+          (isP ? (sec.original ? '<div class="legal-cur"><p class="legal-label">Your current wording</p>' + legalBlock(sec.original) + '</div>' : '<div class="legal-cur legal-cur--none"><p class="legal-label">Your current wording</p><p>Your policy does not cover this yet.</p></div>') : '') +
+          '<div class="legal-new"><p class="legal-label">My suggested wording</p>' + legalBlock(sec.suggested) + '</div></div></section>';
+      }).join('') + '</div>';
+  }
+  views.privacy = function () { return legalPage('privacy'); };
+  views.cookies = function () { return legalPage('cookies'); };
+
+  /* ----- Cookie notice and settings ----- */
+  function cookieCard() {
+    if (!window.WerkConsent || WerkConsent.get() || $('#cookie')) return;
+    var el = doc.createElement('section'); el.id = 'cookie'; el.className = 'cookie'; el.setAttribute('aria-labelledby', 'ck-h'); el.setAttribute('role', 'region');
+    el.innerHTML = '<div class="cookie__in"><div class="cookie__txt"><h2 id="ck-h">Cookies</h2><p>This site uses cookies.</p></div><div class="cookie__acts"><button type="button" class="tlink is-on tlink--btn" data-cookie-settings>Find out more</button><button type="button" class="btn btn--sm" data-cookie-ok><span class="btn__label">OK</span></button></div></div>';
+    var top = $('#top'); top.insertBefore(el, $('#menu'));
+  }
+  function cookieDone() { var el = $('#cookie'); if (!el) return; el.classList.add('is-leaving'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, reduced ? 0 : 300); }
+  function cookiePanel() {
+    var c = (window.WerkConsent && WerkConsent.get()) || { analytics: false };
+    sheet('<div class="cpanel"><h2>Cookie settings</h2><p>Choose which cookies this site may use. You can change this any time from “Cookie settings” at the foot of every page.</p>' +
+      '<div class="cpanel__row"><div><h3>Essential</h3><p>Always on. They remember your bookings, your sound choice and this cookie choice so the site works.</p></div><span class="cpanel__on">Always on</span></div>' +
+      '<div class="cpanel__row"><div><h3>Analytics</h3><p>PostHog, to see how the site is used and where booking gets stuck. Off until you accept.</p></div><label class="switch"><input type="checkbox" id="ckAnalytics"' + (c.analytics ? ' checked' : '') + '><span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span><span class="vh">Allow analytics cookies</span></label></div>' +
+      '<div class="cpanel__acts"><button type="button" class="btn btn--accent" data-ck="all"><span class="btn__label">Accept all</span></button><button type="button" class="btn btn--ghost" data-ck="none"><span class="btn__label">Reject non-essential</span></button><button type="button" class="btn btn--ghost" data-ck="save"><span class="btn__label">Save my choices</span></button></div>' +
+      '<p><a class="tlink is-on" href="#/cookies" data-close>Read the cookie policy</a></p></div>', function (el, close) {
+      el.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-ck]'); if (!b) return;
+        var a = b.dataset.ck === 'all' ? true : b.dataset.ck === 'none' ? false : $('#ckAnalytics', el).checked;
+        WerkConsent.set(a); cookieDone(); close();
+        toast(a ? 'Saved: essential and analytics cookies' : 'Saved: essential cookies only');
+      });
+    });
+  }
+
   /* ----- Private hire ----- */
   views['private-hire'] = function () {
     return '<header class="phead phead--split"><h1>Private hire</h1><p class="lead">Hen parties, birthdays and work socials: a private twerk class for your group, led by Millie.</p></header>' +
@@ -906,7 +982,7 @@
           '<div><h2>More</h2><a class="flink" href="#/about">About</a><a class="flink" href="#/private-hire">Private hire</a><a class="flink" href="#/contact">Contact</a></div>' +
           '<div><h2>' + v(F.newsletter_heading) + '</h2><form class="foot__news" data-form="news" novalidate><label class="vh" for="newsF">Email address</label><input id="newsF" type="email" placeholder="' + esc(F.newsletter_placeholder) + '" autocomplete="email"><button type="submit" class="btn btn--paper btn--sm"><span class="btn__label">' + esc(F.newsletter_button) + '</span></button></form></div>' +
         '</div></div>' +
-      '<div class="foot__legal"><span>' + esc(F.bottom) + '</span><span class="foot__legal-links"><a class="flink" href="#/contact">' + esc(F.privacy_link) + '</a><a class="flink" href="#/studio">' + esc(F.studio_login_link) + '</a><a class="flink" href="#top" data-top>Back to top</a></span></div>';
+      '<div class="foot__legal"><span>' + esc(F.bottom) + '</span><span class="foot__legal-links"><a class="flink" href="#/privacy">Privacy policy</a><a class="flink" href="#/cookies">Cookie policy</a><button type="button" class="flink flink--btn" data-cookie-settings>Cookie settings</button><a class="flink" href="#/studio">' + esc(F.studio_login_link) + '</a><a class="flink" href="#top" data-top>Back to top</a></span></div>';
   }
 
   /* ================= ROUTER ================= */
@@ -918,7 +994,7 @@
     (parts[1] || '').split('&').forEach(function (kv) { if (!kv) return; var p = kv.split('='); q[decodeURIComponent(p[0])] = decodeURIComponent(p[1] || ''); });
     return { name: path[0] || 'home', id: path[1], q: q, anchor: anchor };
   }
-  var TITLES = { home: 'WERK WELL Studio | Women-only twerk and dance fitness, Milton Keynes', classes: 'Classes | WERK WELL Studio', book: 'Book | WERK WELL Studio', club: 'The Werk Club | WERK WELL Studio', events: 'Events | WERK WELL Studio', journal: 'Journal | WERK WELL Studio', about: 'About | WERK WELL Studio', contact: 'Contact | WERK WELL Studio', 'private-hire': 'Private hire | WERK WELL Studio', me: 'Me | WERK WELL Studio', studio: 'Studio | WERK WELL Studio' };
+  var TITLES = { privacy: 'Privacy policy | WERK WELL Studio', cookies: 'Cookie policy | WERK WELL Studio', home: 'WERK WELL Studio | Women-only twerk and dance fitness, Milton Keynes', classes: 'Classes | WERK WELL Studio', book: 'Book | WERK WELL Studio', club: 'The Werk Club | WERK WELL Studio', events: 'Events | WERK WELL Studio', journal: 'Journal | WERK WELL Studio', about: 'About | WERK WELL Studio', contact: 'Contact | WERK WELL Studio', 'private-hire': 'Private hire | WERK WELL Studio', me: 'Me | WERK WELL Studio', studio: 'Studio | WERK WELL Studio' };
   function render(keepScroll) {
     var r = parse(); if (!views[r.name]) r.name = 'home';
     var view = $('#view'), y = window.scrollY;
@@ -1078,6 +1154,8 @@
     if (t.closest('[data-back]')) { bookBack(); return; }
     if (t.closest('#confirmBtn')) { bookConfirm(t.closest('#confirmBtn')); return; }
     if (t.closest('#useDemo')) { var st = $('#stage'); $('[name=name]', st).value = 'Demo member'; $('[name=email]', st).value = 'demo.member@example.com'; $('[name=mobile]', st).value = '07700 900123'; return; }
+    if (t.closest('[data-cookie-ok]')) { WerkConsent.set(true); cookieDone(); toast('Thanks. Cookies accepted.'); return; }
+    if (t.closest('[data-cookie-settings]')) { e.preventDefault(); cookiePanel(); return; }
     var gb = t.closest('[data-gallery]'); if (gb && !t.closest('.gtile')) { openLightbox(+gb.dataset.gallery); return; }
     var ia = t.closest('[data-ics-all]'); if (ia) { var ids = ia.dataset.icsAll.split(','); icsMany(S.bookings.filter(function (b) { return ids.indexOf(b.id) >= 0; }), 'werk-well-bookings.ics'); return; }
     var pl = t.closest('[data-plan]'); if (pl) { S.plan = pl.dataset.plan; save(); render(true); toast(S.plan === 'member' ? 'Demo member is now a Werk Club member' : 'Demo member now has a 5 class pass'); return; }
@@ -1134,7 +1212,7 @@
     setVoice(S.voice, false);
     syncSound();
     if (!S.offerGone) setTimeout(function () { $('#offer').hidden = false; root.classList.add('has-offer'); }, 600);
-    doc.addEventListener('werkwell:enter', function () { syncSound(); });
+    doc.addEventListener('werkwell:enter', function () { syncSound(); setTimeout(cookieCard, 700); });
     if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(function () {});
   }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();

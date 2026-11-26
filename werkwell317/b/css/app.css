@@ -1178,3 +1178,81 @@ table.t td:first-child { white-space: nowrap; }
 .foot .flink:active { transform: translateY(1px); }
 .foot .flink--addr { display: inline-block; padding: 8px 0; min-height: 44px; }
 .flink--addr span { white-space: nowrap; }
+
+.field-err { color: #9b2c12; font-size: .9375rem; font-weight: 500; margin: -10px 0 16px; animation: step-in var(--t-mid) var(--ease-out) both; }
+[aria-invalid="true"] { border-color: #9b2c12 !important; outline: 1px solid #9b2c12; }
+.opt:has(input[aria-invalid="true"]) { outline: 2px solid #9b2c12; outline-offset: -2px; }
+
+/* ---- round 2: cookie notice ---- */
+.cookie { position: fixed; z-index: 70; left: 16px; bottom: calc(16px + var(--tabs-h)); width: min(340px, calc(100vw - 32px)); background: var(--paper); color: var(--ink); padding: 18px 20px 16px; animation: sheet-in var(--t-slow) var(--ease-out) both; }
+.cookie.is-leaving { animation: sheet-out var(--t-mid) var(--ease-move) both; }
+.cookie h2 { font-family: var(--sans); font-weight: 500; font-size: 1rem; letter-spacing: 0; margin: 0 0 4px; }
+.cookie p { margin: 0 0 12px; font-size: .9375rem; }
+.cookie__acts { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.has-cookie .voice, .has-cookie .offer { opacity: 0; pointer-events: none; transform: translateY(20px); }
+.tlink--btn, .flink--btn { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; min-height: 44px; }
+.cpanel h3 { font-family: var(--sans); font-weight: 500; font-size: 1rem; letter-spacing: 0; margin: 0 0 4px; }
+.cpanel__row { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; background: var(--paper); padding: 16px; margin-bottom: 8px; }
+.cpanel__row p { margin: 0; font-size: .9375rem; color: var(--muted); }
+.cpanel__on { font-size: .875rem; font-weight: 500; white-space: nowrap; padding-top: 2px; }
+.cpanel__acts { display: grid; gap: 8px; margin: 20px 0 8px; }
+.switch { position: relative; flex: none; cursor: pointer; display: inline-flex; min-height: 44px; align-items: center; }
+.switch input { position: absolute; opacity: 0; }
+.switch__track { width: 48px; height: 28px; border-radius: 14px; background: var(--sand-2); position: relative; transition: background-color var(--t-mid) ease; }
+.switch__thumb { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform var(--t-mid) var(--ease-press); }
+.switch input:checked + .switch__track { background: var(--ink); }
+.switch input:checked + .switch__track .switch__thumb { transform: translateX(20px); }
+.switch input:focus-visible + .switch__track { outline: 2px solid var(--ink); outline-offset: 3px; }
+@media (max-width: 767px) {
+  .cookie { left: 12px; right: 12px; width: auto; bottom: calc(10px + var(--tabs-h)); }
+}
+/* ---- round 2: legal pages ---- */
+.legal-head .lead { max-width: 40ch; }
+.legal-note { display: inline-block; background: var(--ink); color: var(--bg); padding: 6px 12px; font-size: .9375rem; margin: 20px 0 0; }
+.legal-links { display: flex; flex-wrap: wrap; gap: 4px 24px; margin-top: 20px; align-items: center; }
+.legal { max-width: 860px; padding-bottom: 96px; }
+.legal-sec { margin-bottom: 56px; }
+.legal-sec h2 { font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem); margin-bottom: 16px; }
+.legal-label { font-size: .875rem; font-weight: 500; margin: 0 0 8px; }
+.legal-cur { background: var(--sand); padding: 18px 20px; margin-bottom: 8px; }
+.legal-cur--none p:last-child { color: var(--muted); margin: 0; }
+.legal-new { background: var(--paper); padding: 18px 20px; }
+.legal-cur p, .legal-new p { margin: 0 0 10px; }
+.legal-cur ul, .legal-new ul { margin: 0 0 10px; padding-left: 1.2em; }
+.legal-cur li, .legal-new li { margin-bottom: 4px; }
+mark.blank { background: #f6e0cf; color: var(--ink); padding: 0 3px; }
+[hidden] { display: none !important; }
+.legal { margin: 0 auto; box-sizing: content-box; }
+.legal-head { max-width: 860px; margin: 0 auto; padding-left: var(--m); padding-right: var(--m); box-sizing: content-box; }
+.cookie { transition: transform var(--t-slow) var(--ease-out), opacity var(--t-mid) ease; }
+.bars-tucked .cookie, .at-foot .cookie { transform: translateY(calc(100% + 90px)); opacity: 0; pointer-events: none; }
+.legal, .legal-head { box-sizing: border-box; width: min(860px, calc(100% - 2 * var(--m))); max-width: none; margin-left: auto; margin-right: auto; padding-left: 0; padding-right: 0; }
+
+/* cookie notice: a quiet in-flow bar under the header, so it never covers the page */
+.cookie, .bars-tucked .cookie, .at-foot .cookie { position: relative; left: auto; right: auto; bottom: auto; width: auto; transform: none; opacity: 1; pointer-events: auto; z-index: 1;
+  background: var(--sand); padding: 12px var(--m); animation: cookie-in var(--t-slow) var(--ease-out) both; }
+@keyframes cookie-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.cookie.is-leaving { animation: cookie-out var(--t-mid) var(--ease-move) both; }
+@keyframes cookie-out { to { opacity: 0; transform: translateY(-8px); } }
+.cookie__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; }
+.cookie__txt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.cookie__txt h2, .cookie__txt p { margin: 0; }
+.cookie__acts { gap: 20px; }
+.has-cookie .voice, .has-cookie .offer { opacity: 1; pointer-events: auto; transform: none; }
+@media (max-width: 767px) { .cookie { padding: 10px var(--m); } }
+/* legal pages: heading column and text column on the page grid */
+.legal, .legal-head { width: auto; margin: 0; padding-left: var(--m); padding-right: var(--m); }
+.legal-head { max-width: none; }
+.legal-sec { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); }
+.legal-sec h2 { grid-column: 1 / 5; }
+.legal-body { grid-column: 5 / 13; max-width: 760px; }
+@media (max-width: 960px) { .legal-sec h2, .legal-body { grid-column: 1 / -1; } }
+
+.top .cookie { padding: 10px var(--m) 12px; font-size: 1rem; }
+.top .cookie p, .top .cookie h2 { font-size: 1rem; }
+@media (max-width: 767px) {
+  .event .event__txt { order: 1; margin-top: 0; }
+  .event .event__pic { order: 2; margin-top: 24px; }
+  .event { display: flex; flex-direction: column; }
+  .legal-sec { margin-bottom: 80px; }
+}
