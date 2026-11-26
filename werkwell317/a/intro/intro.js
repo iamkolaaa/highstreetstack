@@ -10,7 +10,8 @@
   var root, audio = null, audioSrc = '', wantsMuted = true, fadeRaf = 0, done = false;
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function seen() { try { return sessionStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+  /* this demo shows the intro on every page load; ?intro=0 skips it */
+  function seen() { return /[?&]intro=0(&|$)/.test(location.search); }
   function markSeen() { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} }
   function forced() { return /[?&]intro=1(&|$)/.test(location.search); }
 
@@ -97,6 +98,18 @@
           '<button type="button" class="werk-intro__btn werk-intro__quiet" data-act="quiet">Enter without sound</button>' +
         '</div>' +
       '</div>';
+    /* phones: set the wordmark on two lines (WERK / WELL) so the first W is big enough to read */
+    if (window.innerWidth < 700) {
+      var svg = root.querySelector('.werk-intro__logo');
+      if (svg) {
+        svg.setAttribute('viewBox', '100 800 2060 1590');
+        [].forEach.call(svg.querySelectorAll('.wl-5, .wl-6, .wl-7, .wl-8'), function (g) {
+          var w = g.parentNode, m = /translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(w.getAttribute('transform') || '');
+          if (m) w.setAttribute('transform', 'translate(' + (parseFloat(m[1]) - 2345.83) + ' ' + (parseFloat(m[2]) + 830) + ')');
+        });
+        root.classList.add('is-stacked');
+      }
+    }
     document.documentElement.classList.add('werk-intro-lock');
     root.addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('[data-act]') : null;

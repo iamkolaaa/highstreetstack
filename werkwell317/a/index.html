@@ -72,6 +72,19 @@
 
 <main id="main" tabindex="-1"></main>
 
+<div class="player" id="player" hidden>
+  <img class="poster" src="media/our-story-poster.jpg" alt="Millie in her orange WERKWELL tee, arms raised, in the studio" width="1280" height="720">
+  <button class="play" type="button" id="playBtn" aria-label="Play the film, Our Story"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg></button>
+  <div class="pctrl">
+    <button class="pc" type="button" id="pcPlay" aria-label="Pause the film"><svg class="ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg><svg class="ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></button>
+    <button class="pc snd" type="button" id="pcMute" aria-label="Turn sound on"><svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M4 9h4l5-4v14l-5-4H4z"/></svg><svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.8" fill="none"/></svg><span class="snd-l">Tap for sound</span></button>
+  </div>
+  <div class="dock-ctrl">
+    <button type="button" id="dockUp" aria-label="Back to the film"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 12L12 2M5 2h7v7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <button type="button" id="dockX" aria-label="Close the small player"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5"/></svg></button>
+  </div>
+</div>
+
 <nav class="tabs" aria-label="App">
   <span class="tab-ind" aria-hidden="true"><span></span></span>
   <a href="#/" data-tab="0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v9h-5v-6H9v6H4z"/></svg>Home</a>
@@ -87,12 +100,12 @@
 </div>
 
 <div class="words" id="words">
-  <div class="words-opts" id="wordsOpts" role="group" aria-label="Which copy to show">
+  <div class="words-opts" id="wordsOpts" role="group" aria-label="Which wording to show">
     <span class="knob" aria-hidden="true"></span>
-    <button type="button" data-mode="original" aria-pressed="true">Her words</button>
-    <button type="button" data-mode="suggested" aria-pressed="false">Our suggestion</button>
+    <button type="button" data-mode="original" aria-pressed="true">Your words</button>
+    <button type="button" data-mode="suggested" aria-pressed="false">My suggestion</button>
   </div>
-  <button type="button" class="words-pill" id="wordsPill" aria-expanded="false" aria-controls="wordsOpts"><span class="vh">Wording: </span><span id="wordsNow">Her words</span><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 6.5l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+  <button type="button" class="words-pill" id="wordsPill" aria-expanded="false" aria-controls="wordsOpts"><span class="vh">Wording: </span><span id="wordsNow">Your words</span><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 6.5l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

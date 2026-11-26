@@ -21,7 +21,7 @@
 
   /* ---------- copy helpers ---------- */
   var mode = get('mode', 'original');
-  var WALLET0 = { name: '5 class pass', total: 5, left: 3, expires: '2027-01-07' };
+  var WALLET0 = { name: '5 class pass', total: 5, left: 5, expires: '2027-01-07' };
   var EMO = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}]/gu;
   function T(v) { if (v == null) return ''; var t = typeof v === 'string' ? v : (mode === 'suggested' ? v.suggested : v.original); return t.replace(EMO, '').replace(/ {2,}/g, ' ').replace(/^ /gm, ''); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -103,18 +103,16 @@
   var ADDR = '31 Wharfside, Fenny Stratford, Milton Keynes MK2 2AZ';
 
   function footer() {
-    var f = C.footer;
+    var f = C.footer, ext = ' target="_blank" rel="noopener"';
     return '<footer class="foot" data-chapter="dark"><div class="card-back">' +
       '<a class="stamp" href="#/about" aria-label="Meet Millie">' + P('millie-portrait', { sizes: '88px' }) + '</a>' +
-      '<div><h2>See you Wednesday</h2><p>' + E(f.blurb) + '</p><p>Classes run on Wednesday nights at Fearless Fit Hub. Women only, 18 and over.</p>' +
-      '<div class="links"><a class="ul" href="#/classes">Classes</a><a class="ul" href="#/club">The Werk Club</a><a class="ul" href="#/events">Events</a><a class="ul" href="#/journal">Journal</a><a class="ul" href="#/about">About</a><a class="ul" href="#/hire">Private hire</a><a class="ul" href="#/contact">Contact</a></div></div>' +
-      '<ul class="addr"><li><a class="ul" href="mailto:' + C.meta.email + '">' + C.meta.email + '</a></li>' +
-      '<li><a class="ul" href="' + MAP + '" target="_blank" rel="noopener">' + ADDR + '</a></li>' +
-      '<li><a class="ul" href="' + MAP + '" target="_blank" rel="noopener">5.0 on Google, 38 reviews</a></li>' +
-      '<li><a class="ul" href="' + SOC.instagram.url + '" target="_blank" rel="noopener">Instagram ' + SOC.instagram.handle + '</a></li>' +
-      '<li><a class="ul" href="' + SOC.tiktok.url + '" target="_blank" rel="noopener">TikTok ' + SOC.tiktok.handle + '</a></li>' +
-      '<li><a class="ul" href="' + SOC.facebook.url + '" target="_blank" rel="noopener">Facebook ' + SOC.facebook.handle + '</a></li></ul>' +
-      '<p class="imprint"><span>' + esc(f.bottom) + '</span><a class="ul" href="#/privacy">Privacy policy</a><a class="ul" href="#/studio">Studio login</a></p>' +
+      '<div class="cb-top"><h2>See you Wednesday</h2>' +
+      '<ul class="links"><li><a class="tl" href="#/about">About</a></li><li><a class="tl" href="#/hire">Private hire</a></li><li><a class="tl" href="#/contact">Contact</a></li></ul></div>' +
+      '<ul class="addr"><li><a class="tl" href="mailto:' + C.meta.email + '">' + C.meta.email + '</a></li>' +
+      '<li><a class="tl tl-addr" href="' + MAP + '"' + ext + '><span>31 Wharfside, Fenny Stratford,</span><span>Milton Keynes MK2 2AZ</span></a></li>' +
+      '<li><a class="tl" href="' + MAP + '"' + ext + '>5.0 on Google, 38 reviews</a></li>' +
+      '<li class="soc"><a class="tl" href="' + SOC.instagram.url + '"' + ext + '>Instagram</a><a class="tl" href="' + SOC.tiktok.url + '"' + ext + '>TikTok</a><a class="tl" href="' + SOC.facebook.url + '"' + ext + '>Facebook</a></li></ul>' +
+      '<p class="imprint"><span>' + esc(f.bottom) + '</span><a class="tl" href="#/privacy">Privacy policy</a><a class="tl" href="#/studio">Studio login</a></p>' +
       '</div><div class="foot-name" aria-hidden="true" data-logo></div></footer>';
   }
 
@@ -124,20 +122,31 @@
       var act = n > 0 ? btn('Book', '#/book?item=' + c.id + '&date=' + date, 'sm') : '<button class="btn sm ghost" type="button" data-waitlist="' + c.id + '|' + date + '"><span class="lbl">Join waitlist</span>' + SPIN + '</button>';
       return '<li class="row"><span class="when soft">' + fmt(date) + ', ' + c.timetable.time_label + ' &middot; ' + c.length + '</span><span class="what">' + esc(c.name) + '</span><span class="meta ' + (n <= 5 ? 'tag-low' : 'soft') + '">' + placesLabel(n) + (n <= 0 ? '. Join the waitlist.' : '') + '</span><span class="act">' + act + '</span></li>';
     });
-    return '<ul class="rows" aria-live="polite">' + rows.join('') + '</ul>';
+    return (early(date) ? '<p class="early-note">Member early access: this date opens to everyone ' + fmt(addDays(date, -21), true) + '.</p>' : '') + '<ul class="rows" aria-live="polite">' + rows.join('') + '</ul>';
   }
+  /* how far ahead people can book: everyone 3 weeks, members 8 weeks (demo values) */
+  function addDays(s, n) { var d = dt(s); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function isMember() { return !!get('plan', null); }
+  var OPEN_ALL = addDays(TODAY, 21), OPEN_MEMBERS = addDays(TODAY, 56);
+  function bookable(d) { return d <= (isMember() ? OPEN_MEMBERS : OPEN_ALL); }
+  function early(d) { return d > OPEN_ALL; }
   function dateChips(sel) {
-    return '<div class="dates" role="group" aria-label="Choose a Wednesday">' + WEDS.map(function (d) {
-      var x = dt(d); return '<button type="button" class="date" data-date="' + d + '" aria-pressed="' + (d === sel) + '"><span>' + DAY[x.getDay()] + '</span><b>' + x.getDate() + '</b><span>' + MON[x.getMonth()] + '</span></button>';
+    return '<div class="dates" role="group" aria-label="Choose a Wednesday">' + WEDS.filter(bookable).map(function (d) {
+      var x = dt(d); return '<button type="button" class="date' + (early(d) ? ' is-early' : '') + '" data-date="' + d + '" aria-pressed="' + (d === sel) + '"' + (early(d) ? ' aria-label="' + fmt(d, true) + ', member early access"' : '') + '><span>' + DAY[x.getDay()] + '</span><b>' + x.getDate() + '</b><span>' + MON[x.getMonth()] + '</span>' + (early(d) ? '<i class="early">Early</i>' : '') + '</button>';
     }).join('') + '</div>';
   }
   function timetable(id, dark) {
     var sel = WEDS[0];
-    return '<div class="tt ' + (dark ? 'dark' : '') + '" id="' + id + '" data-sel="' + sel + '">' + dateChips(sel) + '<div class="tt-rows">' + timetableRows(sel) + '</div><p class="note soft">Places shown are sample figures for this demo. No classes on 23 and 30 December.</p></div>';
+    return '<div class="tt ' + (dark ? 'dark' : '') + '" id="' + id + '" data-sel="' + sel + '">' + dateChips(sel) + '<div class="tt-rows">' + timetableRows(sel) + '</div><div class="ahead-cta"><p>Got a pass or a membership? Book several Wednesdays in one go.</p>' + btn('Book ahead', '#/book?ahead=1', 'ghost sm') + '</div><p class="note soft">Places shown are sample figures for this demo. No classes on 23 and 30 December. ' + (isMember() ? 'As a member you can book 8 weeks ahead; everyone else 3 weeks.' : 'Members can book 8 weeks ahead; everyone else 3 weeks.') + '</p></div>';
   }
 
   function band(names, label) {
-    return '<section class="band wrap" data-chapter="dark" aria-label="' + esc(label) + '">' + names.map(function (n, i) { return '<figure class="b' + i + ' zoom" data-rv="rise" style="--d:' + i * 80 + 'ms"><div class="frame">' + P(n, { sizes: '(min-width: 900px) 33vw, 50vw', pos: '50% 30%' }) + '</div><figcaption class="small soft">' + esc(ALT[n].split(',')[0]) + '</figcaption></figure>'; }).join('') + '</section>';
+    return '<section class="band wrap" data-chapter="dark" aria-label="' + esc(label) + '">' + names.map(function (n, i) { return '<figure class="b' + i + ' zoom" data-rv="rise" style="--d:' + i * 80 + 'ms"><div class="frame">' + P(n, { sizes: '(min-width: 900px) 33vw, 50vw', pos: '50% 30%' }) + '</div></figure>'; }).join('') + '</section>';
+  }
+  var ORB_PH = ['millie-squat', 'two-women-dancing', 'dancer-balance', 'social-brand-graphic', 'group-laughing', 'dancer-reach', 'twerkmas-poster', 'millie-portrait', 'social-high-five', 'dancer-forward-bend', 'love-to-wine-still', 'dancer-arm-pose', 'social-twerk-sweat-repeat'];
+  function orbSection() {
+    return '<section class="orb-sec" data-chapter="dark" aria-labelledby="h-orb"><div class="wrap orb-head"><h2 id="h-orb" class="sec-h">Inside the club</h2><p>Drag or swipe to spin it. Tap a photo to see it full size.</p></div>' +
+      '<div class="orb" id="orb"><ul class="orb-row">' + ORB_PH.map(function (n, i) { return '<li><button type="button" class="orb-ph" data-i="' + i + '" aria-label="Open photo: ' + esc(ALT[n]) + '"><img src="img/' + n + '-800.webp" alt="' + esc(ALT[n]) + '" width="' + DIM[n][0] + '" height="' + DIM[n][1] + '" loading="lazy"></button></li>'; }).join('') + '</ul></div></section>';
   }
   /* ---------- views ---------- */
   var V = {};
@@ -173,12 +182,7 @@
 
     '<section class="film sec wrap" id="film" data-chapter="dark" aria-labelledby="h-film" style="margin-top:var(--gap)">' +
       '<div class="film-grid"><div data-rv><h2 id="h-film" class="head">Our story</h2><p>Millie\'s film about WERK WELL, shot in the studio. ' + C.meta.video.length + '.</p><p class="soft small">Scroll on and it follows you in the corner.</p></div>' +
-      '<div class="film-slot" data-rv style="--d:80ms"><img class="still" src="media/our-story-poster.jpg" alt="" width="1280" height="720" loading="lazy"><span class="still-note">Playing in the corner</span><div class="player" id="player">' +
-        '<img class="poster" src="media/our-story-poster.jpg" alt="Millie in her orange WERKWELL tee, arms raised, in the studio" width="1280" height="720" loading="lazy">' +
-        '<button class="play" type="button" id="playBtn" aria-label="Play the film, Our Story"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg></button>' +
-        '<button class="sound" type="button" id="soundBtn" hidden><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Tap for sound</button>' +
-        '<div class="dock-ctrl"><button type="button" id="dockUp" aria-label="Back to the film"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 12L12 2M5 2h7v7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button><button type="button" id="dockX" aria-label="Close the small player"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5"/></svg></button></div>' +
-      '</div></div></div>' +
+      '<div class="film-slot" id="filmSlot"><img class="still" src="media/our-story-poster.jpg" alt="" width="1280" height="720" loading="lazy"><span class="still-note">Playing in the corner</span></div></div>' +
     '</section>' +
 
     '<section class="list-sec sec wrap on-paper" id="wednesdays" data-chapter="light" aria-labelledby="h-weds">' +
@@ -204,12 +208,12 @@
     '<section class="gal sec wrap" id="socials" data-chapter="dark" aria-labelledby="h-soc">' +
       '<div class="gal-head"><h2 id="h-soc" data-rv>' + E(h.socials_heading) + '</h2><p class="soft" data-rv style="--d:80ms">' + E(h.socials_sub) + '</p></div>' +
       '<div class="stagger">' +
-        '<a class="tile zoom s1" data-rv="rise" href="' + SOC.instagram.url + '" target="_blank" rel="noopener"><div class="frame">' + P('social-brand-graphic', { sizes: '(min-width: 900px) 33vw, 66vw' }) + '<span class="reveal"><span>Open Instagram</span>' + ARR + '</span></div><span class="cap"><span>Instagram</span><span class="soft">' + SOC.instagram.handle + '</span></span></a>' +
-        '<a class="tile zoom s2" data-rv="rise" href="' + SOC.tiktok.url + '" target="_blank" rel="noopener"><div class="frame">' + P('social-high-five', { sizes: '(min-width: 900px) 50vw, 75vw', pos: '50% 20%' }) + '<span class="reveal"><span>Open TikTok</span>' + ARR + '</span></div><span class="cap"><span>TikTok</span><span class="soft">' + SOC.tiktok.handle + '</span></span></a>' +
-        '<a class="tile zoom s3" data-rv="rise" href="' + SOC.facebook.url + '" target="_blank" rel="noopener"><div class="frame">' + P('social-twerk-sweat-repeat', { sizes: '(min-width: 900px) 50vw, 60vw' }) + '<span class="reveal"><span>Open Facebook</span>' + ARR + '</span></div><span class="cap"><span>Facebook</span><span class="soft">' + SOC.facebook.handle + '</span></span></a>' +
-        '<a class="tile zoom s4" data-rv="rise" href="#/classes"><div class="frame">' + P('dancer-reach', { sizes: '(min-width: 900px) 25vw, 100vw' }) + '<span class="reveal"><span>See the classes</span>' + ARR + '</span></div><span class="cap"><span>Stretch &amp; Flow, joining the timetable soon</span></span></a>' +
-        '<a class="tile zoom s5" data-rv="rise" href="#/events"><div class="frame">' + P('love-to-wine-still', { sizes: '(min-width: 900px) 33vw, 80vw' }) + '<span class="reveal"><span>See the workshop</span>' + ARR + '</span></div><span class="cap"><span>Love to Wine, Sunday 28 February</span></span></a>' +
-        '<a class="tile zoom s6" data-rv="rise" href="#/about"><div class="frame">' + P('millie-portrait', { sizes: '(min-width: 900px) 50vw, 66vw', pos: '50% 30%' }) + '<span class="reveal"><span>Meet Millie</span>' + ARR + '</span></div><span class="cap"><span>Millie, founder of WERK WELL</span></span></a>' +
+        '<a class="tile zoom s1" data-rv="rise" href="' + SOC.instagram.url + '" target="_blank" rel="noopener"><div class="frame">' + P('social-brand-graphic', { sizes: '(min-width: 900px) 33vw, 66vw' }) + '<span class="reveal"><span>Open Instagram</span>' + ARR + '</span></div></a>' +
+        '<a class="tile zoom s2" data-rv="rise" href="' + SOC.tiktok.url + '" target="_blank" rel="noopener"><div class="frame">' + P('social-high-five', { sizes: '(min-width: 900px) 50vw, 75vw', pos: '50% 20%' }) + '<span class="reveal"><span>Open TikTok</span>' + ARR + '</span></div></a>' +
+        '<a class="tile zoom s3" data-rv="rise" href="' + SOC.facebook.url + '" target="_blank" rel="noopener"><div class="frame">' + P('social-twerk-sweat-repeat', { sizes: '(min-width: 900px) 50vw, 60vw' }) + '<span class="reveal"><span>Open Facebook</span>' + ARR + '</span></div></a>' +
+        '<a class="tile zoom s4" data-rv="rise" href="#/classes"><div class="frame">' + P('dancer-reach', { sizes: '(min-width: 900px) 25vw, 100vw' }) + '<span class="reveal"><span>See the classes</span>' + ARR + '</span></div></a>' +
+        '<a class="tile zoom s5" data-rv="rise" href="#/events"><div class="frame">' + P('love-to-wine-still', { sizes: '(min-width: 900px) 33vw, 80vw' }) + '<span class="reveal"><span>See the workshop</span>' + ARR + '</span></div><span class="cap"><span>Love to Wine workshop, Sunday 28 February</span></span></a>' +
+        '<a class="tile zoom s6" data-rv="rise" href="#/about"><div class="frame">' + P('millie-portrait', { sizes: '(min-width: 900px) 50vw, 66vw', pos: '50% 30%' }) + '<span class="reveal"><span>Meet Millie</span>' + ARR + '</span></div></a>' +
       '</div>' +
     '</section>' +
 
@@ -266,7 +270,7 @@
       '</div><div class="founding" data-rv><h3>' + esc(k.founding.heading) + '</h3><p>' + esc(k.founding.text) + '</p></div></section>' +
       '<section class="sec wrap" id="passes" data-chapter="dark" aria-labelledby="h-pass" style="background:var(--bg-2)"><div class="split rev"><div><h2 id="h-pass" class="sec-h" data-rv>' + esc(k.passes_heading) + '</h2><p data-rv>' + esc(k.passes_text) + '</p>' +
         '<ul class="ptable" data-rv>' + passes.map(function (p) { return '<li><span class="pn">' + esc(p.name) + '</span><span class="pp">' + esc(p.price_label) + '</span><span class="pd">' + esc(p.detail) + '</span><span style="grid-column:1/-1;margin-top:8px"><button class="btn sm ghost" type="button" data-buy="' + p.id + '"><span class="lbl">Buy ' + esc(p.name.toLowerCase()) + '</span>' + ARR + '</button></span></li>'; }).join('') + '</ul></div>' +
-        '<div class="frame" style="aspect-ratio:4/5" data-rv="wipe">' + P('social-high-five', { sizes: '(min-width: 900px) 40vw, 100vw', pos: '50% 20%' }) + '</div></div></section>' + band(['dancer-reach', 'two-women-dancing', 'millie-squat'], 'Members in the studio') + footer();
+        '<div class="frame" style="aspect-ratio:4/5" data-rv="wipe">' + P('social-high-five', { sizes: '(min-width: 900px) 40vw, 100vw', pos: '50% 20%' }) + '</div></div></section>' + orbSection() + footer();
   };
 
   V.events = function () {
@@ -286,7 +290,7 @@
     if (id) {
       var a = J.articles.filter(function (x) { return x.id === id; })[0];
       if (!a) return V.journal();
-      var extra = ['two-women-dancing', 'dancer-arm-pose', 'group-laughing', 'dancer-reach'].filter(function (n) { return n !== a.photo; }), hn = 0;
+      var artIx = J.articles.indexOf(a), extra = [['two-women-dancing', 'dancer-arm-pose', 'dancer-reach'], ['social-high-five', 'dancer-forward-bend', 'two-women-dancing'], ['dancer-arm-pose', 'social-brand-graphic', 'millie-squat']][artIx] || ['two-women-dancing', 'dancer-arm-pose', 'dancer-reach'], hn = 0;
       var body = a.body.map(function (b) { if (b.type === 'h') { hn++; var fig = (hn === 2 || hn === 4) ? '<figure class="afig" data-rv="rise"><div class="frame">' + P(extra[hn === 2 ? 0 : 1], { sizes: '(min-width: 900px) 720px, 100vw' }) + '</div></figure>' : ''; return fig + '<h2>' + esc(b.text) + '</h2>'; } return '<p>' + esc(b.text) + '</p>'; }).join('');
       return '<section class="phead" data-chapter="dark" aria-labelledby="h-art">' + P(a.photo, { eager: true, pos: '50% 30%' }) + '<div class="phead-in"><h1 id="h-art" class="long">' + esc(a.title) + '</h1><p>' + esc(a.summary) + ' By ' + esc(a.author) + ', ' + a.read_minutes + ' minute read.</p></div></section>' +
         '<article class="sec wrap" data-chapter="dark"><div class="article">' + body +
@@ -297,7 +301,7 @@
       return '<a class="jcard zoom j' + (i + 1) + '" href="#/journal/' + a.id + '" data-rv style="--d:' + i * 80 + 'ms"><div class="frame">' + P(a.photo, { sizes: '(min-width: 900px) 50vw, 100vw', pos: '50% 30%' }) + '<span class="reveal"><span>Read the article</span>' + ARR + '</span></div><h2>' + esc(a.title) + '</h2><p>' + esc(a.summary) + ' ' + a.read_minutes + ' minute read.</p></a>';
     }).join('');
     return '<section class="phead plain" data-chapter="dark" aria-labelledby="h-jn"><div class="phead-in"><h1 id="h-jn">' + esc(J.heading) + '</h1><p>Notes from Millie, founder of WERK WELL: what happens in class, and why the studio is run the way it is.</p></div></section>' +
-      '<section class="sec wrap" data-chapter="dark" aria-label="Posts"><div class="jlist">' + list + '</div></section>' + band(['dancer-reach', 'two-women-dancing', 'millie-portrait'], 'From the studio') +
+      '<section class="sec wrap" data-chapter="dark" aria-label="Posts"><div class="jlist">' + list + '</div></section>' + band(['dancer-reach', 'two-women-dancing', 'dancer-arm-pose'], 'From the studio') +
       '<section class="sec wrap on-paper" data-chapter="light" aria-labelledby="h-jnl"><div class="split"><h2 id="h-jnl" class="sec-h" data-rv>Get the next one</h2><div data-rv>' + '<p>' + esc(J.newsletter.text) + '</p>' + newsForm({ button: J.newsletter.button, placeholder: 'Enter your email' }) + '</div></div></section>' + footer();
   };
 
@@ -367,6 +371,7 @@
   var PAYNAMES = { single: 'Pay as you go', wallet: 'Class pass credit', intro: 'Intro pass, 3 classes', pass5: '5 class pass', pass10: '10 class pass', member: 'Werk Club plan' };
 
   V.book = function (q) {
+    if (q.ahead) { ahead = []; return '<section class="app" data-chapter="dark" aria-labelledby="h-ah"><h1 id="h-ah">Book ahead</h1><p class="app-sub">Pick every Wednesday you want, confirm once.</p><div class="book-grid"><div id="ahList"></div><aside class="summary" id="ahSum" aria-label="Your bookings"></aside></div></section>'; }
     var it = item(q.item);
     if (!bk || q.item || q.pay || q.fresh) {
       var me = get('me', {});
@@ -390,12 +395,12 @@
         .concat([['private', PRIVATE.name, '1 hour, time agreed with Millie', '£70']]);
       h += '<h2>' + esc(C.book.choose_label) + '</h2><div class="choices" role="radiogroup">' + opts.map(function (o) {
         return '<label class="choice"><input type="radio" name="bkItem" value="' + o[0] + '"' + (bk.item === o[0] ? ' checked' : '') + '><span class="dot"></span><span class="c-body"><b>' + esc(o[1]) + '</b><span class="small soft">' + esc(o[2]) + '</span></span><span class="c-price">' + o[3] + '</span></label>';
-      }).join('') + '</div><p class="small soft" style="margin:0">Bounce &amp; Burn and Stretch &amp; Flow are joining the timetable soon. <a class="ulr" href="#/classes">Tell me when</a>.</p>';
+      }).join('') + '</div><p class="small" style="margin:0"><a class="ulr" href="#/book?ahead=1">Got a pass or membership? Book several Wednesdays at once</a></p><p class="small soft" style="margin:0">Bounce &amp; Burn and Stretch &amp; Flow are joining the timetable soon. <a class="ulr" href="#/classes">Tell me when</a>.</p>';
     } else if (name === 'Date') {
       if (it.id === 'private') {
         h += '<h2>Pick a time</h2><div class="choices">' + PRIVATE.slots.map(function (s) { return '<label class="choice"><input type="radio" name="bkDate" value="' + s[0] + '|' + s[1] + '"' + (bk.date === s[0] && bk.time === s[1] ? ' checked' : '') + '><span class="dot"></span><span class="c-body"><b>' + fmt(s[0], true) + '</b><span class="small soft">' + t12(s[1]) + ', 1 hour</span></span></label>'; }).join('') + '</div><p class="small soft" style="margin:0">Sample times for the demo. Millie confirms every private session by email.</p>';
       } else {
-        h += '<h2>Pick your Wednesday</h2><div class="dark">' + '<div class="dates" role="radiogroup" aria-label="Dates">' + it.dates.map(function (d) {
+        h += '<h2>Pick your Wednesday</h2><div class="dark">' + '<div class="dates" role="radiogroup" aria-label="Dates">' + it.dates.filter(bookable).map(function (d) {
           var x = dt(d), n = placesLeft(it.id, d);
           return '<button type="button" class="date" data-pick="' + d + '" aria-pressed="' + (bk.date === d) + '"><span>' + DAY[x.getDay()] + '</span><b>' + x.getDate() + '</b><span>' + MON[x.getMonth()] + '</span></button>';
         }).join('') + '</div></div>';
@@ -486,13 +491,62 @@
     bk = null;
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
   }
-  function ics(rec) {
+  function ics(rec) { icsMany([rec], 'werkwell-' + rec.id + '.ics'); }
+  function icsMany(list, fname) {
+    var ev = list.map(function (rec) {
     var it = item(rec.item), len = it.length_minutes || (it.id === 'private' ? 60 : (+it.end.slice(0, 2) - +it.start.slice(0, 2)) * 60);
     var d = rec.date.replace(/-/g, ''), st = rec.time.replace(':', '') + '00';
     var e = new Date(dt(rec.date).getTime() + (+rec.time.slice(0, 2) * 60 + +rec.time.slice(3) + len) * 60000);
     var en = ('0' + e.getHours()).slice(-2) + ('0' + e.getMinutes()).slice(-2) + '00';
-    var body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//WERK WELL Studio//Booking//EN', 'BEGIN:VEVENT', 'UID:' + rec.id + '@werkwell.co.uk', 'DTSTAMP:20261126T120000Z', 'DTSTART;TZID=Europe/London:' + d + 'T' + st, 'DTEND;TZID=Europe/London:' + d + 'T' + en, 'SUMMARY:' + rec.name + ' at WERK WELL', 'LOCATION:Fearless Fit Hub\\, 31 Wharfside\\, Fenny Stratford\\, Milton Keynes MK2 2AZ', 'DESCRIPTION:Please arrive 5 to 7 minutes early. Ref ' + rec.id, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar' })); a.download = 'werkwell-' + rec.id + '.ics'; document.body.appendChild(a); a.click(); a.remove();
+    return ['BEGIN:VEVENT', 'UID:' + rec.id + '@werkwell.co.uk', 'DTSTAMP:20261126T120000Z', 'DTSTART;TZID=Europe/London:' + d + 'T' + st, 'DTEND;TZID=Europe/London:' + d + 'T' + en, 'SUMMARY:' + rec.name + ' at WERK WELL', 'LOCATION:Fearless Fit Hub\\, 31 Wharfside\\, Fenny Stratford\\, Milton Keynes MK2 2AZ', 'DESCRIPTION:Please arrive 5 to 7 minutes early. Ref ' + rec.id, 'END:VEVENT'].join('\r\n');
+    });
+    var body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//WERK WELL Studio//Booking//EN'].concat(ev, ['END:VCALENDAR']).join('\r\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar' })); a.download = fname; document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  /* ---------- BOOK AHEAD (pass holders and members) ---------- */
+  var ahead = [];
+  function credit() { var plan = get('plan', null), w = get('wallet', WALLET0); return plan ? { member: true, plan: plan } : { member: false, left: w ? w.left : 0, total: w ? w.total : 0, name: w ? w.name : '' }; }
+  function renderAhead() {
+    var host = document.getElementById('ahList'); if (!host) return;
+    var cr = credit(), mine = bookings();
+    var dates = WEDS.filter(bookable);
+    host.innerHTML = '<p class="small soft" style="margin:0 0 16px">' + (cr.member ? 'Included in your ' + esc(cr.plan.name) + ' membership. You can book 8 weeks ahead.' : 'Your ' + esc(cr.name) + ' has ' + cr.left + ' of ' + cr.total + ' credits left. Members book 8 weeks ahead; passes 3 weeks.') + ' Your wellness check and photo choice are on file.</p>' +
+      dates.map(function (d) {
+        return '<fieldset class="ah-day"><legend>' + fmt(d, true) + (early(d) ? ' <i class="early">Member early access</i>' : '') + '</legend>' + LIVE.map(function (c) {
+          var key = c.id + '|' + d, n = placesLeft(c.id, d), had = mine.some(function (b) { return b.item === c.id && b.date === d; }), dis = n <= 0 || had;
+          return '<label class="choice box' + (dis ? ' is-off' : '') + '"><input type="checkbox" data-ah="' + key + '"' + (ahead.indexOf(key) > -1 ? ' checked' : '') + (dis ? ' disabled' : '') + '><span class="dot"></span><span class="c-body"><b>' + esc(c.name) + '</b><span class="small soft">' + c.timetable.time_label + ' &middot; ' + (had ? 'Already booked' : placesLabel(n)) + '</span></span></label>';
+        }).join('') + '</fieldset>';
+      }).join('');
+    renderAheadSum();
+  }
+  function renderAheadSum() {
+    var s = document.getElementById('ahSum'); if (!s) return;
+    var cr = credit(), n = ahead.length, over = !cr.member && n > cr.left;
+    s.innerHTML = '<h2>Your bookings</h2>' + (n ? '<ul class="blist">' + ahead.map(function (k) { var p = k.split('|'); return '<li><b>' + esc(item(p[0]).name) + '</b><span class="soft">' + fmt(p[1]) + '</span></li>'; }).join('') + '</ul>' : '<p class="soft" style="margin:0">Tick the classes you want.</p>') +
+      '<p class="tot" style="margin:0">' + (cr.member ? 'Included in your membership' : 'Uses ' + n + ' of your ' + cr.left + ' credits') + '</p>' +
+      (over ? '<p class="err" style="margin:0">You have ' + cr.left + ' credits left. Untick ' + (n - cr.left) + ', or <a class="ulr" href="#/club#passes">top up</a>.</p>' : '') +
+      '<button class="btn full" type="button" data-ah-go' + (!n || over ? ' disabled' : '') + '><span class="lbl">' + (n ? 'Confirm ' + n + (n === 1 ? ' booking' : ' bookings') : 'Confirm') + '</span>' + SPIN + '</button>';
+  }
+  function confirmAhead(b) {
+    var cr = credit(), me = get('me', {}), list = bookings(), made = [];
+    ahead.slice().sort().forEach(function (k, i) {
+      var p = k.split('|'), it = item(p[0]);
+      var rec = { id: 'WW' + (Date.now() + i).toString(36).toUpperCase().slice(-6), item: it.id, name: it.name, date: p[1], time: it.timetable.time, who: me.name || 'Demo member', email: me.email || '', mobile: me.mobile || '', pay: cr.member ? 'member' : 'wallet', total: 0, photo: 'no', created: new Date().toISOString() };
+      list.push(rec); made.push(rec);
+    });
+    made.sort(function (a, c) { return a.date < c.date ? -1 : a.date > c.date ? 1 : a.time < c.time ? -1 : 1; });
+    set('bookings', list); set('lastBooking', made[0]);
+    if (!cr.member) { var w = get('wallet', WALLET0); w.left = Math.max(0, w.left - made.length); set('wallet', w); }
+    setTimeout(function () {
+      b.classList.remove('is-loading'); b.classList.add('is-done');
+      var host = document.getElementById('ahList'); ahead = [];
+      document.getElementById('ahSum').innerHTML = '<h2>All booked</h2><p style="margin:0">' + made.length + (made.length === 1 ? ' class is' : ' classes are') + ' in your diary. ' + (cr.member ? 'Included in your membership.' : 'Your pass has ' + get('wallet', WALLET0).left + ' credits left.') + '</p><button class="btn full" type="button" data-ics-all="' + made.map(function (r) { return r.id; }).join(',') + '"><span class="lbl">Add all to calendar</span>' + SPIN + '</button>' + btn('See them in Me', '#/me', 'ghost full');
+      host.innerHTML = '<div class="tickets">' + made.map(function (rec, i) {
+        return '<div class="ticket" style="animation-delay:' + i * 90 + 'ms"><div class="t-top">' + (i === 0 ? '<div class="t-w">' + wSvg('jiggle') + '</div>' : '') + '<p class="small" style="margin:0">' + esc(C.book.confirmation.heading) + '</p><h2>' + esc(rec.name) + '</h2><p style="margin:0">' + fmt(rec.date, true) + ', ' + t12(rec.time) + '</p></div><div class="t-cut" aria-hidden="true"><b></b><b></b></div><div class="t-foot"><span>Name<b>' + esc(rec.who) + '</b></span><span>Ref<b>' + rec.id + '</b></span><span>Where<b>Fearless Fit Hub</b></span><span>Paid<b>' + PAYNAMES[rec.pay] + '</b></span></div></div>';
+      }).join('') + '</div>';
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    }, 900);
   }
 
   /* ---------- ME ---------- */
@@ -504,10 +558,11 @@
     var cr = w ? Array.apply(null, Array(w.total)).map(function (_, i) { return '<i class="' + (i < w.left ? 'on' : '') + '"></i>'; }).join('') : '';
     var miles = [5, 10, 25].map(function (m) { var got = attended >= m; return '<div class="mile' + (got ? ' got' : '') + '"><b>' + m + '</b><span class="small">' + (got ? 'Done' : (m - attended) + ' to go') + '</span></div>'; }).join('');
     return '<section class="app" data-chapter="dark" aria-labelledby="h-me"><h1 id="h-me">Me</h1><p class="app-sub">Signed in as Demo member' + (me.name ? ' (last booked as ' + esc(me.name) + ')' : '') + '. Sample account for the demo.</p>' +
+      '<div class="seg' + (plan ? ' on2' : '') + '" role="group" aria-label="Show the demo member as"><span class="knob" aria-hidden="true"></span><button type="button" data-member="pass" aria-pressed="' + !plan + '">5 class pass</button><button type="button" data-member="club" aria-pressed="' + !!plan + '">Werk Club member</button></div>' +
       '<div class="me-grid">' +
       '<div class="panel wallet"><h2>Wallet</h2>' + (w ? '<p class="big" style="margin:0">' + w.left + '<span style="font-size:var(--step-lead);font-family:var(--text)"> of ' + w.total + ' classes left</span></p><div class="credits" aria-hidden="true">' + cr + '</div><p style="margin:0">' + esc(w.name) + ', use by ' + fmt(w.expires, true) + '.</p>' : '<p style="margin:0">No class pass yet.</p>') +
-        (plan ? '<p style="margin:0"><b>' + esc(plan.name) + '</b>, ' + money(plan.price) + ' a month. Booking opens ' + (plan.id === 'club' ? '48' : '24') + ' hours early.</p>' : '') +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm light" type="button" data-buy="pass10"><span class="lbl">Top up</span>' + ARR + '</button>' + btn('Book a class', '#/book', 'sm') + '</div></div>' +
+        (plan ? '<p style="margin:0"><b>' + esc(plan.name) + '</b>, ' + money(plan.price) + ' a month. Every weekly class included; you can book 8 weeks ahead.</p>' : '') +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' + btn('Book ahead', '#/book?ahead=1', 'sm') + '<button class="btn sm light" type="button" data-buy="pass10"><span class="lbl">Top up</span>' + ARR + '</button>' + btn('Book a class', '#/book', 'sm') + '</div></div>' +
       '<div class="panel"><h2>Coming up</h2><ul class="blist">' + up.map(function (b, i) { return '<li class="' + (b.id !== 'SAMPLE' && i === 0 ? 'new' : '') + '"><b>' + esc(b.name) + '</b><span>' + (b.id === 'SAMPLE' ? 'Sample' : b.id) + '</span><span class="soft">' + fmt(b.date, true) + ', ' + t12(b.time) + '</span></li>'; }).join('') + '</ul></div>' +
       '<div class="panel"><h2>Milestones</h2><p style="margin:0">' + attended + ' classes so far.</p><div class="miles">' + miles + '</div></div>' +
       '<div class="panel friend"><h2>Bring a friend</h2><p style="margin:0">Her first class is £5 when she books with your link. She still registers and fills in the wellness check, like everyone.</p><p class="code" style="margin:0">WERK-DEMO</p><button class="btn sm" type="button" data-share><span class="lbl">Share my link</span>' + SPIN + '</button></div>' +
@@ -528,7 +583,7 @@
     }).join('');
     var members = [['Demo member', get('plan', null) ? get('plan', null).name : '5 class pass', '7', 'Sep 2026'], ['Amara K.', 'Werk Club Four', '12', 'Oct 2026'], ['Bisi A.', '10 class pass', '9', 'Sep 2026'], ['Chloe R.', 'Intro pass', '2', 'Nov 2026'], ['Dami O.', 'Pay as you go', '4', 'Oct 2026'], ['Esi M.', '5 class pass', '6', 'Oct 2026']];
     var seen = {};
-    all.forEach(function (b) { if (!seen[b.who]) { seen[b.who] = 1; members.unshift([b.who + ' (new)', PAYNAMES[b.pay], '1', 'Nov 2026']); } });
+    all.forEach(function (b) { if (b.who !== 'Demo member' && !seen[b.who]) { seen[b.who] = 1; members.unshift([b.who + ' (new)', PAYNAMES[b.pay], '1', 'Nov 2026']); } });
     var msg = esc(sample.who) + ' booked ' + esc(sample.name) + ', ' + fmt(sample.date) + ' at ' + t12(sample.time) + '. Paid: ' + (sample.total ? money(sample.total) : PAYNAMES[sample.pay]) + '.';
     return '<section class="app" data-chapter="dark" aria-labelledby="h-st" style="max-width:1320px"><div class="studio-top"><div><h1 id="h-st">Studio</h1><p class="app-sub" style="margin:0">Millie\'s side. Tonight is ' + fmt(tonight, true) + '. Sample data, plus any bookings made in this demo.</p></div>' + btn('Back to the site', '#/', 'ghost sm') + '</div>' +
       '<div class="st-grid"><div style="display:grid;gap:16px;align-content:start"><h2 style="font-size:1.5rem">Tonight\'s classes</h2>' + cls + '</div>' +
@@ -606,7 +661,7 @@
       teardown();
       main.innerHTML = '<div class="view">' + html + '</div>';
       current = r.view; document.body.classList.toggle('at-home', r.view === ''); document.body.classList.toggle('app-view', /^(book|me|studio)$/.test(r.view)); ['book', 'studio'].forEach(function (k) { document.body.classList.toggle('v-' + k, r.view === k); });
-      if (r.view === 'book') renderBook(1);
+      if (r.view === 'book') { if (r.q.ahead) renderAhead(); else renderBook(1); }
       mount();
       if (r.anchor) { var a = document.getElementById(r.anchor); if (a) a.scrollIntoView(); } else window.scrollTo(0, 0);
       if (!first) main.focus({ preventScroll: true });
@@ -634,7 +689,7 @@
       el.setAttribute('data-rv', ''); el.style.setProperty('--d', ((k++ % 4) * 70) + 'ms');
     });
     main.querySelectorAll('[data-rv]').forEach(function (el) { io.observe(el); });
-    logos(main); chapters(); showcase(); player(); xcards();
+    logos(main); chapters(); showcase(); xcards(); film.route(); orb();
     if (!fine.matches) tapReveal();
   }
 
@@ -668,39 +723,79 @@
   }
 
   /* founder film: Vimeo if it plays here, poster and play button if not; docks in the corner */
-  function player() {
-    var pl = document.getElementById('player'); if (!pl) return;
-    var slot = pl.parentNode, iframe = null, ready = false, docked = false, closed = false, playing = false;
-    function load(autoplay) {
-      if (iframe) return;
+  /* founder film: one player element for the whole app. It sits over the home slot and docks in the
+     corner while playing; it is never moved to another parent, so the iframe never reloads. */
+  var film = (function () {
+    var pl = document.getElementById('player'), iframe = null, vp = null, live = false, playing = false, muted = true,
+      docked = false, closed = false, started = false, stub = /[?&]stubfilm=1(&|$)/.test(location.search);
+    var pcPlay = document.getElementById('pcPlay'), pcMute = document.getElementById('pcMute');
+    function slot() { return document.getElementById('filmSlot'); }
+    function sync() {
+      pl.classList.toggle('live', live); pl.classList.toggle('stub', stub); pl.classList.toggle('playing', playing); pl.classList.toggle('unmuted', !muted);
+      pcPlay.setAttribute('aria-label', playing ? 'Pause the film' : 'Play the film');
+      pcMute.setAttribute('aria-label', muted ? 'Turn sound on' : 'Mute the film');
+    }
+    function onPlay() { live = true; playing = true; sync(); }
+    function onPause() { playing = false; sync(); }
+    function makeStub() {
+      var h = {}; return {
+        on: function (e, f) { h[e] = f; }, ready: function () { return Promise.resolve(); },
+        play: function () { setTimeout(function () { h.play && h.play(); }, 60); return Promise.resolve(); },
+        pause: function () { setTimeout(function () { h.pause && h.pause(); }, 60); return Promise.resolve(); },
+        getPaused: function () { return Promise.resolve(!playing); }, setMuted: function () { return Promise.resolve(); },
+        setVolume: function () { return Promise.resolve(); }
+      };
+    }
+    function msgPlayer() { /* postMessage fallback if the Vimeo API script cannot load */
+      var h = {}; function post(m, v) { if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage(JSON.stringify({ method: m, value: v }), 'https://player.vimeo.com'); }
+      window.addEventListener('message', function (e) {
+        if (!/player\.vimeo\.com$/.test((e.origin || '').replace(/^https?:\/\//, ''))) return;
+        var d = e.data; try { if (typeof d === 'string') d = JSON.parse(d); } catch (x) { return; }
+        if (!d) return;
+        if (d.event === 'ready') { post('addEventListener', 'play'); post('addEventListener', 'pause'); }
+        if ((d.event === 'play' || d.event === 'playProgress') && h.play) h.play();
+        if (d.event === 'pause' && h.pause) h.pause();
+      });
+      return { on: function (e, f) { h[e] = f; }, play: function () { post('play'); return Promise.resolve(); }, pause: function () { post('pause'); return Promise.resolve(); },
+        getPaused: function () { return Promise.resolve(!playing); }, setMuted: function (m) { post('setMuted', m); return Promise.resolve(); }, setVolume: function (v) { post('setVolume', v); return Promise.resolve(); } };
+    }
+    function start() {
+      if (started) return; started = true;
+      if (stub) { vp = makeStub(); vp.on('play', onPlay); vp.on('pause', onPause); vp.play(); return; }
       iframe = document.createElement('iframe');
-      iframe.src = 'https://player.vimeo.com/video/' + C.meta.video.vimeo_id + '?autoplay=' + (autoplay ? 1 : 0) + '&muted=1&loop=1&playsinline=1&title=0&byline=0&portrait=0&dnt=1';
-      iframe.allow = 'autoplay; fullscreen; picture-in-picture'; iframe.title = C.meta.video.title; iframe.setAttribute('loading', 'lazy');
+      iframe.src = 'https://player.vimeo.com/video/' + C.meta.video.vimeo_id + '?autoplay=1&muted=1&loop=1&playsinline=1&controls=0&title=0&byline=0&portrait=0&dnt=1';
+      iframe.allow = 'autoplay; fullscreen; picture-in-picture'; iframe.title = C.meta.video.title;
       pl.insertBefore(iframe, pl.firstChild);
-    }
-    function onMsg(e) {
-      if (!/vimeo\.com$/.test((e.origin || '').replace(/^https?:\/\//, ''))) return;
-      var d = e.data; try { if (typeof d === 'string') d = JSON.parse(d); } catch (x) { return; }
-      if (d && (d.event === 'ready' || d.event === 'play' || d.event === 'playProgress')) {
-        if (!ready) { ready = true; post('addEventListener', 'play'); }
-        if (d.event === 'play' || d.event === 'playProgress') { pl.classList.add('live'); playing = true; document.getElementById('soundBtn').hidden = false; }
+      function wire() {
+        vp = (window.Vimeo && Vimeo.Player) ? new Vimeo.Player(iframe) : msgPlayer();
+        vp.on('play', onPlay); vp.on('pause', onPause);
+        if (vp.on && window.Vimeo) vp.on('volumechange', function (d) { muted = !d || d.volume === 0; sync(); });
       }
+      var sc = document.createElement('script'); sc.src = 'https://player.vimeo.com/api/player.js'; sc.async = true;
+      sc.onload = wire; sc.onerror = wire; document.head.appendChild(sc);
+      setTimeout(function () { if (!live) pl.classList.add('blocked'); }, 9000);
     }
-    function post(m, v) { if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage(JSON.stringify({ method: m, value: v }), 'https://player.vimeo.com'); }
-    window.addEventListener('message', onMsg);
-    cleanups.push(function () { window.removeEventListener('message', onMsg); });
-    if (!reduced) load(true);
-    document.getElementById('playBtn').addEventListener('click', function () {
-      if (ready) { post('play'); post('setVolume', 1); post('setMuted', false); }
-      else { load(true); toast('Starting the film'); setTimeout(function () { if (!ready) { pl.classList.add('blocked'); toast('The film plays on werkwellstudio.com. Showing the still here.'); } }, 6000); }
-    });
-    document.getElementById('soundBtn').addEventListener('click', function () { post('setMuted', false); post('setVolume', 1); this.hidden = true; });
-    /* dock */
+    function toggle() { if (!vp) { start(); return; } if (playing) vp.pause(); else vp.play(); }
+    function setSound(on) {
+      muted = !on; sync(); if (!vp) return;
+      vp.setMuted(!on); if (on) { vp.setVolume(1); if (window.WerkIntro && !WerkIntro.isMuted()) { WerkIntro.mute(); syncMute(); } if (!playing) vp.play(); }
+    }
+    function place() {
+      var s = slot();
+      if (docked) return;
+      if (!s) { pl.hidden = true; return; }
+      var r = s.getBoundingClientRect();
+      pl.hidden = false;
+      pl.style.left = (r.left + window.scrollX) + 'px'; pl.style.top = (r.top + window.scrollY) + 'px';
+      pl.style.width = r.width + 'px'; pl.style.height = r.height + 'px';
+    }
     function setDock(on) {
-      if (on === docked || closed) return;
+      if (on === docked) return;
       var first = pl.getBoundingClientRect();
-      docked = on; pl.classList.toggle('docked', on);
-      if (reduced || !pl.animate) return;
+      docked = on; pl.classList.toggle('docked', on); pl.hidden = false;
+      if (!on) place();
+      if (!on && !slot()) { pl.hidden = true; return; }
+      if (reduced || !pl.animate || first.width === 0) return;
       var last = pl.getBoundingClientRect();
       var dx = first.left - last.left, dy = first.top - last.top, s = first.width / last.width;
       pl.animate([
@@ -709,12 +804,34 @@
         { transform: 'none', transformOrigin: '0 0' }
       ], { duration: 450, easing: 'cubic-bezier(.16,1,.3,1)' });
     }
-    var dio = new IntersectionObserver(function (es) { es.forEach(function (e) { setDock(!e.isIntersecting && e.boundingClientRect.top < 0); }); }, { threshold: 0 });
-    dio.observe(slot);
-    cleanups.push(function () { dio.disconnect(); pl.classList.remove('docked'); });
-    document.getElementById('dockX').addEventListener('click', function () { setDock(false); closed = true; post('pause'); });
-    document.getElementById('dockUp').addEventListener('click', function () { slot.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); });
-  }
+    function check() {
+      var s = slot();
+      if (!s) { setDock(playing && !closed); if (!docked) pl.hidden = true; return; }
+      var r = s.getBoundingClientRect(), past = r.bottom < 0, inView = r.bottom > 0 && r.top < window.innerHeight;
+      if (inView) closed = false;
+      setDock(past && !closed && playing);
+    }
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', function () { place(); check(); });
+    if (window.ResizeObserver) new ResizeObserver(function () { place(); }).observe(document.getElementById('main'));
+    document.getElementById('playBtn').addEventListener('click', function () {
+      if (pl.classList.contains('blocked') && !stub) toast('The film could not start here. It plays on her own site.');
+      if (!vp) start(); else vp.play();
+    });
+    pcPlay.addEventListener('click', toggle);
+    pcMute.addEventListener('click', function () { setSound(muted); });
+    document.getElementById('dockX').addEventListener('click', function () { closed = true; if (vp && playing) vp.pause(); setDock(false); if (!slot()) pl.hidden = true; });
+    document.getElementById('dockUp').addEventListener('click', function () {
+      function go() { var s = slot(); if (s) s.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); }
+      if (slot()) go(); else { location.hash = '#/'; setTimeout(go, 400); }
+    });
+    sync();
+    return {
+      route: function () { var s = slot(); if (s && !started && !reduced) start(); place(); check(); },
+      state: function () { return { live: live, playing: playing, muted: muted, docked: docked, hidden: pl.hidden, stub: stub }; }
+    };
+  })();
+
 
   /* class cards: hover-expand on desktop, tap-to-expand on phones */
   function xcards() {
@@ -739,6 +856,91 @@
       xc.addEventListener('click', function (e) { if (e.target.closest('a,button,input,form')) return; if (fine.matches) return; if (c.classList.contains('open')) close(); else open(c); });
       xc.addEventListener('keydown', function (e) { if (e.target !== xc) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (c.classList.contains('open')) close(); else open(c); } if (e.key === 'Escape') close(); });
     });
+  }
+
+  /* club: a sphere of her photos in CSS 3D. Drag or swipe to spin, tap to open. */
+  function orb() {
+    var host = document.getElementById('orb'); if (!host) return;
+    var stage = document.createElement('div'); stage.className = 'orb-stage';
+    var ball = document.createElement('div'); ball.className = 'orb-ball'; stage.appendChild(ball);
+    var rings = [[-56, 8], [-28, 13], [0, 16], [28, 13], [56, 8]], tiles = [], k = 0;
+    var R0 = Math.min(host.clientWidth * 0.42, 340), tw = Math.round(2 * Math.PI * R0 / 16 * 0.86), th = Math.round(tw * 1.3);
+    host.style.setProperty('--orb-h', Math.round(R0 * 2.7) + 'px');
+    rings.forEach(function (rg, ri) {
+      for (var j = 0; j < rg[1]; j++) {
+        var lon = 360 / rg[1] * j + (ri % 2 ? 360 / rg[1] / 2 : 0), lat = rg[0], idx = (j + ri * 5) % ORB_PH.length, name = ORB_PH[idx];
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'orb-tile'; b.setAttribute('data-i', idx); b.setAttribute('aria-label', 'Open photo: ' + ALT[name]);
+        b.style.width = tw + 'px'; b.style.height = th + 'px'; b.style.marginLeft = -tw / 2 + 'px'; b.style.marginTop = -th / 2 + 'px';
+        b.style.transform = 'rotateY(' + lon + 'deg) rotateX(' + (-lat) + 'deg) translateZ(' + R0 + 'px)';
+        b.innerHTML = '<img src="img/' + name + '-800.webp" alt="" draggable="false">';
+        if (ri !== 2 || j % 2) b.tabIndex = -1;
+        ball.appendChild(b);
+        var la = lat * Math.PI / 180, lo = lon * Math.PI / 180;
+        tiles.push({ el: b, x: Math.cos(la) * Math.sin(lo), y: Math.sin(la), z: Math.cos(la) * Math.cos(lo) }); k++;
+      }
+    });
+    host.classList.add('is-3d'); host.appendChild(stage);
+    var rx = -8, ry = 0, vx = 0, vy = 0, last = 0, lastTouch = -1e9, raf = 0, visible = true, drag = null;
+    function frame(t) {
+      var dt = last ? Math.min(48, t - last) : 16; last = t;
+      if (!drag) {
+        if (Math.abs(vy) > 0.01 || Math.abs(vx) > 0.01) { ry += vy * dt / 16; rx = Math.max(-30, Math.min(30, rx + vx * dt / 16)); vy *= 0.94; vx *= 0.9; }
+        else if (!reduced && t - lastTouch > 2600) ry += 0.006 * dt;
+      }
+      ball.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+      var sy = Math.sin(ry * Math.PI / 180), cy = Math.cos(ry * Math.PI / 180), sx = Math.sin(rx * Math.PI / 180), cx = Math.cos(rx * Math.PI / 180);
+      for (var i = 0; i < tiles.length; i++) {
+        var p = tiles[i], z1 = -p.x * sy + p.z * cy, z2 = -p.y * sx + z1 * cx;
+        var o = z2 > 0 ? 0.35 + 0.65 * z2 : 0.12 + 0.2 * (1 + z2);
+        if (Math.abs(o - (p.o || 0)) > 0.02) { p.el.style.opacity = o.toFixed(2); p.o = o; }
+      }
+      raf = visible ? requestAnimationFrame(frame) : 0;
+    }
+    var vio = new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible && !raf) { last = 0; raf = requestAnimationFrame(frame); } });
+    vio.observe(host);
+    cleanups.push(function () { vio.disconnect(); cancelAnimationFrame(raf); raf = 0; visible = false; });
+    host.addEventListener('pointerdown', function (e) { drag = { x: e.clientX, y: e.clientY, t: e.timeStamp, lx: e.clientX, ly: e.clientY, lt: e.timeStamp, mode: null, id: e.pointerId, tile: e.target.closest('.orb-tile') }; vx = vy = 0; lastTouch = e.timeStamp; });
+    host.addEventListener('pointermove', function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!drag.mode) {
+        if (Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) { drag.mode = 'spin'; try { host.setPointerCapture(e.pointerId); } catch (x) {} }
+        else if (Math.abs(dy) > 8 && e.pointerType !== 'mouse') { drag = null; return; }
+        else if (Math.abs(dy) > 6 && e.pointerType === 'mouse') drag.mode = 'spin';
+        else return;
+      }
+      var mx = e.clientX - drag.lx, my = e.clientY - drag.ly, mt = Math.max(1, e.timeStamp - drag.lt);
+      ry += mx * 0.35; rx = Math.max(-30, Math.min(30, rx - my * 0.2));
+      vy = mx * 0.35 * 16 / mt; vx = -my * 0.2 * 16 / mt;
+      drag.lx = e.clientX; drag.ly = e.clientY; drag.lt = e.timeStamp; lastTouch = e.timeStamp;
+    });
+    function end(e) {
+      if (!drag) return;
+      var tap = !drag.mode && e.type === 'pointerup' && e.timeStamp - drag.t < 500, tile = drag.tile;
+      drag = null; lastTouch = e.timeStamp;
+      if (tap && tile) lightbox(+tile.getAttribute('data-i'), tile);
+    }
+    host.addEventListener('pointerup', end); host.addEventListener('pointercancel', end);
+    host.addEventListener('click', function (e) { var t = e.target.closest('.orb-tile'); if (t && e.detail === 0) lightbox(+t.getAttribute('data-i'), t); });
+    host.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') { vy = -3; lastTouch = e.timeStamp; } if (e.key === 'ArrowRight') { vy = 3; lastTouch = e.timeStamp; } });
+  }
+  function lightbox(i, from) {
+    var lb = document.createElement('div'); lb.className = 'lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true'); lb.setAttribute('aria-label', 'Photo viewer');
+    lb.innerHTML = '<figure><img alt=""></figure><button type="button" class="lb-b lb-x" aria-label="Close">' + '<svg width="16" height="16" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5"/></svg></button><button type="button" class="lb-b lb-p" aria-label="Previous photo">&larr;</button><button type="button" class="lb-b lb-n" aria-label="Next photo">&rarr;</button><p class="lb-c small" aria-live="polite"></p>';
+    document.body.appendChild(lb);
+    var img = lb.querySelector('img'), cnt = lb.querySelector('.lb-c');
+    function show(n, dir) { i = (n + ORB_PH.length) % ORB_PH.length; var name = ORB_PH[i]; img.classList.remove('in'); img.style.setProperty('--dx', (dir || 0) * 24 + 'px'); img.src = 'img/' + name + '-1600.webp'; img.alt = ALT[name]; cnt.textContent = (i + 1) + ' of ' + ORB_PH.length; requestAnimationFrame(function () { requestAnimationFrame(function () { img.classList.add('in'); }); }); }
+    function close() { lb.classList.remove('on'); document.removeEventListener('keydown', key); setTimeout(function () { lb.remove(); }, 300); if (from && from.focus) from.focus({ preventScroll: true }); }
+    function key(e) { if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') show(i + 1, 1); if (e.key === 'ArrowLeft') show(i - 1, -1); }
+    document.addEventListener('keydown', key);
+    lb.querySelector('.lb-x').addEventListener('click', close);
+    lb.querySelector('.lb-n').addEventListener('click', function () { show(i + 1, 1); });
+    lb.querySelector('.lb-p').addEventListener('click', function () { show(i - 1, -1); });
+    var sx = null;
+    lb.addEventListener('pointerdown', function (e) { if (!e.target.closest('.lb-b')) sx = e.clientX; });
+    lb.addEventListener('pointerup', function (e) { if (sx == null) return; var d = e.clientX - sx; sx = null; if (Math.abs(d) > 50) show(i + (d < 0 ? 1 : -1), d < 0 ? 1 : -1); else if (e.target === lb) close(); });
+    show(i, 0);
+    requestAnimationFrame(function () { lb.classList.add('on'); lb.querySelector('.lb-x').focus(); });
   }
 
   /* phones: picture reveal as a card enters view */
@@ -770,6 +972,12 @@
     }
     var wb = e.target.closest('[data-wallet]');
     if (wb && bk) { var sel = document.querySelector('input[name=bkPay]:checked'); if (!sel) { var f1 = document.querySelector('input[name=bkPay][value=single]'); if (f1) f1.checked = true; } if (readStep()) { toast((wb.getAttribute('data-wallet') === 'apple' ? 'Apple Pay' : 'Google Pay') + ': demo, nothing charged'); bk.step++; renderBook(1); } return; }
+    var ag = e.target.closest('[data-ah-go]');
+    if (ag && !ag.disabled) { ag.classList.add('is-loading'); confirmAhead(ag); return; }
+    var ia = e.target.closest('[data-ics-all]');
+    if (ia) { var ids = ia.getAttribute('data-ics-all').split(','); icsMany(bookings().filter(function (b) { return ids.indexOf(b.id) > -1; }), 'werkwell-bookings.ics'); ia.classList.add('is-done'); toast('One calendar file with ' + ids.length + ' classes downloaded'); return; }
+    var mt = e.target.closest('[data-member]');
+    if (mt) { var on = mt.getAttribute('data-member') === 'club'; mt.parentNode.classList.toggle('on2', on); set('plan', on ? { id: 'club', name: 'The Werk Club', price: 79 } : null); setTimeout(function () { var y = window.scrollY; route(true); window.scrollTo(0, y); }, 380); toast(on ? 'Demo member is now a Werk Club member' : 'Demo member is back on a 5 class pass'); return; }
     var ic = e.target.closest('[data-ics]');
     if (ic) { var rec = bookings().filter(function (b) { return b.id === ic.getAttribute('data-ics'); })[0]; if (rec) { ics(rec); ic.classList.add('is-done'); toast('Calendar file downloaded'); } return; }
     var by = e.target.closest('[data-buy]'); if (by) { buySheet(by.getAttribute('data-buy')); return; }
@@ -784,6 +992,7 @@
     if (e.target.name === 'yn-pregnant' && bk) bk.pregnant = e.target.value;
     if (e.target.name === 'bkPay' && bk) { bk.pay = e.target.value; renderSummary(); }
     if (e.target.id === 'bkPads' && bk) { bk.pads = e.target.checked; renderSummary(); }
+    if (e.target.hasAttribute && e.target.hasAttribute('data-ah')) { var k = e.target.getAttribute('data-ah'), ix = ahead.indexOf(k); if (e.target.checked && ix < 0) ahead.push(k); if (!e.target.checked && ix > -1) ahead.splice(ix, 1); renderAheadSum(); }
     if (e.target.name === 'bkItem' && bk) { bk.item = e.target.value; var it = item(bk.item); bk.date = isEvent(it) ? it.date : null; renderSummary(); }
   });
   document.addEventListener('submit', function (e) {
@@ -814,7 +1023,7 @@
   document.addEventListener('werkwell:enter', function () { syncMute(); });
 
   var words = document.getElementById('words'), wordsPill = document.getElementById('wordsPill');
-  function syncWords() { words.classList.toggle('sug', mode === 'suggested'); words.querySelectorAll('.words-opts button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-mode') === mode); }); document.getElementById('wordsNow').textContent = mode === 'suggested' ? 'Our suggestion' : 'Her words'; }
+  function syncWords() { words.classList.toggle('sug', mode === 'suggested'); words.querySelectorAll('.words-opts button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-mode') === mode); }); document.getElementById('wordsNow').textContent = mode === 'suggested' ? 'My suggestion' : 'Your words'; }
   function wordsOpen(on) { words.classList.toggle('open', on); wordsPill.setAttribute('aria-expanded', on); }
   wordsPill.addEventListener('click', function () { wordsOpen(!words.classList.contains('open')); });
   document.addEventListener('click', function (e) { if (!words.contains(e.target)) wordsOpen(false); });
@@ -823,7 +1032,7 @@
     var b = e.target.closest('button'); if (!b || b.getAttribute('data-mode') === mode) return;
     mode = b.getAttribute('data-mode'); set('mode', mode); syncWords();
     var y = window.scrollY; var keepBk = bk; route(true); bk = keepBk; if (current === 'book' && bk) renderBook(0); window.scrollTo(0, y);
-    toast(mode === 'suggested' ? 'Showing our suggested wording' : 'Showing her own words');
+    toast(mode === 'suggested' ? 'Showing my suggested wording' : 'Showing your own words');
     setTimeout(function () { wordsOpen(false); }, 700);
   });
   syncWords();
