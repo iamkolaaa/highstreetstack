@@ -38,7 +38,10 @@
     });
     // fetch every showroom photo early so switching cars is instant
     const warm = () => panels.forEach(p => { const im = p.querySelector('img'); if (im) im.loading = 'eager'; });
-    'requestIdleCallback' in window ? requestIdleCallback(warm, { timeout: 2500 }) : setTimeout(warm, 1500);
+    if ('IntersectionObserver' in window) {
+      const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { near.disconnect(); warm(); } }, { rootMargin: '800px 0px' });
+      near.observe(showroom);
+    } else warm();
   }
 
   // stock filters
