@@ -1,0 +1,170 @@
+/* Werk Well intro screen. Theme only through the custom properties on .werk-intro. */
+.werk-intro {
+  --intro-bg: #0b020a;
+  --intro-ink: #fdf2e3;
+  --intro-accent: #da6318;
+  --intro-font: inherit;
+  --intro-radius: 999px; /* 999px = fully round buttons, 0 = square */
+
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  background: var(--intro-bg);
+  color: var(--intro-ink);
+  font-family: var(--intro-font);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+html.werk-intro-lock { overflow: hidden; }
+
+.werk-intro__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+  transform: translateY(-4vh);
+}
+.werk-intro__logo-wrap {
+  width: 70vw;
+  max-width: 800px;
+  color: var(--intro-accent);
+  transform-origin: 50% 50%;
+}
+.werk-intro__logo { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* Letters */
+.werk-intro .wl {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  animation:
+    werk-drop 0.7s both,
+    werk-wobble 0.55s 1.7s ease-in-out;
+  animation-delay: calc(0.25s + var(--i, 0) * 0.1s), calc(1.78s + var(--i, 0) * 0.03s);
+}
+.werk-intro .wl-1 { --i: 0; } .werk-intro .wl-2 { --i: 1; } .werk-intro .wl-3 { --i: 2; } .werk-intro .wl-4 { --i: 3; }
+.werk-intro .wl-5 { --i: 4; } .werk-intro .wl-6 { --i: 5; } .werk-intro .wl-7 { --i: 6; } .werk-intro .wl-8 { --i: 7; }
+
+.werk-intro .wl-w {
+  animation:
+    werk-drop 0.7s both,
+    werk-twerk 0.9s 1.7s linear;
+  animation-delay: calc(0.25s + var(--i, 0) * 0.1s), 1.7s;
+}
+
+@keyframes werk-drop {
+  0%   { opacity: 0; transform: translateY(-2800px) scale(0.92, 1.16); animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.5); }
+  8%   { opacity: 1; }
+  46%  { opacity: 1; transform: translateY(0) scale(0.9, 1.14); animation-timing-function: ease-out; }
+  58%  { opacity: 1; transform: translateY(0) scale(1.2, 0.68); animation-timing-function: ease-out; }
+  74%  { opacity: 1; transform: translateY(-110px) scale(0.95, 1.07); animation-timing-function: ease-in; }
+  88%  { opacity: 1; transform: translateY(0) scale(1.06, 0.93); animation-timing-function: ease-out; }
+  100% { opacity: 1; transform: none; }
+}
+
+/* 900 ms: low squash, four 110 ms hip beats, pop */
+@keyframes werk-twerk {
+  0%     { transform: none; animation-timing-function: ease-out; }
+  17.8%  { transform: scale(1.1, 0.76); animation-timing-function: ease-in-out; }
+  30%    { transform: translateX(-70px) rotate(-7deg) skewX(-7deg) scale(1.06, 0.84); animation-timing-function: ease-in-out; }
+  42.2%  { transform: translateX(70px) rotate(7deg) skewX(7deg) scale(1.06, 0.84); animation-timing-function: ease-in-out; }
+  54.4%  { transform: translateX(-70px) rotate(-7deg) skewX(-7deg) scale(1.06, 0.84); animation-timing-function: ease-in-out; }
+  66.6%  { transform: translateX(70px) rotate(7deg) skewX(7deg) scale(1.06, 0.84); animation-timing-function: ease-out; }
+  80%    { transform: translateY(-60px) scale(0.93, 1.14); animation-timing-function: ease-in-out; }
+  90%    { transform: scale(1.03, 0.97); animation-timing-function: ease-out; }
+  100%   { transform: none; }
+}
+
+@keyframes werk-wobble {
+  0%, 100% { transform: none; }
+  25% { transform: rotate(-2.5deg) scale(1.02, 0.97); }
+  60% { transform: rotate(2deg) scale(0.99, 1.02); }
+}
+
+/* Prompt and buttons */
+.werk-intro__prompt {
+  margin-top: clamp(28px, 6vh, 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  animation: werk-rise 0.55s 2.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.werk-intro__note {
+  margin: 0;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+.werk-intro__btn {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  border-radius: var(--intro-radius);
+  background: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.werk-intro__btn:focus-visible { outline: 2px solid var(--intro-ink); outline-offset: 3px; }
+.werk-intro__enter {
+  min-width: 170px;
+  padding: 14px 40px;
+  background: var(--intro-accent);
+  color: var(--intro-bg);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: transform 0.15s;
+}
+.werk-intro__enter:active { transform: scale(0.96); }
+.werk-intro__quiet {
+  margin-top: 4px;
+  padding: 10px 16px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.75;
+}
+.werk-intro__skip {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  right: 16px;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  opacity: 0;
+  animation: werk-fade 0.5s 0.6s both;
+}
+@keyframes werk-rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes werk-fade { from { opacity: 0; } to { opacity: 0.8; } }
+
+/* Exit: logo swells a touch, then the screen lifts away like a curtain */
+.werk-intro { transition: transform 0.75s cubic-bezier(0.7, 0, 0.2, 1) 0.2s; }
+.werk-intro__logo-wrap { transition: transform 0.6s cubic-bezier(0.3, 0, 0.2, 1); }
+.werk-intro__prompt, .werk-intro__skip { transition: opacity 0.25s; }
+.werk-intro.is-leaving { transform: translateY(-100%); pointer-events: none; }
+.werk-intro.is-leaving .werk-intro__logo-wrap { transform: scale(1.08); }
+.werk-intro.is-leaving .werk-intro__prompt,
+.werk-intro.is-leaving .werk-intro__skip { animation: none; opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .werk-intro .wl, .werk-intro .wl-w { animation: none; opacity: 1; }
+  .werk-intro__prompt, .werk-intro__skip { animation: none; opacity: 1; }
+  .werk-intro__skip { opacity: 0.8; }
+  .werk-intro, .werk-intro__logo-wrap { transition: opacity 0.3s; }
+  .werk-intro.is-leaving { transform: none; opacity: 0; }
+  .werk-intro.is-leaving .werk-intro__logo-wrap { transform: none; }
+}

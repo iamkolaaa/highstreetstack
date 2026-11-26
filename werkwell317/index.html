@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>WERK WELL: two looks</title>
+<style>
+:root{--bg:#0b020a;--ink:#fdf2e3;--acc:#da6318}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 Georgia,"Times New Roman",serif;display:flex;flex-direction:column}
+header{padding:28px 24px 8px}
+header img{height:34px;display:block}
+h1{font-weight:400;font-size:clamp(34px,7vw,64px);line-height:1.02;letter-spacing:-.02em;margin:24px 0 8px}
+p{margin:0;max-width:34em;font-family:system-ui,sans-serif;font-size:16px}
+main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:24px}
+a.look{position:relative;display:block;min-height:46vh;overflow:hidden;text-decoration:none;color:var(--ink)}
+a.look img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+a.look:hover img,a.look:focus-visible img{transform:scale(1.05)}
+a.look span{position:absolute;left:0;right:0;bottom:0;padding:20px;background:rgba(11,2,10,.72);font-size:26px;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+a.look.light span{background:rgba(248,246,242,.92);color:#1b1512}
+a.look small{font:15px system-ui,sans-serif}
+a.look b{font-weight:400;color:var(--acc);transition:transform .3s}
+a.look:hover b{transform:translateX(6px)}
+a.look:active{transform:scale(.99)}
+a.look:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+@media(max-width:700px){main{grid-template-columns:1fr}a.look{min-height:36vh}}
+@media(prefers-reduced-motion:reduce){a.look img,a.look b{transition:none}}
+</style>
+</head>
+<body>
+<header>
+<img src="a/img/logo.svg" alt="WERK WELL" onerror="this.remove()">
+<h1>Two looks, one studio</h1>
+<p>Both are working demos. Book a class in either one, then open the Studio login in the footer to see it arrive on your side. Nothing is charged.</p>
+</header>
+<main>
+<a class="look" href="a/"><img src="a/img/dancer-balance-1600.webp" alt="" onerror="this.remove()"><span>After Hours <small>the dark one <b>&rarr;</b></small></span></a>
+<a class="look light" href="b/"><img src="b/img/millie-portrait-1600.webp" alt="" onerror="this.remove()"><span>Maison <small>the light one <b>&rarr;</b></small></span></a>
+</main>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WERK WELL Studio | Women-only twerk and dance fitness, Milton Keynes</title>
+<meta name="description" content="Women-only twerk and dance fitness classes on Wednesday nights at Fearless Fit Hub, Fenny Stratford, Milton Keynes. Book a class, join The Werk Club.">
+<meta name="theme-color" content="#0b020a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Werk Well">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<link rel="preload" href="fonts/zodiak-100.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="intro/intro.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .werk-intro { --intro-bg: #0b020a; --intro-ink: #fdf2e3; --intro-accent: #da6318; --intro-font: "Hanken Grotesk", system-ui, sans-serif; --intro-radius: 0px; }
+  @media (min-width: 900px) { .werk-intro__logo-wrap { width: 45vw; } }
+</style>
+<script>
+  document.documentElement.classList.add('js');
+  if (/[?&]intro=0(&|$)/.test(location.search)) { try { sessionStorage.setItem('werkwell-intro-seen', '1'); } catch (e) {} }
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div id="werk-intro" data-audio="../audio/01-momentum-jmhbm.mp3"></div>
+
+<header class="hdr" id="hdr">
+  <a class="brand" href="#/" aria-label="WERK WELL Studio, home" data-logo></a>
+  <nav aria-label="Main">
+    <a class="ul" href="#/classes">Classes</a>
+    <a class="ul" href="#/club">The Werk Club</a>
+    <a class="ul" href="#/events">Events</a>
+    <a class="ul" href="#/journal">Journal</a>
+    <a class="ul" href="#/me">Me</a>
+  </nav>
+  <div class="hdr-r">
+    <button class="icon-btn" id="mute" type="button" aria-pressed="false"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="mute-l">Sound off</span></button>
+    <a class="btn sm book-top" href="#/book"><span class="lbl">Book</span><span class="arr" aria-hidden="true">&rarr;</span></a>
+    <button class="icon-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="hide-sm">Menu</span><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="vh">Open menu</span></button>
+  </div>
+</header>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <div>
+    <ul>
+      <li><a class="big ul" href="#/">Home</a></li>
+      <li><a class="big ul" href="#/classes">Classes</a></li>
+      <li><a class="big ul" href="#/club">The Werk Club</a></li>
+      <li><a class="big ul" href="#/events">Events</a></li>
+      <li><a class="big ul" href="#/journal">Journal</a></li>
+      <li><a class="big ul" href="#/about">About</a></li>
+      <li><a class="big ul" href="#/hire">Private hire</a></li>
+      <li><a class="big ul" href="#/contact">Contact</a></li>
+      <li><a class="big ul" href="#/me">Me</a></li>
+    </ul>
+    <div class="menu-foot small" style="margin-top:32px">
+      <a class="ul" href="https://www.instagram.com/werkwellstudio" rel="noopener" target="_blank">Instagram</a>
+      <a class="ul" href="https://www.tiktok.com/@werkwellstudio" rel="noopener" target="_blank">TikTok</a>
+      <a class="ul" href="https://www.facebook.com/WerkWellstudio/" rel="noopener" target="_blank">Facebook</a>
+      <a class="ul" href="mailto:hello@werkwell.co.uk">hello@werkwell.co.uk</a>
+    </div>
+  </div>
+  <div class="menu-pic"><img src="img/millie-portrait-800.webp" alt="Millie sitting on the studio's wood floor in her orange WERKWELL tee" width="534" height="800" loading="lazy"></div>
+</div>
+
+<main id="main" tabindex="-1"></main>
+
+<nav class="tabs" aria-label="App">
+  <span class="tab-ind" aria-hidden="true"><span></span></span>
+  <a href="#/" data-tab="0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v9h-5v-6H9v6H4z"/></svg>Home</a>
+  <a href="#/classes" data-tab="1"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Classes</a>
+  <a href="#/book" data-tab="2" class="tab-book"><span class="pill" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Book</a>
+  <a href="#/club" data-tab="3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V6a2 2 0 012-2h10a2 2 0 012 2v14"/><circle cx="15" cy="12" r="1"/><path d="M3 20h18"/></svg>Club</a>
+  <a href="#/me" data-tab="4"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"/></svg>Me</a>
+</nav>
+
+<div class="offer" id="offer" hidden>
+  <p>New here? <a class="ulr" href="#/book?pay=intro">3 classes for £29</a><span class="hide-sm">, used within 14 days</span>.</p>
+  <button class="icon-btn" type="button" id="offerX" aria-label="Dismiss the intro offer"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5"/></svg></button>
+</div>
+
+<div class="words" id="words">
+  <div class="words-opts" id="wordsOpts" role="group" aria-label="Which copy to show">
+    <span class="knob" aria-hidden="true"></span>
+    <button type="button" data-mode="original" aria-pressed="true">Her words</button>
+    <button type="button" data-mode="suggested" aria-pressed="false">Our suggestion</button>
+  </div>
+  <button type="button" class="words-pill" id="wordsPill" aria-expanded="false" aria-controls="wordsOpts"><span class="vh">Wording: </span><span id="wordsNow">Her words</span><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 6.5l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+<script src="content.js"></script>
+<script src="brand.js"></script>
+<script src="app.js"></script>
+<script defer src="intro/intro.js"></script>
+</body>
+</html>
