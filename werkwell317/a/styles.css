@@ -600,6 +600,8 @@ textarea { min-height: 120px; resize: vertical; }
 .blist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .blist li { background: var(--bg-3); padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; font-size: 1rem; }
 .blist li b { font-weight: 500; font-size: 1rem; }
+.blist li:has(> b + a.ul) { grid-template-columns: auto minmax(0, 1fr); }
+.blist li > b + a.ul { min-width: 0; text-align: right; overflow-wrap: anywhere; }
 .blist li.new { animation: rowIn var(--t-slow) var(--ease-out) both; }
 .friend { background: var(--paper); color: var(--paper-ink); }
 .friend .code { font-family: var(--display); font-size: 2rem; }
@@ -976,3 +978,17 @@ html[data-theme="light"] .appear__seg { border-color: rgba(253,242,227,.35); }
 
 .mute-l { white-space: nowrap; }
 @media (max-width: 420px) { .hdr .icon-btn { padding: 0 8px; } }
+
+/* per-field booking errors */
+.field-err { margin: -6px 0 4px; color: var(--err); font-size: 1rem; font-weight: 500; animation: stepIn var(--t-mid) var(--ease-out) both; }
+.step input[aria-invalid="true"], .step textarea[aria-invalid="true"] { box-shadow: inset 0 -2px 0 var(--err), 0 0 0 1px var(--err); }
+.choice:has(input[aria-invalid="true"]), .dates[aria-invalid="true"] { outline: 2px solid var(--err); outline-offset: -2px; }
+.dates[aria-invalid="true"] { outline-offset: 2px; }
+.choices:has(input[aria-invalid="true"]) .choice, fieldset:has(input[aria-invalid="true"]) .choice { outline: 2px solid var(--err); outline-offset: -2px; }
+
+/* light theme: the heading beside its photo, clear of it */
+html[data-theme="light"] .cross .big { margin-top: 32px; }
+@media (min-width: 900px) {
+  html[data-theme="light"] .cross h2 { grid-column: 1 / 7; }
+  html[data-theme="light"] .cross .big { margin-top: 30svh; }
+}

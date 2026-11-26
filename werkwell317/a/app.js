@@ -504,16 +504,42 @@
     s.innerHTML = '<h2>Your booking</h2>' + (it ? '<dl><dt>What</dt><dd>' + esc(it.short_name || it.name) + '</dd><dt>When</dt><dd>' + (bk.date ? fmt(bk.date) + ', ' + t12(bk.time || timeOf(it, bk.date)) : 'Not chosen yet') + '</dd><dt>Where</dt><dd>Fearless Fit Hub</dd>' +
       (bk.pay ? '<dt>Paying by</dt><dd>' + PAYNAMES[bk.pay] + '</dd>' : '') + (bk.pads ? '<dt>Knee pads</dt><dd>£10</dd>' : '') + '</dl>' + (bk.pay ? '<p class="tot" style="margin:0">' + money(priceOf(bk)) + '</p>' : '') : '<p class="soft" style="margin:0">Choose a class or event to start.</p>');
   }
+  /* per-field errors: message under the field, focus on it, aria-invalid set */
+  function clearFieldErrs() {
+    document.querySelectorAll('#bkStep .field-err').forEach(function (x) { x.parentNode.removeChild(x); });
+    document.querySelectorAll('#bkStep [aria-invalid]').forEach(function (x) { x.removeAttribute('aria-invalid'); x.removeAttribute('aria-describedby'); });
+  }
+  function showFieldErr(sel, msg) {
+    clearFieldErrs();
+    var f = document.querySelector('#bkStep ' + sel); if (!f) return;
+    var anchor = f.closest('.field, .choice.box, fieldset, .choices, .dates') || f;
+    var m = document.createElement('p'); m.className = 'field-err'; m.id = 'fe-' + (f.id || f.name || 'x'); m.setAttribute('role', 'alert'); m.textContent = msg;
+    anchor.parentNode.insertBefore(m, anchor.nextSibling);
+    var group = f.name ? document.querySelectorAll('#bkStep [name="' + f.name + '"]') : [f];
+    Array.prototype.forEach.call(group, function (x) { x.setAttribute('aria-invalid', 'true'); x.setAttribute('aria-describedby', m.id); });
+    if (anchor.classList.contains('dates')) { anchor.setAttribute('aria-invalid', 'true'); anchor.setAttribute('aria-describedby', m.id); }
+    anchor.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+    try { f.focus({ preventScroll: true }); } catch (e) { f.focus(); }
+  }
+  ['input', 'change', 'click'].forEach(function (t) {
+    document.addEventListener(t, function (e) {
+      if (!e.target.closest || !e.target.closest('#bkStep') || !document.querySelector('#bkStep .field-err')) return;
+      var bad = document.querySelector('#bkStep [aria-invalid="true"]');
+      if (bad && (e.target === bad || e.target.closest('[aria-invalid="true"]') || (bad.name && e.target.name === bad.name) || e.target.closest('.choice.box, .field, .choices'))) { if (t === 'click' && e.target.closest('.btn')) return; clearFieldErrs(); }
+    });
+  });
   function readStep() {
     var it = item(bk.item), name = bookSteps(it)[bk.step], v = function (id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; };
-    var err = '';
-    if (name === 'Choose') { var r = document.querySelector('input[name=bkItem]:checked'); if (!r) err = 'Choose what you are booking.'; else { if (bk.item !== r.value) { bk.date = null; bk.pay = bk.pay === 'intro' ? 'intro' : null; } bk.item = r.value; var ni = item(bk.item); if (isEvent(ni)) bk.date = ni.date; } }
-    else if (name === 'Date') { if (it.id === 'private') { var p = document.querySelector('input[name=bkDate]:checked'); if (!p) err = 'Pick a time.'; else { bk.date = p.value.split('|')[0]; bk.time = p.value.split('|')[1]; } } else if (!bk.date) err = 'Pick a date.'; }
-    else if (name === 'Pay') { var q = document.querySelector('input[name=bkPay]:checked'); if (!q) err = 'Choose how to pay.'; else bk.pay = q.value; var pd = document.getElementById('bkPads'); bk.pads = !!(pd && pd.checked); }
-    else if (name === 'Your details') { bk.name = v('bk-name'); bk.email = v('bk-email'); bk.mobile = v('bk-mobile'); if (!bk.name) err = 'Add your name.'; else if (!/^\S+@\S+\.\S+$/.test(bk.email)) err = 'Add an email address we can reach you on.'; else if (bk.mobile.replace(/\D/g, '').length < 10) err = 'Add your mobile number.'; }
-    else if (name === 'Wellness check') { bk.ec_name = v('bk-ecn'); bk.ec_phone = v('bk-ecp'); bk.injury_detail = v('bk-injd'); bk.agree = document.getElementById('bkAgree').checked; if (!bk.ec_name || bk.ec_phone.replace(/\D/g, '').length < 10) err = 'Add an emergency contact name and number.'; else if (!bk.agree) err = 'Tick the box to confirm.'; }
-    else if (name === 'Photos') { var ph = document.querySelector('input[name=bkPhoto]:checked'), mk = document.querySelector('input[name=bkMkt]:checked'); bk.photo = ph ? ph.value : ''; bk.marketing = mk ? mk.value : ''; bk.terms = document.getElementById('bkTerms').checked; if (!bk.photo || !bk.marketing) err = 'Choose an answer for photos and for emails.'; else if (!bk.terms) err = 'Tick the box to agree to the studio policies.'; }
-    var e = document.getElementById('bkErr'); if (e) e.textContent = err;
+    var err = '', bad = '';
+    function fail(sel, msg) { if (!err) { err = msg; bad = sel; } }
+    if (name === 'Choose') { var r = document.querySelector('input[name=bkItem]:checked'); if (!r) fail('input[name=bkItem]', 'Choose what you are booking.'); else { if (bk.item !== r.value) { bk.date = null; bk.pay = bk.pay === 'intro' ? 'intro' : null; } bk.item = r.value; var ni = item(bk.item); if (isEvent(ni)) bk.date = ni.date; } }
+    else if (name === 'Date') { if (it.id === 'private') { var p = document.querySelector('input[name=bkDate]:checked'); if (!p) fail('input[name=bkDate]', 'Pick a time.'); else { bk.date = p.value.split('|')[0]; bk.time = p.value.split('|')[1]; } } else if (!bk.date) fail('.dates .date', 'Pick a date.'); }
+    else if (name === 'Pay') { var q = document.querySelector('input[name=bkPay]:checked'); if (!q) fail('input[name=bkPay]', 'Choose how to pay.'); else bk.pay = q.value; var pd = document.getElementById('bkPads'); bk.pads = !!(pd && pd.checked); }
+    else if (name === 'Your details') { bk.name = v('bk-name'); bk.email = v('bk-email'); bk.mobile = v('bk-mobile'); if (!bk.name) fail('#bk-name', 'Add your name.'); if (!/^\S+@\S+\.\S+$/.test(bk.email)) fail('#bk-email', 'Add an email address we can reach you on, like name@example.com.'); if (bk.mobile.replace(/\D/g, '').length < 10) fail('#bk-mobile', 'Add your mobile number, at least 10 digits.'); }
+    else if (name === 'Wellness check') { bk.ec_name = v('bk-ecn'); bk.ec_phone = v('bk-ecp'); bk.injury_detail = v('bk-injd'); bk.agree = document.getElementById('bkAgree').checked; if (!bk.ec_name) fail('#bk-ecn', 'Add the name of someone we can call in an emergency.'); if (bk.ec_phone.replace(/\D/g, '').length < 10) fail('#bk-ecp', 'Add their phone number, at least 10 digits.'); if (!bk.agree) fail('#bkAgree', 'Tick the box to confirm.'); }
+    else if (name === 'Photos') { var ph = document.querySelector('input[name=bkPhoto]:checked'), mk = document.querySelector('input[name=bkMkt]:checked'); bk.photo = ph ? ph.value : ''; bk.marketing = mk ? mk.value : ''; bk.terms = document.getElementById('bkTerms').checked; if (!bk.photo) fail('input[name=bkPhoto]', 'Choose an answer for photos and video.'); if (!bk.marketing) fail('input[name=bkMkt]', 'Choose an answer for emails.'); if (!bk.terms) fail('#bkTerms', 'Tick the box to agree to the studio policies.'); }
+    var e = document.getElementById('bkErr'); if (e) e.textContent = '';
+    if (err) showFieldErr(bad, err); else clearFieldErrs();
     return !err;
   }
   function confirmBooking(b) {
