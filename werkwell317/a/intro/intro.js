@@ -10,8 +10,7 @@
   var root, audio = null, audioSrc = '', wantsMuted = true, fadeRaf = 0, done = false;
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* this demo shows the intro on every page load; ?intro=0 skips it */
-  function seen() { return /[?&]intro=0(&|$)/.test(location.search); }
+  function seen() { try { return sessionStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
   function markSeen() { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} }
   function forced() { return /[?&]intro=1(&|$)/.test(location.search); }
 
@@ -73,13 +72,20 @@
     document.dispatchEvent(new CustomEvent('werkwell:enter', { detail: { skipped: !!skipped, sound: !!sound } }));
   }
 
-  function onKey(e) { if (e.key === 'Escape') finish(false, true); }
+  function onKey(e) { if (e.key === 'Escape') finish(true, false); }
 
+  // On narrow screens the wordmark sits on two lines (WERK / WELL) so the first W is big enough to see.
+  function logoMarkup() {
+    if (!(window.matchMedia && matchMedia('(max-width: 600px)').matches)) return LOGO;
+    var a = LOGO.replace('viewBox="100 800 4310 735"', 'viewBox="100 800 2160 735"').replace('class="werk-intro__logo"', 'class="werk-intro__logo werk-intro__logo--a"');
+    var b = LOGO.replace('viewBox="100 800 4310 735"', 'viewBox="2440 800 1980 735"').replace('class="werk-intro__logo"', 'class="werk-intro__logo werk-intro__logo--b"').replace('aria-label="Werk Well"', 'aria-hidden="true"').replace('role="img" ', '');
+    return a + b;
+  }
   function init() {
     root = document.getElementById('werk-intro');
     audioSrc = new URL((root && root.getAttribute('data-audio')) || 'audio/01-momentum-jmhbm.mp3', scriptSrc).href;
     if (!root) return;
-    if (seen() && !forced()) {
+    if (/[?&]intro=0(&|$)/.test(location.search)) {
       root.parentNode.removeChild(root); root = null; done = true;
       setTimeout(function () { fire(true, false); }, 0);
       return;
@@ -89,27 +95,12 @@
     root.setAttribute('aria-modal', 'true');
     root.setAttribute('aria-label', 'Welcome to Werk Well');
     root.innerHTML =
-      '<button type="button" class="werk-intro__btn werk-intro__skip" data-act="skip">Skip</button>' +
       '<div class="werk-intro__stage">' +
-        '<div class="werk-intro__logo-wrap">' + LOGO + '</div>' +
+        '<div class="werk-intro__logo-wrap">' + logoMarkup() + '</div>' +
         '<div class="werk-intro__prompt">' +
-          '<p class="werk-intro__note">Sound on for the full experience</p>' +
           '<button type="button" class="werk-intro__btn werk-intro__enter" data-act="enter">Enter</button>' +
-          '<button type="button" class="werk-intro__btn werk-intro__quiet" data-act="quiet">Enter without sound</button>' +
         '</div>' +
       '</div>';
-    /* phones: set the wordmark on two lines (WERK / WELL) so the first W is big enough to read */
-    if (window.innerWidth < 700) {
-      var svg = root.querySelector('.werk-intro__logo');
-      if (svg) {
-        svg.setAttribute('viewBox', '100 800 2060 1590');
-        [].forEach.call(svg.querySelectorAll('.wl-5, .wl-6, .wl-7, .wl-8'), function (g) {
-          var w = g.parentNode, m = /translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(w.getAttribute('transform') || '');
-          if (m) w.setAttribute('transform', 'translate(' + (parseFloat(m[1]) - 2345.83) + ' ' + (parseFloat(m[2]) + 830) + ')');
-        });
-        root.classList.add('is-stacked');
-      }
-    }
     document.documentElement.classList.add('werk-intro-lock');
     root.addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('[data-act]') : null;

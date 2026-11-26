@@ -112,8 +112,10 @@
       '<li><a class="tl tl-addr" href="' + MAP + '"' + ext + '><span>31 Wharfside, Fenny Stratford,</span><span>Milton Keynes MK2 2AZ</span></a></li>' +
       '<li><a class="tl" href="' + MAP + '"' + ext + '>5.0 on Google, 38 reviews</a></li>' +
       '<li class="soc"><a class="tl" href="' + SOC.instagram.url + '"' + ext + '>Instagram</a><a class="tl" href="' + SOC.tiktok.url + '"' + ext + '>TikTok</a><a class="tl" href="' + SOC.facebook.url + '"' + ext + '>Facebook</a></li></ul>' +
-      '<p class="imprint"><span>' + esc(f.bottom) + '</span><a class="tl" href="#/privacy">Privacy policy</a><a class="tl" href="#/studio">Studio login</a></p>' +
-      '</div><div class="foot-name" aria-hidden="true" data-logo></div></footer>';
+      '<p class="imprint"><span>' + esc(f.bottom) + '</span><a class="tl" href="#/privacy">Privacy policy</a><a class="tl" href="#/cookies">Cookie policy</a><button type="button" class="tl" data-cookie-settings>Cookie settings</button><a class="tl" href="#/studio">Studio login</a></p>' +
+      '</div>' +
+      '<div class="appear" role="group" aria-label="Appearance"><p class="appear__lab">Appearance</p><div class="appear__seg" data-theme-seg><i class="appear__thumb" aria-hidden="true"></i><button type="button" data-theme-set="auto" aria-pressed="false">Auto</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button></div></div>' +
+      '<div class="foot-name" aria-hidden="true" data-logo></div></footer>';
   }
 
   function timetableRows(date, dark) {
@@ -346,11 +348,58 @@
         '<div class="frame" style="aspect-ratio:4/5" data-rv="wipe">' + P('millie-portrait', { sizes: '(min-width: 900px) 40vw, 100vw' }) + '</div></div></section>' + band(['group-laughing', 'social-high-five', 'dancer-forward-bend'], 'Group nights') + footer();
   };
 
-  V.privacy = function () {
-    var p = C.policies;
-    return '<section class="phead" data-chapter="dark" aria-labelledby="h-pv">' + P('dancer-forward-bend', { eager: true, pos: '50% 40%' }) + '<div class="phead-in"><h1 id="h-pv">' + esc(p.privacy.link_label) + '</h1><p>' + esc(p.privacy.summary) + '</p></div></section>' +
-      '<section class="sec wrap" data-chapter="dark" aria-labelledby="h-pol"><div class="split"><h2 id="h-pol" class="sec-h">' + esc(p.heading) + '</h2><ul class="ptable">' + p.items.map(function (x) { return '<li><span class="pn">' + esc(x.title) + '</span><span class="pd">' + esc(x.text) + '</span></li>'; }).join('') + '</ul></div><p style="margin-top:32px">Questions about your data: <a class="ul" href="mailto:' + p.privacy.contact + '">' + p.privacy.contact + '</a></p></section>' + band(['millie-squat', 'two-women-dancing', 'dancer-reach'], 'In class') + footer();
-  };
+  /* ----- Privacy and cookie policies ----- */
+  function legalBlock(lines) {
+    var out = '', list = [];
+    function mark(t) { return esc(t).replace(/\[([^\]]+)\]/g, '<mark class="blank">[$1]</mark>'); }
+    function flush() { if (list.length) { out += '<ul>' + list.map(function (l) { return '<li>' + mark(l) + '</li>'; }).join('') + '</ul>'; list = []; } }
+    lines.forEach(function (l) { if (l.indexOf('- ') === 0) list.push(l.slice(2)); else { flush(); out += '<p>' + mark(l) + '</p>'; } });
+    flush();
+    return out;
+  }
+  function legalPage(kind) {
+    var L = window.WW_LEGAL || { privacy: [], cookies: [] }, secs = L[kind], isP = kind === 'privacy';
+    return '<section class="phead plain legal-head" data-chapter="dark" aria-labelledby="h-lg"><div class="phead-in"><h1 id="h-lg">' + (isP ? 'Privacy policy' : 'Cookie policy') + '</h1>' +
+      '<p>' + (isP ? 'Each section shows your current wording, then my suggested wording for the new site. Words in square brackets are facts only you can fill in.' : 'You do not have a cookie policy yet. This is my suggested one for the new site.') + '</p>' +
+      '<p class="legal-note">Draft for you to check. This is not legal advice.</p>' +
+      '<p class="legal-links"><a class="tl" href="#/' + (isP ? 'cookies' : 'privacy') + '">' + (isP ? 'Cookie policy' : 'Privacy policy') + '</a><button type="button" class="tl" data-cookie-settings>Cookie settings</button></p></div></section>' +
+      '<div class="legal wrap" data-chapter="dark">' + secs.map(function (sec, i) {
+        return '<section class="legal-sec" aria-labelledby="lg-' + i + '"><h2 id="lg-' + i + '">' + esc(sec.title) + '</h2><div class="legal-body">' +
+          (isP ? (sec.original ? '<div class="legal-cur"><p class="legal-label">Your current wording</p>' + legalBlock(sec.original) + '</div>' : '<div class="legal-cur legal-cur--none"><p class="legal-label">Your current wording</p><p>Your policy does not cover this yet.</p></div>') : '') +
+          '<div class="legal-new"><p class="legal-label">My suggested wording</p>' + legalBlock(sec.suggested) + '</div></div></section>';
+      }).join('') + '</div>' + footer();
+  }
+  V.privacy = function () { return legalPage('privacy'); };
+  V.cookies = function () { return legalPage('cookies'); };
+
+  /* ----- Cookie notice and settings ----- */
+  function cookieCard() {
+    if (!window.WerkConsent || WerkConsent.get() || document.getElementById('cookie')) return;
+    var el = document.createElement('section'); el.id = 'cookie'; el.className = 'cookie'; el.setAttribute('aria-labelledby', 'ck-h'); el.setAttribute('role', 'region');
+    el.innerHTML = '<div class="cookie__in"><div class="cookie__txt"><h2 id="ck-h">Cookies</h2><p>This site uses cookies.</p></div><div class="cookie__acts"><button type="button" class="tl" data-cookie-settings>Find out more</button><button type="button" class="btn sm" data-cookie-ok><span class="lbl">OK</span></button></div></div>';
+    main.parentNode.insertBefore(el, main); window.dispatchEvent(new Event('scroll'));
+  }
+  function cookieDone() { var el = document.getElementById('cookie'); if (!el) return; el.classList.add('is-leaving'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); window.dispatchEvent(new Event('scroll')); }, reduced ? 0 : 320); }
+  function cookiePanel() {
+    var c = (window.WerkConsent && WerkConsent.get()) || { analytics: false };
+    var sh = sheet('<div class="cpanel"><h2>Cookie settings</h2><p>Choose which cookies this site may use. You can change this any time from &ldquo;Cookie settings&rdquo; at the foot of every page.</p>' +
+      '<div class="cpanel__row"><div><h3>Essential</h3><p>Always on. They remember your bookings, your sound choice and this cookie choice so the site works.</p></div><span class="cpanel__on">Always on</span></div>' +
+      '<div class="cpanel__row"><div><h3>Analytics</h3><p>PostHog, to see how the site is used and where booking gets stuck. Off until you accept.</p></div><label class="switch"><input type="checkbox" id="ckAnalytics"' + (c.analytics ? ' checked' : '') + '><span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span><span class="vh">Allow analytics cookies</span></label></div>' +
+      '<div class="cpanel__acts"><button type="button" class="btn" data-ck="all"><span class="lbl">Accept all</span></button><button type="button" class="btn ghost" data-ck="none"><span class="lbl">Reject non-essential</span></button><button type="button" class="btn ghost" data-ck="save"><span class="lbl">Save my choices</span></button></div>' +
+      '<p style="margin:0"><a class="tl" href="#/cookies">Read the cookie policy</a></p></div>');
+    sh.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ck]'); if (!b) return;
+      var a = b.getAttribute('data-ck') === 'all' ? true : b.getAttribute('data-ck') === 'none' ? false : sh.querySelector('#ckAnalytics').checked;
+      WerkConsent.set(a); cookieDone(); sh.querySelector('[data-close]').click();
+      toast(a ? 'Saved: essential and analytics cookies' : 'Saved: essential cookies only');
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target : null; if (!t) return;
+    if (t.closest('[data-cookie-ok]')) { WerkConsent.set(true); cookieDone(); toast('Thanks. Cookies accepted.'); return; }
+    if (t.closest('[data-cookie-settings]')) { e.preventDefault(); cookiePanel(); }
+  });
+  document.addEventListener('werkwell:enter', function () { setTimeout(cookieCard, 700); });
 
   /* ---------- BOOK ---------- */
   var bk = null;
@@ -672,7 +721,7 @@
     nav.style.setProperty('--ti', ti == null ? -5 : ti);
     document.querySelectorAll('.tabs a, .hdr nav a').forEach(function (a) { var on = a.getAttribute('href') === '#/' + r.view || (r.view === '' && a.getAttribute('href') === '#/'); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     closeMenu();
-    document.title = (r.view ? ({ classes: 'Classes', book: 'Book', club: 'The Werk Club', me: 'Me', events: 'Events', journal: 'Journal', about: 'About', contact: 'Contact', hire: 'Private hire', studio: 'Studio', privacy: 'Privacy' }[r.view] || 'WERK WELL') + ' | ' : '') + 'WERK WELL Studio';
+    document.title = (r.view ? ({ classes: 'Classes', book: 'Book', club: 'The Werk Club', me: 'Me', events: 'Events', journal: 'Journal', about: 'About', contact: 'Contact', hire: 'Private hire', studio: 'Studio', privacy: 'Privacy policy', cookies: 'Cookie policy' }[r.view] || 'WERK WELL') + ' | ' : '') + 'WERK WELL Studio';
   }
   window.addEventListener('hashchange', function () { document.querySelectorAll('.sheet [data-close]').forEach(function (x) { x.click(); }); route(false); });
 
@@ -695,13 +744,16 @@
 
   /* colour by chapter: the header takes the ink of the section under it */
   var hdr = document.getElementById('hdr');
+  /* sections that stay dark in the light theme (photo heads, the footer) */
+  var DARK_ISLANDS = '.hero, .phead:not(.plain), .quote, .show, .foot';
   function chapters() {
     var secs = main.querySelectorAll('[data-chapter]');
     function check() {
       var y = (hdr.offsetHeight || 60) / 2, light = false, solid = window.scrollY > 40;
-      for (var i = 0; i < secs.length; i++) { var r = secs[i].getBoundingClientRect(); if (r.top <= y && r.bottom > y) { light = secs[i].getAttribute('data-chapter') === 'light'; break; } }
+      var onDark = false;
+      for (var i = 0; i < secs.length; i++) { var r = secs[i].getBoundingClientRect(); if (r.top <= y && r.bottom > y) { light = secs[i].getAttribute('data-chapter') === 'light'; onDark = !light && secs[i].matches(DARK_ISLANDS); break; } }
       document.body.classList.toggle('scrolled', window.scrollY > 160);
-      hdr.classList.toggle('on-light', light); hdr.classList.toggle('solid', solid && (current !== '' || window.scrollY > window.innerHeight * 0.6));
+      hdr.classList.toggle('on-light', light); hdr.classList.toggle('on-dark', onDark); hdr.classList.toggle('solid', solid && (current !== '' || window.scrollY > window.innerHeight * 0.6));
     }
     window.addEventListener('scroll', check, { passive: true }); check();
     cleanups.push(function () { window.removeEventListener('scroll', check); });

@@ -49,12 +49,50 @@ html.werk-intro-lock { overflow: hidden; }
 .werk-intro .wl-1 { --i: 0; } .werk-intro .wl-2 { --i: 1; } .werk-intro .wl-3 { --i: 2; } .werk-intro .wl-4 { --i: 3; }
 .werk-intro .wl-5 { --i: 4; } .werk-intro .wl-6 { --i: 5; } .werk-intro .wl-7 { --i: 6; } .werk-intro .wl-8 { --i: 7; }
 
-/* Only the first W does the move: it drops in from above the screen, bounces twice, settles, then twerks */
 .werk-intro .wl-1 {
-  animation:
-    werk-bounce 1.05s both,
-    werk-twerk 1.25s 1.55s linear;
-  animation-delay: 0.15s, 1.55s;
+  animation: werk-bounce 1.25s both;
+  animation-delay: 0.2s;
+}
+/* Drop from above, hit, squash, two rebounds, settle */
+@keyframes werk-bounce {
+  0%   { opacity: 0; transform: translateY(-2800px) scale(0.9, 1.18); animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.45); }
+  6%   { opacity: 1; }
+  34%  { opacity: 1; transform: translateY(0) scale(0.92, 1.12); animation-timing-function: ease-out; }
+  40%  { opacity: 1; transform: translateY(0) scale(1.28, 0.62); animation-timing-function: ease-out; }
+  55%  { opacity: 1; transform: translateY(-240px) scale(0.94, 1.08); animation-timing-function: ease-in; }
+  68%  { opacity: 1; transform: translateY(0) scale(1.16, 0.8); animation-timing-function: ease-out; }
+  79%  { opacity: 1; transform: translateY(-90px) scale(0.97, 1.04); animation-timing-function: ease-in; }
+  89%  { opacity: 1; transform: translateY(0) scale(1.07, 0.92); animation-timing-function: ease-out; }
+  100% { opacity: 1; transform: none; }
+}
+/* Squat, eight fast hip beats pivoting on the base of the letter, pop upright */
+@keyframes werk-shake {
+  0%     { transform: none; animation-timing-function: ease-out; }
+  10%    { transform: scale(1.12, 0.78); animation-timing-function: ease-in-out; }
+  19%    { transform: translateX(-35px) translateY(-30px) rotate(-15deg) skewX(-18deg) scale(1.1, 0.82); animation-timing-function: ease-in-out; }
+  28%    { transform: translateX(35px) rotate(15deg) skewX(18deg) scale(1.12, 0.76); animation-timing-function: ease-in-out; }
+  37%    { transform: translateX(-35px) translateY(-30px) rotate(-15deg) skewX(-18deg) scale(1.1, 0.82); animation-timing-function: ease-in-out; }
+  46%    { transform: translateX(35px) rotate(15deg) skewX(18deg) scale(1.12, 0.76); animation-timing-function: ease-in-out; }
+  55%    { transform: translateX(-35px) translateY(-30px) rotate(-15deg) skewX(-18deg) scale(1.1, 0.82); animation-timing-function: ease-in-out; }
+  64%    { transform: translateX(35px) rotate(15deg) skewX(18deg) scale(1.12, 0.76); animation-timing-function: ease-in-out; }
+  73%    { transform: translateX(-35px) translateY(-30px) rotate(-15deg) skewX(-18deg) scale(1.1, 0.82); animation-timing-function: ease-in-out; }
+  82%    { transform: translateX(35px) rotate(15deg) skewX(18deg) scale(1.12, 0.76); animation-timing-function: ease-out; }
+  91%    { transform: translateY(-110px) scale(0.9, 1.18); animation-timing-function: ease-in; }
+  100%   { transform: none; }
+}
+@keyframes werk-shake-big {
+  0%     { transform: none; animation-timing-function: ease-out; }
+  10%    { transform: scale(1.12, 0.78); animation-timing-function: ease-in-out; }
+  19%    { transform: translateX(-35px) translateY(-40px) rotate(-10deg) skewX(-12deg) scale(1.06, 0.8); animation-timing-function: ease-in-out; }
+  28%    { transform: translateX(35px) rotate(10deg) skewX(12deg) scale(1.08, 0.74); animation-timing-function: ease-in-out; }
+  37%    { transform: translateX(-35px) translateY(-40px) rotate(-10deg) skewX(-12deg) scale(1.06, 0.8); animation-timing-function: ease-in-out; }
+  46%    { transform: translateX(35px) rotate(10deg) skewX(12deg) scale(1.08, 0.74); animation-timing-function: ease-in-out; }
+  55%    { transform: translateX(-35px) translateY(-40px) rotate(-10deg) skewX(-12deg) scale(1.06, 0.8); animation-timing-function: ease-in-out; }
+  64%    { transform: translateX(35px) rotate(10deg) skewX(12deg) scale(1.08, 0.74); animation-timing-function: ease-in-out; }
+  73%    { transform: translateX(-35px) translateY(-40px) rotate(-10deg) skewX(-12deg) scale(1.06, 0.8); animation-timing-function: ease-in-out; }
+  82%    { transform: translateX(35px) rotate(10deg) skewX(12deg) scale(1.08, 0.74); animation-timing-function: ease-out; }
+  91%    { transform: translateY(-200px) scale(0.9, 1.18); animation-timing-function: ease-in; }
+  100%   { transform: none; }
 }
 
 @keyframes werk-drop {
@@ -67,33 +105,17 @@ html.werk-intro-lock { overflow: hidden; }
   100% { opacity: 1; transform: none; }
 }
 
-@keyframes werk-bounce {
-  0%   { opacity: 0; transform: translateY(-4200px) scale(0.9, 1.18); animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.45); }
-  6%   { opacity: 1; }
-  34%  { opacity: 1; transform: translateY(0) scale(0.92, 1.12); animation-timing-function: ease-out; }
-  42%  { transform: translateY(0) scale(1.28, 0.62); animation-timing-function: ease-out; }
-  58%  { transform: translateY(-260px) scale(0.94, 1.08); animation-timing-function: ease-in; }
-  70%  { transform: translateY(0) scale(1.16, 0.8); animation-timing-function: ease-out; }
-  80%  { transform: translateY(-90px) scale(0.98, 1.03); animation-timing-function: ease-in; }
-  88%  { transform: translateY(0) scale(1.07, 0.92); animation-timing-function: ease-out; }
-  100% { opacity: 1; transform: none; }
-}
-
-/* 1.25 s: squat, eight fast hip beats pivoting on the bottom of the letter, then pop upright */
+/* 900 ms: low squash, four 110 ms hip beats, pop */
 @keyframes werk-twerk {
-  0%    { transform: none; animation-timing-function: ease-out; }
-  10%   { transform: scale(1.12, 0.74); animation-timing-function: ease-in-out; }
-  18%   { transform: translateX(-40px) rotate(-10deg) skewX(-8deg) scale(1.08, 0.8); animation-timing-function: ease-in-out; }
-  26%   { transform: translateX(40px) rotate(10deg) skewX(8deg) scale(1.1, 0.76); animation-timing-function: ease-in-out; }
-  34%   { transform: translateX(-40px) rotate(-10deg) skewX(-8deg) scale(1.08, 0.8); animation-timing-function: ease-in-out; }
-  42%   { transform: translateX(40px) rotate(10deg) skewX(8deg) scale(1.1, 0.76); animation-timing-function: ease-in-out; }
-  50%   { transform: translateX(-40px) rotate(-10deg) skewX(-8deg) scale(1.08, 0.8); animation-timing-function: ease-in-out; }
-  58%   { transform: translateX(40px) rotate(10deg) skewX(8deg) scale(1.1, 0.76); animation-timing-function: ease-in-out; }
-  66%   { transform: translateX(-40px) rotate(-10deg) skewX(-8deg) scale(1.08, 0.8); animation-timing-function: ease-in-out; }
-  74%   { transform: translateX(40px) rotate(10deg) skewX(8deg) scale(1.1, 0.76); animation-timing-function: ease-out; }
-  84%   { transform: translateY(-180px) scale(0.9, 1.18); animation-timing-function: ease-in; }
-  93%   { transform: scale(1.05, 0.95); animation-timing-function: ease-out; }
-  100%  { transform: none; }
+  0%     { transform: none; animation-timing-function: ease-out; }
+  17.8%  { transform: scale(1.1, 0.76); animation-timing-function: ease-in-out; }
+  30%    { transform: translateX(-70px) rotate(-7deg) skewX(-7deg) scale(1.06, 0.84); animation-timing-function: ease-in-out; }
+  42.2%  { transform: translateX(70px) rotate(7deg) skewX(7deg) scale(1.06, 0.84); animation-timing-function: ease-in-out; }
+  54.4%  { transform: translateX(-70px) rotate(-7deg) skewX(-7deg) scale(1.06, 0.84); animation-timing-function: ease-in-out; }
+  66.6%  { transform: translateX(70px) rotate(7deg) skewX(7deg) scale(1.06, 0.84); animation-timing-function: ease-out; }
+  80%    { transform: translateY(-60px) scale(0.93, 1.14); animation-timing-function: ease-in-out; }
+  90%    { transform: scale(1.03, 0.97); animation-timing-function: ease-out; }
+  100%   { transform: none; }
 }
 
 @keyframes werk-wobble {
@@ -110,7 +132,7 @@ html.werk-intro-lock { overflow: hidden; }
   align-items: center;
   gap: 10px;
   opacity: 0;
-  animation: werk-rise 0.55s 2.85s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: werk-rise 0.55s 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 .werk-intro__note {
   margin: 0;
@@ -178,7 +200,7 @@ html.werk-intro-lock { overflow: hidden; }
 .werk-intro.is-leaving .werk-intro__skip { animation: none; opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .werk-intro .wl, .werk-intro .wl-1 { animation: none; opacity: 1; }
+  .werk-intro .wl, .werk-intro .wl-w, .werk-intro .wl-1 { animation: none; opacity: 1; }
   .werk-intro__prompt, .werk-intro__skip { animation: none; opacity: 1; }
   .werk-intro__skip { opacity: 0.8; }
   .werk-intro, .werk-intro__logo-wrap { transition: opacity 0.3s; }
@@ -186,4 +208,12 @@ html.werk-intro-lock { overflow: hidden; }
   .werk-intro.is-leaving .werk-intro__logo-wrap { transform: none; }
 }
 
-.werk-intro.is-stacked .werk-intro__logo-wrap { width: 80vw; }
+/* Two-line wordmark on phones; the first W shakes twice as far */
+.werk-intro__logo--a .wl-5, .werk-intro__logo--a .wl-6, .werk-intro__logo--a .wl-7, .werk-intro__logo--a .wl-8,
+.werk-intro__logo--b .wl-1, .werk-intro__logo--b .wl-2, .werk-intro__logo--b .wl-3, .werk-intro__logo--b .wl-4 { visibility: hidden; }
+@media (max-width: 600px) {
+  .werk-intro__logo-wrap { width: 84vw; max-width: 420px; display: grid; justify-items: center; gap: 2vw; transform: translateX(14px); }
+  .werk-intro__logo--b { width: 91.7%; }
+
+}
+@media (max-width: 600px) { .werk-intro.is-leaving .werk-intro__logo-wrap { transform: translateX(14px) scale(1.08); } }

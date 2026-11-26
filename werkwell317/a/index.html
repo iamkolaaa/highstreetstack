@@ -7,9 +7,10 @@
 <title>WERK WELL Studio | Women-only twerk and dance fitness, Milton Keynes</title>
 <meta name="description" content="Women-only twerk and dance fitness classes on Wednesday nights at Fearless Fit Hub, Fenny Stratford, Milton Keynes. Book a class, join The Werk Club.">
 <meta name="theme-color" content="#0b020a">
+<script>(function(){var d=document.documentElement,k='werkwell-theme',m='auto',q=/[?&]theme=(light|dark|auto)\b/.exec(location.search);try{if(q){m=q[1];localStorage.setItem(k,m);}else{m=localStorage.getItem(k)||'auto';}}catch(e){if(q)m=q[1];}var dark=m==='dark'||(m!=='light'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);d.setAttribute('data-theme',dark?'dark':'light');var t=document.querySelector('meta[name="theme-color"]');if(t)t.content=dark?'#0b020a':'#f8f1e6';})();</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Werk Well">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="img/icon-192.png" type="image/png">
@@ -41,6 +42,7 @@
     <a class="ul" href="#/me">Me</a>
   </nav>
   <div class="hdr-r">
+    <button type="button" class="icon-btn theme-btn" data-theme-toggle aria-label="Switch to light mode"><svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M18.7 5.3L17 7M7 17l-1.7 1.7"/></svg><svg class="ico-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.2 14.6A8.6 8.6 0 0 1 9.4 3.8a.6.6 0 0 0-.8-.7A9.6 9.6 0 1 0 20.9 15.4a.6.6 0 0 0-.7-.8z"/></svg></button>
     <button class="icon-btn" id="mute" type="button" aria-pressed="false"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="mute-l">Sound off</span></button>
     <a class="btn sm book-top" href="#/book"><span class="lbl">Book</span><span class="arr" aria-hidden="true">&rarr;</span></a>
     <button class="icon-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="hide-sm">Menu</span><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="vh">Open menu</span></button>
@@ -113,6 +115,9 @@
 
 <script src="content.js"></script>
 <script src="brand.js"></script>
+<script src="legal.js"></script>
+<script src="consent.js"></script>
+<script src="theme.js"></script>
 <script src="app.js"></script>
 <script defer src="intro/intro.js"></script>
 </body>
