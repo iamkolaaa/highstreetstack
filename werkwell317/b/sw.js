@@ -1,7 +1,7 @@
 /* Offline shell: network first, cache as a fallback. */
-var CACHE = 'werkwell-b-v2';
+var CACHE = 'werkwell-b-v3';
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(['./', 'index.html', 'css/app.css', 'js/app.js', 'js/content.js', 'js/logo.js', 'intro/intro.js', 'intro/intro.css']); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(['./', 'index.html', 'css/app.css', 'js/app.js', 'js/content.js', 'js/logo.js', 'intro/intro.js', 'intro/intro.css', 'js/theme.js']); }));
   self.skipWaiting();
 });
 self.addEventListener('activate', function (e) { e.waitUntil(self.clients.claim()); });

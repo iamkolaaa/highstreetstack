@@ -982,7 +982,9 @@
           '<div><h2>More</h2><a class="flink" href="#/about">About</a><a class="flink" href="#/private-hire">Private hire</a><a class="flink" href="#/contact">Contact</a></div>' +
           '<div><h2>' + v(F.newsletter_heading) + '</h2><form class="foot__news" data-form="news" novalidate><label class="vh" for="newsF">Email address</label><input id="newsF" type="email" placeholder="' + esc(F.newsletter_placeholder) + '" autocomplete="email"><button type="submit" class="btn btn--paper btn--sm"><span class="btn__label">' + esc(F.newsletter_button) + '</span></button></form></div>' +
         '</div></div>' +
-      '<div class="foot__legal"><span>' + esc(F.bottom) + '</span><span class="foot__legal-links"><a class="flink" href="#/privacy">Privacy policy</a><a class="flink" href="#/cookies">Cookie policy</a><button type="button" class="flink flink--btn" data-cookie-settings>Cookie settings</button><a class="flink" href="#/studio">' + esc(F.studio_login_link) + '</a><a class="flink" href="#top" data-top>Back to top</a></span></div>';
+      '<div class="foot__legal"><span>' + esc(F.bottom) + '</span><span class="foot__legal-links"><a class="flink" href="#/privacy">Privacy policy</a><a class="flink" href="#/cookies">Cookie policy</a><button type="button" class="flink flink--btn" data-cookie-settings>Cookie settings</button><a class="flink" href="#/studio">' + esc(F.studio_login_link) + '</a><a class="flink" href="#top" data-top>Back to top</a></span></div>' +
+      '<div class="appear" role="group" aria-label="Appearance"><p class="appear__lab">Appearance</p><div class="appear__seg" data-theme-seg><i class="appear__thumb" aria-hidden="true"></i><button type="button" data-theme-set="auto" aria-pressed="false">Auto</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button><button type="button" data-theme-set="dark" aria-pressed="false">Dark</button></div></div>';
+    if (window.WerkTheme) window.WerkTheme.sync();
   }
 
   /* ================= ROUTER ================= */
