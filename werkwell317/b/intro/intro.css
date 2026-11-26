@@ -53,23 +53,6 @@ html.werk-intro-lock { overflow: hidden; }
   animation: werk-bounce 1.25s both;
   animation-delay: 0.2s;
 }
-/* The cheeks: eight fast alternating bounces with a squash and jiggle, then settle */
-.werk-intro .ck { transform-box: fill-box; transform-origin: 50% 100%; }
-.werk-intro .ck ellipse { stroke: var(--intro-bg); stroke-width: 16; paint-order: stroke; }
-.werk-intro .ck-l { animation: werk-cheek 0.13s 1.7s 8 ease-in-out; }
-.werk-intro .ck-r { animation: werk-cheek-r 0.13s 1.765s 8 ease-in-out; }
-@keyframes werk-cheek {
-  0%   { transform: none; }
-  35%  { transform: translateY(-70px) rotate(-8deg) scale(0.94, 1.1); }
-  70%  { transform: translateY(10px) scale(1.12, 0.84); }
-  100% { transform: none; }
-}
-@keyframes werk-cheek-r {
-  0%   { transform: none; }
-  35%  { transform: translateY(-70px) rotate(8deg) scale(0.94, 1.1); }
-  70%  { transform: translateY(10px) scale(1.12, 0.84); }
-  100% { transform: none; }
-}
 /* Drop from above, hit, squash, two rebounds, settle */
 @keyframes werk-bounce {
   0%   { opacity: 0; transform: translateY(-2800px) scale(0.9, 1.18); animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.45); }
@@ -149,7 +132,7 @@ html.werk-intro-lock { overflow: hidden; }
   align-items: center;
   gap: 10px;
   opacity: 0;
-  animation: werk-rise 0.55s 2.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: werk-rise 0.55s 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 .werk-intro__note {
   margin: 0;
@@ -217,7 +200,7 @@ html.werk-intro-lock { overflow: hidden; }
 .werk-intro.is-leaving .werk-intro__skip { animation: none; opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .werk-intro .wl, .werk-intro .wl-w, .werk-intro .wl-1, .werk-intro .ck { animation: none; opacity: 1; }
+  .werk-intro .wl, .werk-intro .wl-w, .werk-intro .wl-1 { animation: none; opacity: 1; }
   .werk-intro__prompt, .werk-intro__skip { animation: none; opacity: 1; }
   .werk-intro__skip { opacity: 0.8; }
   .werk-intro, .werk-intro__logo-wrap { transition: opacity 0.3s; }
