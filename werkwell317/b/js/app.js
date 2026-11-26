@@ -12,7 +12,7 @@
   /* ---------- storage ---------- */
   var KEY = 'werkwell-b';
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-  var S = Object.assign({ voice: 'original', bookings: [], requests: [], offerGone: false, purchases: [] }, load());
+  var S = Object.assign({ voice: 'original', bookings: [], requests: [], offerGone: false, purchases: [], plan: 'pass' }, load());
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
   /* ---------- helpers ---------- */
@@ -67,6 +67,13 @@
     CLASSES.forEach(function (c) { if (c.status === 'live') c.dates.forEach(function (d) { out.push({ id: c.id, name: c.name, date: d, time: c.timetable.time, len: c.length_minutes, kind: 'class' }); }); });
     return out.sort(function (a, b) { return (a.date + a.time).localeCompare(b.date + b.time); });
   }
+  function isMember() { return S.plan === 'member'; }
+  function weekList() { var w = []; slots().forEach(function (s) { if (w.indexOf(s.date) < 0) w.push(s.date); }); return w; }
+  function openDates() { return weekList().slice(0, isMember() ? 4 : 2); }
+  function earlyDate(d) { var i = weekList().indexOf(d); return isMember() && i >= 2 && i < 4; }
+  function visibleSlots() { var o = openDates(); return slots().filter(function (s) { return o.indexOf(s.date) >= 0; }); }
+  function creditsLeft() { return Math.max(0, 5 - S.bookings.filter(function (b) { return b.pay === 'wallet' && !b.waitlist; }).length); }
+  var EARLY = '<span class="early">Member early access</span>';
   function placesLabel(id, date) {
     var l = left(id, date);
     if (l === 0) return '<span class="tag-full">Full</span>';
@@ -95,9 +102,9 @@
     var H = W.home, next = slots()[0], nc = cls(next.id), tw = evt('twerkmas'), lw = evt('love-to-wine');
     var nextLeft = left(next.id, next.date), cap = nc.capacity, tk = cap - nextLeft;
     var dots = ''; for (var i = 0; i < cap; i++) dots += '<i class="place' + (i >= tk ? ' is-free' : '') + '"></i>';
-    var rows = slots().slice(0, 6).map(function (s, i) {
+    var rows = visibleSlots().slice(0, 6).map(function (s, i) {
       var full = left(s.id, s.date) === 0;
-      return '<li' + (i === 2 || i === 4 ? ' class="group"' : '') + '><a href="#/book?c=' + s.id + '&d=' + s.date + '"><span class="when">' + fmtDate(s.date) + ', ' + time12(s.time) + '</span><span class="what">' + esc(s.name) + '</span><span class="val">' + (full ? 'Join waitlist' : placesLabel(s.id, s.date)) + '<span class="go" aria-hidden="true">&rarr;</span></span></a></li>';
+      return '<li' + (i === 2 || i === 4 ? ' class="group"' : '') + '><a href="#/book?c=' + s.id + '&d=' + s.date + '"><span class="when">' + fmtDate(s.date) + ', ' + time12(s.time) + '</span><span class="what">' + esc(s.name) + (earlyDate(s.date) ? ' ' + EARLY : '') + '</span><span class="val">' + (full ? 'Join waitlist' : placesLabel(s.id, s.date)) + '<span class="go" aria-hidden="true">&rarr;</span></span></a></li>';
     }).join('');
     return '' +
     '<section class="hero" aria-labelledby="h1">' +
@@ -128,7 +135,7 @@
       '<h2 id="list-h" class="list__head rv"><span>Put your name on</span><span>Wednesday\'s list</span></h2>' +
       '<div class="grid list__body">' +
         '<div class="list__side"><p class="rv">Fifteen places on the wood floor, every Wednesday. Put your first name down and the next free place is yours to hold.</p>' +
-        pic('millie-portrait', 'Millie sitting cross-legged on the wood floor, smiling', 'list__pic rv-pic pic--hover', { cap: 'Millie, founder' }) + '</div>' +
+        pic('millie-portrait', 'Millie sitting cross-legged on the wood floor, smiling', 'list__pic rv-pic pic--hover') + '</div>' +
         '<div class="list__table">' +
           '<div class="guest rv" id="guest" data-cap="' + cap + '" data-taken="' + tk + '">' +
             '<div class="guest__title"><h3>' + esc(nc.name) + '</h3><span class="small">' + fmtDate(next.date, true) + ', ' + time12(next.time) + '</span></div>' +
@@ -138,6 +145,7 @@
             '<form class="field-row" id="guestForm"><label class="vh" for="guestName">Your first name</label><input id="guestName" type="text" autocomplete="given-name" placeholder="Your first name" maxlength="24">' + arrowBtn('Hold it', null, 'btn--accent') + '</form>' +
           '</div>' +
           '<ul class="sched rv" style="--d:1" aria-label="Next classes">' + rows + '</ul>' +
+          '<div class="ahead-cta rv"><a class="btn btn--ghost" href="#/book?ahead=1"><span class="btn__label">Book ahead</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a><p class="small">' + (isMember() ? 'Members see four weeks ahead.' : 'Pass holders see two weeks ahead; members see four.') + ' Pick several Wednesdays at once.</p></div>' +
         '</div>' +
       '</div>' +
     '</section>' +
@@ -168,7 +176,7 @@
         '<div class="run__frames">' +
           '<a class="frame frame--lift" href="#/book?e=twerkmas">' + pic('twerkmas-poster', 'Twerkmas at WerkWell poster: Friday 18 December, 6 to 9pm, Fearless Fit Hub', 'pic--hover', { sizes: '(max-width: 767px) 92vw, 40vw', cap: 'Book your Twerkmas place \u2192' }) + '<span class="frame__cap"><span>Book Twerkmas</span><span>£25</span></span></a>' +
           '<a class="frame" href="#/book?e=love-to-wine">' + pic('love-to-wine-still', 'Love to Wine workshop still', 'pic--hover', { sizes: '30vw', cap: 'Sun 28 Feb' }) + '<span class="frame__cap"><span>Love to Wine</span><span>£20</span></span></a>' +
-          '<a class="frame" href="#/events">' + pic('group-laughing', 'A group of women laughing with their arms up', 'pic--hover', { sizes: '30vw' }) + '<span class="frame__cap"><span>The community</span><span>All welcome</span></span></a>' +
+          '<a class="frame" href="#/events">' + pic('group-laughing', 'A group of women laughing with their arms up', 'pic--hover', { sizes: '30vw' }) + '<span class="frame__cap"><span>All events</span><span>&rarr;</span></span></a>' +
         '</div>' +
       '</div>' +
     '</section>' +
@@ -196,7 +204,7 @@
     '<section aria-labelledby="news-h">' +
       '<div class="strip">' + pic('group-laughing', 'Women laughing together outdoors', '', { sizes: '(max-width: 767px) 100vw, 34vw' }) + pic('dancer-reach', 'A dancer reaching high', '', { sizes: '34vw', pos: 'center 20%' }) + pic('two-women-dancing', 'Two women dancing', '', { sizes: '34vw' }) + '</div>' +
       '<div class="field"><div class="field__txt"><h2 id="news-h">' + esc(H.newsletter.heading) + '</h2><p>' + esc(H.newsletter.text) + '</p>' + newsletterForm('newsHome') + '<p class="small" style="margin-top:12px">' + esc(H.newsletter.consent) + '</p></div>' +
-        '<div class="field__who">' + pic('millie-portrait', 'Millie', '', { sizes: '150px' }) + '<span>Millie writes these herself</span></div></div>' +
+        '<div class="field__who">' + pic('millie-portrait', 'Millie', '', { sizes: '150px' }) + '</div></div>' +
     '</section>';
   };
   function reel(name, net, handle, url, pos) {
@@ -205,34 +213,65 @@
 
   /* ----- Video player (founder film) ----- */
   var VIMEO = W.meta.video.vimeo_id;
+  var ICON = {
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5l13 7.5-13 7.5z"/></svg>',
+    pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg>',
+    muted: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4.5v15L8 15H4z"/><path d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    sound: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4.5v15L8 15H4z"/><path d="M16 8.5c1.6 1.9 1.6 5.1 0 7M18.6 6c3 3.4 3 8.6 0 12" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
+  };
   function playerHTML() {
     return '<div class="player" id="player">' +
       '<img class="player__poster" src="media/our-story-poster.jpg" alt="Still from Our Story, the Werk Well film" width="1280" height="720" loading="lazy">' +
-      '<button type="button" class="player__play" id="playBtn" aria-label="Play Our Story, 5 minutes 12 seconds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l15 8-15 8z"/></svg></button>' +
-      '<button type="button" class="player__sound" id="tapSound">Tap for sound</button>' +
-      '<div class="player__dockbar"><button type="button" id="dockUp" aria-label="Back to the film">&#8599;</button><button type="button" id="dockX" aria-label="Close the player">&times;</button></div>' +
+      '<button type="button" class="player__play" id="playBtn" aria-label="Play Our Story, 5 minutes 12 seconds">' + ICON.play + '</button>' +
+      '<button type="button" class="player__sound" id="tapSound">' + ICON.muted + '<span>Tap for sound</span></button>' +
+      '<div class="player__bar" role="group" aria-label="Film controls">' +
+        '<button type="button" class="pbtn" id="pPlay" aria-label="Pause the film">' + ICON.pause + '</button>' +
+        '<button type="button" class="pbtn" id="pMute" aria-label="Turn the sound on">' + ICON.muted + '</button>' +
+        '<button type="button" class="pbtn pbtn--dock" id="dockUp" aria-label="Back to the film">' + ICON.up + '</button>' +
+        '<button type="button" class="pbtn pbtn--dock" id="dockX" aria-label="Close the player">' + ICON.x + '</button>' +
+      '</div>' +
     '</div>';
   }
-  var P = { el: null, frame: null, live: false, docked: false, closed: false, io: null };
-  function vimeoPost(method, value) { if (P.frame && P.frame.contentWindow) P.frame.contentWindow.postMessage(JSON.stringify(value === undefined ? { method: method } : { method: method, value: value }), 'https://player.vimeo.com'); }
+  var TESTPLAYER = /[?&]player=test(&|$)/.test(location.search);
+  var P = { el: null, frame: null, live: false, docked: false, closed: false, io: null, playing: false, muted: true, origin: 'https://player.vimeo.com' };
+  function vimeoPost(method, value) { if (P.frame && P.frame.contentWindow) P.frame.contentWindow.postMessage(JSON.stringify(value === undefined ? { method: method } : { method: method, value: value }), P.origin); }
+  function syncPlayer() {
+    if (!P.el) return;
+    var pp = $('#pPlay', P.el), pm = $('#pMute', P.el);
+    pp.innerHTML = P.playing ? ICON.pause : ICON.play; pp.setAttribute('aria-label', P.playing ? 'Pause the film' : 'Play the film');
+    pm.innerHTML = P.muted ? ICON.muted : ICON.sound; pm.setAttribute('aria-label', P.muted ? 'Turn the sound on' : 'Mute the film');
+    P.el.classList.toggle('is-unmuted', !P.muted);
+    P.el.classList.toggle('is-paused', !P.playing);
+  }
+  function setMuted(m) {
+    P.muted = m;
+    if (m) { vimeoPost('setMuted', true); vimeoPost('setVolume', 0); }
+    else { vimeoPost('setMuted', false); vimeoPost('setVolume', 1); vimeoPost('enableTextTrack', 'en'); if (window.WerkIntro && !WerkIntro.isMuted()) { WerkIntro.mute(); syncSound(); } }
+    syncPlayer();
+  }
   function setupPlayer() {
     P.el = $('#player'); if (!P.el) return;
-    P.live = false; P.docked = false; P.closed = false;
+    P.live = false; P.docked = false; P.closed = false; P.playing = false; P.muted = true; P.frame = null;
     var slot = $('#storySlot');
     function mount(autoplayMuted) {
       if (P.frame) return;
       var f = doc.createElement('iframe');
-      f.src = 'https://player.vimeo.com/video/' + VIMEO + '?autoplay=1&muted=' + (autoplayMuted ? 1 : 0) + '&loop=1&title=0&byline=0&portrait=0&dnt=1&playsinline=1&texttrack=en&api=1';
+      if (TESTPLAYER) { f.src = 'media/test-player.html?autoplay=1&muted=' + (autoplayMuted ? 1 : 0); P.origin = location.origin === 'null' ? '*' : location.origin; }
+      else { f.src = 'https://player.vimeo.com/video/' + VIMEO + '?autoplay=1&muted=' + (autoplayMuted ? 1 : 0) + '&loop=1&title=0&byline=0&portrait=0&dnt=1&playsinline=1&texttrack=en&api=1'; P.origin = 'https://player.vimeo.com'; }
       f.allow = 'autoplay; fullscreen; picture-in-picture'; f.title = 'Our Story, the Werk Well film'; f.setAttribute('loading', 'eager');
-      P.el.insertBefore(f, P.el.firstChild); P.frame = f;
-      setTimeout(function () { if (!P.live) P.el.classList.add('is-fallback'); }, 9000);
+      P.el.insertBefore(f, P.el.firstChild); P.frame = f; P.muted = !!autoplayMuted; syncPlayer();
+      setTimeout(function () { if (!P.live && P.el) P.el.classList.add('is-fallback'); }, 9000);
     }
     $('#playBtn').addEventListener('click', function () {
       if (P.el.classList.contains('is-fallback')) { window.open('https://vimeo.com/' + VIMEO, '_blank', 'noopener'); return; }
-      if (P.frame) { vimeoPost('play'); } else mount(false); P.el.classList.add('is-unmuted');
+      if (P.frame) { vimeoPost('play'); setMuted(false); } else mount(false);
     });
-    $('#tapSound').addEventListener('click', function () { vimeoPost('setVolume', 1); vimeoPost('setMuted', false); vimeoPost('enableTextTrack', 'en'); P.el.classList.add('is-unmuted'); if (window.WerkIntro && !WerkIntro.isMuted()) { WerkIntro.mute(); syncSound(); } });
-    $('#dockX').addEventListener('click', function () { vimeoPost('pause'); undock(true); P.closed = true; P.el.classList.add('is-closed'); });
+    $('#tapSound').addEventListener('click', function () { setMuted(false); });
+    $('#pPlay').addEventListener('click', function () { vimeoPost(P.playing ? 'pause' : 'play'); P.playing = !P.playing; syncPlayer(); });
+    $('#pMute').addEventListener('click', function () { setMuted(!P.muted); });
+    $('#dockX').addEventListener('click', function () { vimeoPost('pause'); P.playing = false; undock(true); P.closed = true; P.el.classList.add('is-closed'); });
     $('#dockUp').addEventListener('click', function () { slot.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); });
     // Start muted when the film is near the screen (autoplay muted).
     var started = false;
@@ -240,18 +279,20 @@
       es.forEach(function (e) {
         if (e.isIntersecting && !started) { started = true; mount(true); }
         if (!started) return;
-        var past = !e.isIntersecting && e.boundingClientRect.top < 0;
+        var past = !e.isIntersecting;
         if (past && !P.docked && !P.closed) dock(); else if (!past && P.docked) undock();
       });
     }, { threshold: 0, rootMargin: '0px' });
     P.io.observe(slot);
   }
   window.addEventListener('message', function (e) {
-    if (!/vimeo\.com$/.test(new URL(e.origin || 'http://x').hostname)) return;
+    if (!P.el || !P.frame || e.source !== P.frame.contentWindow) return;
     var d; try { d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (x) { return; }
-    if (!d || !P.el) return;
-    if (d.event === 'ready') { vimeoPost('addEventListener', 'play'); vimeoPost('addEventListener', 'playProgress'); }
-    if (d.event === 'play' || d.event === 'playProgress') { if (!P.live) { P.live = true; P.el.classList.add('is-live'); P.el.classList.remove('is-fallback'); } }
+    if (!d) return;
+    if (d.event === 'ready') { ['play', 'pause', 'playProgress', 'volumechange'].forEach(function (ev) { vimeoPost('addEventListener', ev); }); }
+    if (d.event === 'play' || d.event === 'playProgress') { if (!P.live) { P.live = true; P.el.classList.add('is-live'); P.el.classList.remove('is-fallback'); } if (!P.playing) { P.playing = true; syncPlayer(); } }
+    if (d.event === 'pause') { P.playing = false; syncPlayer(); }
+    if (d.event === 'volumechange' && d.data) { var m = d.data.muted != null ? !!d.data.muted : d.data.volume === 0; if (m !== P.muted) { P.muted = m; syncPlayer(); } }
   });
   // Dock along a curved path: X and Y travel on different curves.
   function flip(fromRect, toRect) {
@@ -290,6 +331,8 @@
       '<div class="grid tt__grid">' +
         '<div class="tt__aside"><p class="rv" style="max-width:34ch">' + esc(C.timetable_note) + ' No classes on 23 or 30 December; back on 6 January.</p>' +
           '<p class="small rv" style="--d:1">Places left are sample numbers for this demo. One class is shown full so you can see the waitlist.</p>' +
+          '<p class="rv" style="--d:1">' + (isMember() ? 'You are a member, so you can book four weeks ahead.' : 'You can book two weeks ahead. Werk Club members see four.') + '</p>' +
+          '<p class="rv" style="--d:1"><a class="btn btn--ghost btn--sm" href="#/book?ahead=1"><span class="btn__label">Book ahead</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a></p>' +
           pic('two-women-dancing', 'A Wednesday class in the mirrored studio', 'rv-pic pic--hover', { sizes: '(max-width: 767px) 60vw, 28vw' }) + '</div>' +
         '<div class="tt__list"><div class="daychips" id="days" role="group" aria-label="Choose a Wednesday"><span class="chips__ind" aria-hidden="true"></span></div><div class="slots" id="slots" aria-live="polite"></div>' +
           '<div class="slot" style="margin-top:8px;animation:none"><div><h3>Bounce &amp; Burn, Stretch &amp; Flow</h3><p class="slot__meta">Joining the timetable soon.</p></div><button type="button" class="btn btn--ghost btn--sm" data-tell="soon"><span class="btn__label">' + esc(C.tell_me_when.button) + '</span></button></div>' +
@@ -323,15 +366,15 @@
   };
   function renderDays(rootEl) {
     var days = $('#days', rootEl), slotsEl = $('#slots', rootEl); if (!days) return;
-    var dates = []; slots().forEach(function (s) { if (dates.indexOf(s.date) < 0) dates.push(s.date); });
-    days.insertAdjacentHTML('beforeend', dates.map(function (d, i) { var x = D(d); return '<button type="button" class="chip" data-date="' + d + '" aria-pressed="' + (i === 0) + '"><b>' + x.getDate() + '</b><small>' + MONTHS[x.getMonth()] + '</small></button>'; }).join(''));
+    var dates = openDates();
+    days.insertAdjacentHTML('beforeend', dates.map(function (d, i) { var x = D(d); return '<button type="button" class="chip' + (earlyDate(d) ? ' chip--early' : '') + '" data-date="' + d + '" aria-pressed="' + (i === 0) + '"><b>' + x.getDate() + '</b><small>' + MONTHS[x.getMonth()] + (earlyDate(d) ? ' &middot; early' : '') + '</small></button>'; }).join(''));
     function pick(d) {
       $$('.chip', days).forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.date === d); });
       var on = $('.chip[data-date="' + d + '"]', days), ind = $('.chips__ind', days);
       ind.style.width = on.offsetWidth + 'px'; ind.style.transform = 'translate(' + on.offsetLeft + 'px,' + on.offsetTop + 'px)';
       slotsEl.innerHTML = slots().filter(function (s) { return s.date === d; }).map(function (s) {
         var l = left(s.id, s.date);
-        return '<div class="slot"><h3>' + esc(s.name) + '</h3><p class="slot__meta">' + fmtDate(s.date, true) + ', ' + time12(s.time) + ' &middot; ' + s.len + ' min &middot; ' + placesLabel(s.id, s.date) + '</p>' +
+        return '<div class="slot"><h3>' + esc(s.name) + '</h3><p class="slot__meta">' + fmtDate(s.date, true) + ', ' + time12(s.time) + ' &middot; ' + s.len + ' min &middot; ' + placesLabel(s.id, s.date) + (earlyDate(s.date) ? ' &middot; ' + EARLY : '') + '</p>' +
           (l === 0 ? '<button type="button" class="btn btn--ghost btn--sm" data-wait="' + s.id + '|' + s.date + '"><span class="btn__label">Join waitlist</span></button>' : arrowBtn('Book', '#/book?c=' + s.id + '&d=' + s.date, 'btn--accent btn--sm')) + '</div>';
       }).join('');
     }
@@ -348,6 +391,7 @@
     if (q.e && evt(q.e)) { b.item = q.e; b.kind = 'event'; b.date = evt(q.e).date; b.step = 2; }
     if (q.pay) b.pay = q.pay;
     if (q.name) b.name = q.name;
+    if (q.ahead) { b.ahead = true; b.kind = 'class'; b.step = 1; b.picks = []; b.name = 'Demo member'; b.email = 'demo.member@example.com'; b.mobile = '07700 900123'; }
     return b;
   }
   var STEPS = ['Choose', 'Date', 'Pay', 'Your details', 'Wellness check', 'Photos', 'Confirm'];
@@ -356,9 +400,9 @@
   function itemPrice(b) {
     if (b.kind === 'event') { var e = evt(b.item); return e.price; }
     if (b.kind === 'private') return PRICE.private;
-    return { single: 13, intro: 29, pass5: 58, pass10: 105, wallet: 0, four: 0, club: 0 }[b.pay] != null ? { single: 13, intro: 29, pass5: 58, pass10: 105, wallet: 0, four: 0, club: 0 }[b.pay] : 13;
+    var pr = { single: 13, intro: 29, pass5: 58, pass10: 105, wallet: 0, four: 0, club: 0, member: 0 }[b.pay]; return pr != null ? pr : 13;
   }
-  function payLabel(id) { return { single: 'Single class, £13', intro: 'Intro pass, 3 classes for £29', pass5: '5 class pass, £58', pass10: '10 class pass, £105', wallet: 'From my class pass (1 credit)', four: 'Werk Club Four membership', club: 'The Werk Club membership', card: 'Pay on the night is not offered', event: 'Event ticket', private: 'Private session, £70' }[id] || ''; }
+  function payLabel(id) { return { member: 'Included in your Werk Club membership', single: 'Single class, £13', intro: 'Intro pass, 3 classes for £29', pass5: '5 class pass, £58', pass10: '10 class pass, £105', wallet: 'Class pass credit', four: 'Werk Club Four membership', club: 'The Werk Club membership', card: 'Pay on the night is not offered', event: 'Event ticket', private: 'Private session, £70' }[id] || ''; }
   views.book = function (q) {
     B = newBooking(q);
     return '<div class="app"><div class="app__top"><div><h1>Book your place</h1><p style="margin:12px 0 0;max-width:46ch">Wednesday classes, Twerkmas, Love to Wine and private sessions at Fearless Fit Hub, Fenny Stratford.</p></div><a class="tlink is-on" href="#/me">My bookings</a></div>' +
@@ -370,12 +414,14 @@
     var b = B, html = '';
     var steps = b.kind === 'event' || b.kind === 'private' ? STEPS.filter(function (s) { return b.kind === 'private' || s !== 'Date'; }) : STEPS;
     if (b.step < 7) {
-      $('#steps').innerHTML = STEPS.map(function (s, i) { return '<span class="' + (i === b.step ? 'is-on' : '') + '">' + s + '</span>'; }).join('');
-      $('#prog').style.transform = 'scaleX(' + ((b.step + 1) / 7) + ')';
+      if (b.ahead) { var AS = [[1, 'Pick Wednesdays'], [2, 'Credits or plan'], [6, 'Confirm']]; $('#steps').innerHTML = AS.map(function (x) { return '<span class="' + (x[0] === b.step ? 'is-on' : '') + '">' + x[1] + '</span>'; }).join(''); $('#prog').style.transform = 'scaleX(' + ({ 1: 1, 2: 2, 6: 3 }[b.step] / 3) + ')'; }
+      else { $('#steps').innerHTML = STEPS.map(function (s, i) { return '<span class="' + (i === b.step ? 'is-on' : '') + '">' + s + '</span>'; }).join('');
+      $('#prog').style.transform = 'scaleX(' + ((b.step + 1) / 7) + ')'; }
     }
-    switch (b.step) {
+    if (b.ahead && (b.step === 1 || b.step === 2 || b.step === 6 || b.step === 7)) html = aheadHTML(b);
+    else switch (b.step) {
       case 0:
-        html = '<h2>What are you booking?</h2>' +
+        html = '<h2>What are you booking?</h2><p><a class="tlink is-on" href="#/book?ahead=1">Book several Wednesdays at once</a></p>' +
           CLASSES.map(function (c) { var live = c.status === 'live'; return '<label class="opt"' + (live ? '' : ' style="opacity:.55"') + '><input type="radio" name="item" value="class:' + c.id + '"' + (b.item === c.id ? ' checked' : '') + (live ? '' : ' disabled') + '><span class="opt__dot"></span><span class="opt__body"><b>' + esc(c.name) + '</b><small>' + (live ? 'Wednesdays ' + esc(c.timetable.time_label) + ', ' + esc(c.length) : 'Joining the timetable soon') + '</small></span><span class="opt__price">' + (live ? '£13' : '') + '</span></label>'; }).join('') +
           EVENTS.map(function (e) { return '<label class="opt"><input type="radio" name="item" value="event:' + e.id + '"' + (b.item === e.id ? ' checked' : '') + '><span class="opt__dot"></span><span class="opt__body"><b>' + esc(e.short_name) + '</b><small>' + fmtDate(e.date, true) + ', ' + esc(e.time_label) + ' &middot; ' + placesLabel(e.id, e.date) + '</small></span><span class="opt__price">' + esc(e.price_label) + '</span></label>'; }).join('') +
           '<label class="opt"><input type="radio" name="item" value="private:private"' + (b.kind === 'private' ? ' checked' : '') + '><span class="opt__dot"></span><span class="opt__body"><b>Private 1:1 with Millie</b><small>One hour, times agreed with Millie</small></span><span class="opt__price">£70</span></label>' +
@@ -388,7 +434,7 @@
         } else {
           var c = cls(b.item);
           html = '<h2>Which Wednesday?</h2><p class="muted">' + esc(c.name) + ', ' + esc(c.timetable.time_label) + '. No classes on 23 or 30 December.</p>' +
-            c.dates.map(function (d) { var l = left(c.id, d); return '<label class="opt"' + (l === 0 ? ' style="opacity:.7"' : '') + '><input type="radio" name="date" value="' + d + '"' + (b.date === d ? ' checked' : '') + '><span class="opt__dot"></span><span class="opt__body"><b>' + fmtDate(d, true) + '</b><small>' + (l === 0 ? 'Full. Choosing this joins the waitlist.' : placesLabel(c.id, d) + (l <= 5 ? '' : ', ' + l + ' of ' + c.capacity)) + '</small></span></label>'; }).join('');
+            c.dates.filter(function (d) { return openDates().indexOf(d) >= 0; }).map(function (d) { var l = left(c.id, d); return '<label class="opt"' + (l === 0 ? ' style="opacity:.7"' : '') + '><input type="radio" name="date" value="' + d + '"' + (b.date === d ? ' checked' : '') + '><span class="opt__dot"></span><span class="opt__body"><b>' + fmtDate(d, true) + '</b><small>' + (l === 0 ? 'Full. Choosing this joins the waitlist.' : placesLabel(c.id, d) + (l <= 5 ? '' : ', ' + l + ' of ' + c.capacity)) + (earlyDate(d) ? ' &middot; ' + EARLY : '') + '</small></span></label>'; }).join('') + '<p class="small">' + (isMember() ? 'Members can book four weeks ahead.' : 'Booking opens two weeks ahead. Werk Club members can book four weeks ahead.') + '</p>';
         }
         html += '<p class="err" id="err"></p><div class="step__nav"><button type="button" class="btn btn--ghost" data-back><span class="btn__label">Back</span></button>' + arrowBtn('Next', null, 'btn--accent', ' data-next') + '</div>';
         break;
@@ -404,7 +450,8 @@
           b.pay = b.kind;
         } else {
           html = '<h2>How would you like to pay?</h2>' +
-            [['single', 'Single class', 'This class only', '£13'], ['intro', 'Intro pass', '3 classes for new clients, use within 14 days', '£29'], ['pass5', '5 class pass', '£11.60 a class, use within 6 weeks', '£58'], ['pass10', '10 class pass', '£10.50 a class, use within 12 weeks', '£105'], ['wallet', 'Use my class pass', 'Demo member has 3 credits left', '1 credit'], ['four', 'Werk Club Four', 'Members book with their plan', 'Plan']].map(function (o) {
+            (isMember() ? [['member', 'My Werk Club membership', 'Included in your membership', '£0'], ['single', 'Single class', 'This class only', '£13']] :
+            [['single', 'Single class', 'This class only', '£13'], ['intro', 'Intro pass', '3 classes for new clients, use within 14 days', '£29'], ['pass5', '5 class pass', '£11.60 a class, use within 6 weeks', '£58'], ['pass10', '10 class pass', '£10.50 a class, use within 12 weeks', '£105'], ['wallet', 'Use my class pass', 'You have ' + creditsLeft() + ' of 5 credits left', '1 credit']]).map(function (o) {
               return '<label class="opt"><input type="radio" name="pay" value="' + o[0] + '"' + (b.pay === o[0] ? ' checked' : '') + '><span class="opt__dot"></span><span class="opt__body"><b>' + o[1] + '</b><small>' + o[2] + '</small></span><span class="opt__price">' + o[3] + '</span></label>';
             }).join('');
         }
@@ -454,6 +501,7 @@
     st.innerHTML = '<div class="step' + (dir < 0 ? ' is-back' : '') + '">' + html + '</div>';
     if (b.step === 7) { $('#steps').innerHTML = ''; $('#prog').style.transform = 'scaleX(1)'; $('#summary').hidden = true; setTimeout(function () { var tw = $('.ticket-wrap'); if (tw) tw.classList.add('is-party'); }, 50); return; }
     $('#summary').hidden = false;
+    if (b.ahead) { var np = (b.picks || []).length; $('#summary').innerHTML = '<h3>Booking ahead</h3><dl>' + row('Classes', np ? String(np) : 'None picked yet') + row('Plan', isMember() ? 'Werk Club member' : '5 class pass, ' + creditsLeft() + ' credits left') + row('Where', 'Fearless Fit Hub') + row('Name', b.name) + '</dl>'; return; }
     $('#summary').innerHTML = '<h3>Your booking</h3><dl>' + row('What', itemName(b) || 'Not chosen yet') + row('When', b.date ? fmtDate(b.date, true) + (itemTime(b) ? ', ' + itemTime(b) : '') : 'Not chosen yet') + row('Where', 'Fearless Fit Hub') + (b.pay ? row('Paying', b.pay === 'waitlist' ? 'Waitlist' : payLabel(b.pay)) : '') + (b.name ? row('Name', b.name) : '') + '</dl>';
   }
   function row(k, val) { return '<dt>' + esc(k) + '</dt><dd>' + esc(val) + '</dd>'; }
@@ -466,8 +514,10 @@
     function val(n) { var el = $('[name="' + n + '"]:checked', st) || $('[name="' + n + '"]', st); return el ? (el.type === 'checkbox' ? el.checked : el.value) : ''; }
     switch (b.step) {
       case 0: var it = $('[name="item"]:checked', st); if (!it) err = 'Choose a class, an event or a private session.'; else { var p = it.value.split(':'); if (b.item !== p[1]) { b.date = null; b.pay = null; } b.kind = p[0]; b.item = p[1]; if (b.kind === 'event') b.date = evt(b.item).date; } break;
-      case 1: var d = $('[name="date"]:checked', st); if (!d) err = 'Choose a date.'; else b.date = d.value; break;
-      case 2: var pp = $('[name="pay"]:checked', st); if (b.pay !== 'waitlist') { if (!pp) err = 'Choose how to pay.'; else b.pay = pp.value; } b.knee = !!val('knee'); break;
+      case 1:
+        if (b.ahead) { b.picks = $$('[name="pick"]:checked', st).map(function (x) { return x.value; }); if (!b.picks.length) err = 'Pick at least one class.'; else if (!isMember() && b.picks.length > creditsLeft()) err = 'You have ' + creditsLeft() + ' credits left. Untick some, or buy a pass first.'; break; }
+        var d = $('[name="date"]:checked', st); if (!d) err = 'Choose a date.'; else b.date = d.value; break;
+      case 2: if (b.ahead) { b.pay = isMember() ? 'member' : 'wallet'; break; } var pp = $('[name="pay"]:checked', st); if (b.pay !== 'waitlist') { if (!pp) err = 'Choose how to pay.'; else b.pay = pp.value; } b.knee = !!val('knee'); break;
       case 3: b.name = val('name').trim(); b.email = val('email').trim(); b.mobile = val('mobile').trim(); if (!b.name || !/^\S+@\S+\.\S+$/.test(b.email) || b.mobile.replace(/\D/g, '').length < 10) err = 'Add your name, a working email and a mobile number.'; break;
       case 4: b.ec_name = val('ec_name'); b.ec_phone = val('ec_phone'); b.injury = val('injury'); b.injury_detail = val('injury_detail'); b.pregnant = val('pregnant'); b.confirms = !!val('confirms');
         if (!b.ec_name || !b.ec_phone) err = 'Add an emergency contact and their number.'; else if (!b.injury || !b.pregnant) err = 'Answer both questions.'; else if (!b.confirms) err = 'Tick the box to confirm.'; break;
@@ -476,13 +526,18 @@
     var e = $('#err', st); if (e) e.textContent = err;
     return !err;
   }
-  function bookNext() { if (!bookCollect()) return; B.step++; if (B.step === 1 && B.kind === 'event') B.step = 2; bookRender(1); scrollToTop(); }
-  function bookBack() { B.step--; if (B.step === 1 && B.kind === 'event') B.step = 0; if (B.step < 0) B.step = 0; bookRender(-1); scrollToTop(); }
+  function bookNext() { if (!bookCollect()) return; B.step++; if (B.step === 1 && B.kind === 'event') B.step = 2; if (B.ahead && B.step === 3) B.step = 6; bookRender(1); scrollToTop(); }
+  function bookBack() { B.step--; if (B.step === 1 && B.kind === 'event') B.step = 0; if (B.ahead && B.step === 5) B.step = 2; if (B.ahead && B.step < 1) { location.hash = '#/book'; return; } if (B.step < 0) B.step = 0; bookRender(-1); scrollToTop(); }
   function scrollToTop() { var a = $('.app'); if (a && a.getBoundingClientRect().top < 0) window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }); }
   function bookConfirm(btn) {
     btn.classList.add('is-loading');
     setTimeout(function () {
       var b = B, code = 'WW-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+      if (b.ahead) {
+        b.savedList = b.picks.map(function (pk) { var p = pk.split('|'), c = cls(p[0]); var r = { id: 'WW-' + Math.random().toString(36).slice(2, 6).toUpperCase(), item: c.id, kind: 'class', name: b.name, email: b.email, mobile: b.mobile, date: p[1], time: c.timetable.time, pay: isMember() ? 'member' : 'wallet', knee: false, waitlist: false, photo: 'yes', injury: 'no', at: Date.now(), title: c.name, ahead: true }; S.bookings.push(r); return r; });
+        save(); btn.classList.remove('is-loading'); btn.classList.add('is-done'); $('.btn__label', btn).textContent = 'Done';
+        setTimeout(function () { b.step = 7; bookRender(1); scrollToTop(); }, 380); return;
+      }
       var rec = { id: code, item: b.item, kind: b.kind, name: b.name, email: b.email, mobile: b.mobile, date: b.date, time: b.kind === 'class' ? cls(b.item).timetable.time : b.kind === 'event' ? evt(b.item).start : '10:00', pay: b.pay, knee: b.knee, waitlist: b.pay === 'waitlist', photo: b.photo, injury: b.injury, at: Date.now(), title: itemName(b) };
       S.bookings.push(rec); save();
       btn.classList.remove('is-loading'); btn.classList.add('is-done'); $('.btn__label', btn).textContent = 'Done';
@@ -499,15 +554,42 @@
       (nexts.length ? '<div class="next2"><h3 style="margin-bottom:8px">Book your next class</h3><ul class="sched" style="margin-top:0">' + nexts.map(function (s) { return '<li><a href="#/book?c=' + s.id + '&d=' + s.date + '"><span class="when">' + fmtDate(s.date) + ', ' + time12(s.time) + '</span><span class="what">' + esc(s.name) + '</span><span class="val">' + placesLabel(s.id, s.date) + '<span class="go" aria-hidden="true">&rarr;</span></span></a></li>'; }).join('') + '</ul></div>' : '') +
       '</div>';
   }
-  function ics(r) {
+  function aheadHTML(b) {
+    var nav = function (label, id) { return '<div class="step__nav"><button type="button" class="btn btn--ghost" data-back><span class="btn__label">Back</span></button>' + (id ? '<button type="button" class="btn btn--accent" id="' + id + '"><span class="btn__label">' + label + '</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button>' : arrowBtn(label, null, 'btn--accent', ' data-next')) + '</div>'; };
+    var plan = isMember() ? 'Werk Club member' : '5 class pass, ' + creditsLeft() + ' credits left';
+    if (b.step === 1) {
+      return '<h2>Book ahead</h2><p>Signed in as Demo member (' + plan + '). Tick every class you want; you confirm once.</p>' +
+        '<div class="ahead" id="ahead">' + openDates().map(function (d) {
+          return '<fieldset class="ahead__day"><legend>' + fmtDate(d, true) + (earlyDate(d) ? ' ' + EARLY : '') + '</legend>' + slots().filter(function (s) { return s.date === d; }).map(function (s) {
+            var l = left(s.id, s.date), val = s.id + '|' + s.date, on = (b.picks || []).indexOf(val) >= 0;
+            return '<label class="opt' + (l === 0 ? ' is-off' : '') + '"><input type="checkbox" name="pick" value="' + val + '"' + (on ? ' checked' : '') + (l === 0 ? ' disabled' : '') + '><span class="opt__dot"></span><span class="opt__body"><b>' + esc(s.name) + '</b><small>' + time12(s.time) + ' &middot; ' + (l === 0 ? 'Full' : placesLabel(s.id, s.date)) + '</small></span></label>';
+          }).join('') + '</fieldset>';
+        }).join('') + '</div>' +
+        '<p class="ahead__count" id="aheadCount" aria-live="polite"></p><p class="err" id="err"></p>' + nav('Next');
+    }
+    var picks = b.picks.map(function (pk) { var p = pk.split('|'); return { c: cls(p[0]), d: p[1] }; });
+    var listHTML = '<ul class="ahead__list">' + picks.map(function (x) { return '<li><b>' + fmtDate(x.d, true) + '</b><span>' + esc(x.c.name) + ', ' + time12(x.c.timetable.time) + '</span></li>'; }).join('') + '</ul>';
+    var cover = isMember() ? 'Included in your membership' : 'Uses ' + picks.length + ' of your 5 credits';
+    if (b.step === 2) return '<h2>' + cover + '</h2>' + listHTML + '<p>' + (isMember() ? 'Your Werk Club plan covers every weekly class, so there is nothing to pay.' : 'You will have ' + (creditsLeft() - picks.length) + ' credits left after this.') + '</p><p class="small">Your details, wellness check and photo answers are already on file.</p>' + nav('Next');
+    if (b.step === 6) return '<h2>Check and confirm</h2>' + listHTML + '<dl class="summary" style="position:static;display:grid;grid-template-columns:auto 1fr;gap:10px 16px;margin:0 0 16px">' + row('Name', b.name) + row('Paying with', cover) + row('Total', '£0') + '</dl><p class="small">' + esc(W.book.confirmation.cancel) + '</p>' + nav('Confirm ' + picks.length + (picks.length === 1 ? ' booking' : ' bookings'), 'confirmBtn');
+    var L = b.savedList || [];
+    return '<div class="ticket-wrap"><div class="ticket-w">' + window.WW_W + '</div><h2 style="font-size:clamp(2rem,1.6rem + 1.6vw,3rem)">You are booked in for ' + L.length + (L.length === 1 ? ' class' : ' classes') + '</h2><p class="muted">One ticket for each Wednesday. ' + esc(cover) + '.</p>' +
+      '<div class="tix">' + L.map(function (r, i) { return '<div class="ticket ticket--mini" style="animation-delay:' + (i * 90) + 'ms"><div class="ticket__top"><h2>' + esc(r.title) + '</h2><p style="margin:0">' + fmtDate(r.date, true) + ', ' + time12(r.time) + '</p></div><div class="ticket__perf"></div><div class="ticket__body"><div><span>Name</span><b>' + esc(r.name) + '</b></div><div><span>Paid with</span><b>' + esc(payLabel(r.pay)) + '</b></div><p class="ticket__code" style="margin:0">' + r.id + '</p></div></div>'; }).join('') + '</div>' +
+      '<div class="hero__acts" style="justify-content:center"><button type="button" class="btn btn--accent" data-ics-all="' + L.map(function (r) { return r.id; }).join(',') + '"><span class="btn__label">Add all to calendar</span><span class="btn__arrow" aria-hidden="true">&darr;</span></button><a class="btn btn--ghost" href="#/me"><span class="btn__label">See them in Me</span></a></div></div>';
+  }
+  function vevent(r) {
     var dt = r.date.replace(/-/g, '') + 'T' + r.time.replace(':', '') + '00';
     var end = new Date(D(r.date).getTime()); var hh = +r.time.slice(0, 2), mm = +r.time.slice(3); end.setHours(hh, mm + (r.kind === 'event' ? (r.item === 'twerkmas' ? 180 : 120) : r.kind === 'private' ? 60 : 45));
     var pad = function (n) { return (n < 10 ? '0' : '') + n; };
     var de = r.date.replace(/-/g, '') + 'T' + pad(end.getHours()) + pad(end.getMinutes()) + '00';
-    var body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Werk Well Studio//Booking//EN', 'BEGIN:VEVENT', 'UID:' + r.id + '@werkwell', 'DTSTART;TZID=Europe/London:' + dt, 'DTEND;TZID=Europe/London:' + de, 'SUMMARY:' + r.title + ' at Werk Well', 'LOCATION:Fearless Fit Hub\\, 31 Wharfside\\, Fenny Stratford\\, Milton Keynes MK2 2AZ', 'DESCRIPTION:Please arrive 5 to 7 minutes early. Booking ' + r.id, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-    var a = doc.createElement('a'); a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar' })); a.download = 'werk-well-' + r.id + '.ics'; doc.body.appendChild(a); a.click(); a.remove();
-    toast('Calendar file saved');
+    return ['BEGIN:VEVENT', 'UID:' + r.id + '@werkwell', 'DTSTART;TZID=Europe/London:' + dt, 'DTEND;TZID=Europe/London:' + de, 'SUMMARY:' + r.title + ' at Werk Well', 'LOCATION:Fearless Fit Hub\\, 31 Wharfside\\, Fenny Stratford\\, Milton Keynes MK2 2AZ', 'DESCRIPTION:Please arrive 5 to 7 minutes early. Booking ' + r.id, 'END:VEVENT'].join('\r\n');
   }
+  function icsMany(list, name) {
+    var body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Werk Well Studio//Booking//EN'].concat(list.map(vevent)).concat(['END:VCALENDAR']).join('\r\n');
+    var a = doc.createElement('a'); a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar' })); a.download = name; doc.body.appendChild(a); a.click(); a.remove();
+    toast(list.length > 1 ? 'One calendar file with ' + list.length + ' classes saved' : 'Calendar file saved');
+  }
+  function ics(r) { icsMany([r], 'werk-well-' + r.id + '.ics'); }
 
   /* ----- The Werk Club ----- */
   views.club = function () {
@@ -518,7 +600,7 @@
       '<section class="wrap" aria-label="Membership plans"><div class="tiers">' +
         '<article class="tier tier--full rv"><h2>' + esc(full.name) + '</h2><p class="tier__price">£79</p><p class="small">a month. Founding places are limited to 30.</p><ul>' + li(full) + '</ul>' +
           '<div class="tier__end">' + '<button type="button" class="btn btn--accent btn--full" data-request><span class="btn__label">Request your place</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button><p class="small" style="margin:12px 0 0">Millie reads every request and replies within a few days.</p></div></article>' +
-        '<article class="tier tier--four rv" style="--d:1"><h2>' + esc(four.name) + '</h2><p class="tier__price">£44</p><p class="small">a month, so £11 a class.</p><ul>' + li(four) + '</ul>' +
+        '<article class="tier tier--four rv" style="--d:1">' + pic('social-high-five', 'Two members high-fiving in class', 'tier__pic', { sizes: '(max-width: 767px) 100vw, 36vw', pos: 'center 25%' }) + '<h2>' + esc(four.name) + '</h2><p class="tier__price">£44</p><p class="small">a month, so £11 a class.</p><ul>' + li(four) + '</ul>' +
           '<div class="tier__end"><button type="button" class="btn btn--full" data-buy="four"><span class="btn__label">Join now</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button></div></article>' +
       '</div></section>' +
       '<section class="band wrap" aria-labelledby="fd-h"><div class="grid founding">' + pic(Cl.photo, 'Werk Well women laughing together', 'founding__pic rv-pic pic--hover', { sizes: '(max-width: 767px) 100vw, 56vw' }) +
@@ -529,8 +611,86 @@
         }).join('') + '</div></div></section>' +
       '<section class="band wrap" aria-labelledby="cur-h"><div class="grid split2">' + pic('social-brand-graphic', 'A dance community. Built by women. For women.', 'split2__pic rv-pic', { sizes: '(max-width: 767px) 72vw, 36vw' }) +
         '<div class="split2__txt"><h2 id="cur-h" class="rv">Bring a friend</h2><p class="rv" style="--d:1">Members get one guest place a month. Your friend still books and fills in the wellness check, because only booked participants come in. She books free with your code.</p><p class="rv" style="--d:2">Not a member? Share your link and your friend’s first class is £5.</p>' + arrowBtn('See your friend card', '#/me', 'btn--ghost rv') + '</div></div></section>' +
-      '<div class="strip" aria-hidden="true">' + pic('social-high-five', '', '', { sizes: '34vw' }) + pic('dancer-balance', '', '', { sizes: '34vw' }) + pic('millie-portrait', '', '', { sizes: '34vw' }) + '</div>';
+      globeHTML();
   };
+  var GALLERY = [
+    ['two-women-dancing', 'Two women dancing close in a Wednesday class'], ['millie-portrait', 'Millie sitting cross-legged on the studio floor'], ['dancer-balance', 'A dancer balancing on one leg'],
+    ['group-laughing', 'A group of women laughing with their arms up'], ['social-high-five', 'Two women high-fiving in class'], ['dancer-reach', 'A dancer reaching high, back arched'],
+    ['twerkmas-poster', 'The Twerkmas poster'], ['millie-squat', 'Millie crouched low in her orange tee'], ['social-brand-graphic', 'A dance community. Built by women. For women.'],
+    ['dancer-forward-bend', 'A dancer bent forward, hands on knees'], ['love-to-wine-still', 'Love to Wine workshop'], ['dancer-arm-pose', 'A dancer mid-move, one arm raised'],
+    ['social-twerk-sweat-repeat', 'Twerk, sweat, repeat']
+  ];
+  function globeHTML() {
+    return '<section class="globe-band" aria-labelledby="gl-h"><div class="wrap globe-head"><h2 id="gl-h" class="rv">Inside the club</h2><p class="rv" style="--d:1">Wednesday nights, parties and the women who make them. Drag to spin, tap a photo to open it.</p>' +
+      '<button type="button" class="btn btn--paper btn--sm rv" style="--d:2" data-gallery="0"><span class="btn__label">View all 13 photos</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></button></div>' +
+      '<div class="globe" id="globe"><div class="globe-row">' + GALLERY.map(function (g, i) { return '<button type="button" class="globe-row__item" data-gallery="' + i + '">' + img(g[0], g[1], { sizes: '200px', w: (DIMS[g[0]] || [1067, 1600])[0], h: (DIMS[g[0]] || [1067, 1600])[1] }) + '</button>'; }).join('') + '</div></div></section>';
+  }
+  var globeStop = null;
+  function setupGlobe() {
+    var host = $('#globe'); if (!host) return;
+    var probe = doc.createElement('div'); probe.style.transformStyle = 'preserve-3d';
+    if (probe.style.transformStyle !== 'preserve-3d') return;
+    var phone = innerWidth < 768, R = phone ? Math.min(205, innerWidth * 0.52) : 320;
+    var LATS = phone ? [-50, -25, 0, 25, 50] : [-54, -27, 0, 27, 54], COUNTS = [9, 14, 16, 14, 9];
+    var tiles = '', k = 0;
+    LATS.forEach(function (lat, r) {
+      var n = COUNTS[r], circ = 2 * Math.PI * R * Math.cos(lat * Math.PI / 180), w = Math.round(circ / n * 0.84), h = Math.round(Math.min(w * 1.25, R * 0.42));
+      for (var i = 0; i < n; i++) {
+        var lon = i * 360 / n + (r % 2 ? 180 / n : 0), g = GALLERY[k % GALLERY.length], gi = k % GALLERY.length; k++;
+        tiles += '<div class="gtile" data-gallery="' + gi + '" style="width:' + w + 'px;height:' + h + 'px;margin:' + (-h / 2) + 'px 0 0 ' + (-w / 2) + 'px;transform:rotateY(' + lon + 'deg) rotateX(' + (-lat) + 'deg) translateZ(' + R + 'px)"><img src="img/' + g[0] + '-800.webp" alt="" loading="lazy" decoding="async" draggable="false"></div>';
+      }
+    });
+    host.innerHTML = '<div class="globe__stage"><div class="globe__ball" aria-hidden="true">' + tiles + '</div></div>';
+    host.classList.add('is-3d');
+    var ball = $('.globe__ball', host), stage = $('.globe__stage', host);
+    var ang = 20, vel = 0, tilt = -10, auto = !reduced, lastTouch = 0, raf = 0, visible = true, t0 = performance.now();
+    function paint() { ball.style.transform = 'translateZ(' + (-R) + 'px) rotateX(' + tilt + 'deg) rotateY(' + ang + 'deg)'; }
+    function loop(now) {
+      var dt = Math.min(50, now - t0); t0 = now;
+      if (!drag) {
+        if (Math.abs(vel) > 0.01) { ang += vel; vel *= 0.94; }
+        else if (auto && now - lastTouch > 3000) ang += dt * 0.008;
+      }
+      paint();
+      raf = visible && !doc.hidden ? requestAnimationFrame(loop) : 0;
+    }
+    function kick() { if (!raf) { t0 = performance.now(); raf = requestAnimationFrame(loop); } }
+    var io = new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) kick(); }, { threshold: 0 });
+    io.observe(stage);
+    var drag = false, decided = false, sx = 0, sy = 0, lx = 0, lt = 0, moved = 0, pid = null;
+    stage.addEventListener('pointerdown', function (e) { sx = lx = e.clientX; sy = e.clientY; lt = performance.now(); decided = false; drag = false; moved = 0; pid = e.pointerId; vel = 0; lastTouch = performance.now(); });
+    stage.addEventListener('pointermove', function (e) {
+      if (pid !== e.pointerId) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy; moved = Math.max(moved, Math.abs(dx), Math.abs(dy));
+      if (!decided && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) { decided = true; drag = Math.abs(dx) > Math.abs(dy); if (drag) { try { stage.setPointerCapture(e.pointerId); } catch (x) {} stage.classList.add('is-drag'); } }
+      if (drag) { var now = performance.now(), step = (e.clientX - lx) * 0.28; ang += step; vel = step / Math.max(1, (now - lt) / 16); lt = now; lx = e.clientX; lastTouch = now; kick(); }
+    });
+    function end(e) {
+      if (pid !== e.pointerId) return;
+      if (!drag && moved < 6 && e.type === 'pointerup') { var t = doc.elementFromPoint(e.clientX, e.clientY), tile = t && t.closest('.gtile'); if (tile) openLightbox(+tile.dataset.gallery); }
+      drag = false; pid = null; stage.classList.remove('is-drag'); lastTouch = performance.now(); kick();
+    }
+    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
+    paint(); kick();
+    globeStop = function () { cancelAnimationFrame(raf); raf = 0; io.disconnect(); };
+  }
+  function openLightbox(i) {
+    var n = GALLERY.length, el = doc.createElement('div'); el.className = 'lightbox'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Photos');
+    el.innerHTML = '<figure class="lightbox__fig"><img alt=""><figcaption class="vh"></figcaption></figure><p class="lightbox__count" aria-live="polite"></p>' +
+      '<button type="button" class="lightbox__btn lightbox__prev" aria-label="Previous photo">&larr;</button><button type="button" class="lightbox__btn lightbox__next" aria-label="Next photo">&rarr;</button><button type="button" class="lightbox__btn lightbox__x" aria-label="Close">&times;</button>';
+    doc.body.appendChild(el); var last = doc.activeElement, im = $('img', el);
+    function show(j, dir) { i = (j + n) % n; var g = GALLERY[i]; im.classList.remove('is-in'); im.style.setProperty('--from', (dir || 0) * 30 + 'px'); im.src = 'img/' + g[0] + '-1600.webp'; im.alt = g[1]; $('figcaption', el).textContent = g[1]; $('.lightbox__count', el).textContent = (i + 1) + ' of ' + n; requestAnimationFrame(function () { requestAnimationFrame(function () { im.classList.add('is-in'); }); }); }
+    function close() { el.classList.add('is-closing'); doc.removeEventListener('keydown', key); setTimeout(function () { el.remove(); if (last && last.focus) last.focus(); }, reduced ? 0 : 250); }
+    function key(e) { if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') show(i + 1, 1); if (e.key === 'ArrowLeft') show(i - 1, -1); }
+    doc.addEventListener('keydown', key);
+    $('.lightbox__x', el).addEventListener('click', close);
+    $('.lightbox__next', el).addEventListener('click', function () { show(i + 1, 1); });
+    $('.lightbox__prev', el).addEventListener('click', function () { show(i - 1, -1); });
+    el.addEventListener('click', function (e) { if (e.target === el) close(); });
+    var sx = null; el.addEventListener('pointerdown', function (e) { sx = e.clientX; });
+    el.addEventListener('pointerup', function (e) { if (sx == null) return; var dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); });
+    show(i, 0); $('.lightbox__x', el).focus();
+  }
   function sheet(html, onReady) {
     var el = doc.createElement('div'); el.className = 'sheet'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
     el.innerHTML = '<div class="sheet__scrim" data-close></div><div class="sheet__panel"><button type="button" class="sheet__x" data-close aria-label="Close">&times;</button>' + html + '</div>';
@@ -621,7 +781,7 @@
       }).join('') + '</div></section>' + newsBand(J.newsletter.text, J.newsletter.button);
   };
   function newsBand(text, btn) {
-    return '<section class="band" aria-labelledby="nb-h"><div class="field"><div class="field__txt"><h2 id="nb-h">Be first to hear</h2><p>' + esc(text) + '</p>' + newsletterForm('newsJ', btn) + '</div><div class="field__who">' + pic('millie-portrait', 'Millie', '', { sizes: '150px' }) + '<span>From Millie</span></div></div></section>';
+    return '<section class="band" aria-labelledby="nb-h"><div class="field"><div class="field__txt"><h2 id="nb-h">Be first to hear</h2><p>' + esc(text) + '</p>' + newsletterForm('newsJ', btn) + '</div><div class="field__who">' + pic('millie-portrait', 'Millie', '', { sizes: '150px' }) + '</div></div></section>';
   }
 
   /* ----- About ----- */
@@ -653,7 +813,7 @@
           '<address class="addr">Fearless Fit Hub<br>31 Wharfside, Fenny Stratford<br>Milton Keynes MK2 2AZ</address>' +
           '<p><a class="tlink is-on" href="' + GMAPS + '" target="_blank" rel="noopener">Open in Google Maps</a></p>' +
           '<p style="display:flex;gap:20px;flex-wrap:wrap"><a class="tlink" href="' + IG + '" target="_blank" rel="noopener">Instagram</a><a class="tlink" href="' + TT + '" target="_blank" rel="noopener">TikTok</a><a class="tlink" href="' + FB + '" target="_blank" rel="noopener">Facebook</a></p>' +
-          pic(C.photo, 'The Werk Well community', 'pic--hover rv-pic', { sizes: '(max-width: 767px) 100vw, 40vw', cap: 'See you on Wednesday' }) + '</div></div></section>' +
+          pic(C.photo, 'The Werk Well community', 'pic--hover rv-pic', { sizes: '(max-width: 767px) 100vw, 40vw' }) + '</div></div></section>' +
       '<div class="strip" aria-hidden="true">' + pic('dancer-balance', '', '', { sizes: '34vw' }) + pic('millie-portrait', '', '', { sizes: '34vw' }) + pic('dancer-arm-pose', '', '', { sizes: '34vw' }) + '</div>';
   };
 
@@ -669,7 +829,7 @@
         '<label class="f rv"><span>Budget</span><select name="budget"><option>Up to £200</option><option>£200 to £400</option><option>£400 or more</option><option>Not sure yet</option></select></label>' +
         '<label class="f rv"><span>Anything else (optional)</span><textarea name="note"></textarea></label><p class="err" id="hErr"></p>' +
         arrowBtn('Send enquiry', null, 'btn--accent') + '<p class="small" style="margin-top:12px">Demo only. Nothing is sent.</p></form></div>' +
-        '<div class="contact__info">' + pic('group-laughing', 'A group of women laughing with their arms up', 'pic--hover', { sizes: '(max-width: 767px) 100vw, 40vw', cap: 'Bring the whole group' }) +
+        '<div class="contact__info">' + pic('group-laughing', 'A group of women laughing with their arms up', 'pic--hover', { sizes: '(max-width: 767px) 100vw, 40vw' }) +
         '<h2 class="lead rv" style="margin:32px 0 12px">How it works</h2><p class="rv">Women only, as with every class. Everyone in the group books a place and fills in the wellness check, so Millie knows who is in the room.</p><p class="rv">Prefer one-to-one? <a class="tlink is-on" href="#/classes#private">Private 1:1 is £70 an hour</a>.</p></div></div></section>' +
       '<div class="strip" aria-hidden="true">' + pic('two-women-dancing', '', '', { sizes: '34vw' }) + pic('dancer-reach', '', '', { sizes: '34vw' }) + pic('social-high-five', '', '', { sizes: '34vw' }) + '</div>';
   };
@@ -678,14 +838,17 @@
   views.me = function () {
     var mine = S.bookings.slice().reverse();
     var used = S.bookings.filter(function (b) { return b.pay === 'wallet' && !b.waitlist; }).length;
-    var credits = Math.max(0, 3 - used);
+    var credits = creditsLeft();
     var attended = 7 + S.bookings.filter(function (b) { return !b.waitlist; }).length;
     var sample = { id: 'sample', title: 'Pelvic Pilates', date: '2026-12-09', time: '19:15', sample: true };
     var list = mine.concat([sample]);
     function ms(n) { var got = attended >= n; return '<div class="' + (got ? 'is-got' : '') + '"><b>' + n + '</b><span class="small" style="color:inherit">' + (got ? 'Reached' : (n - attended) + ' to go') + '</span><div class="bar"><i style="transform:scaleX(' + Math.min(1, attended / n) + ')"></i></div></div>'; }
-    return '<div class="app"><div class="app__top"><h1>Me</h1><p class="small" style="margin:0">Signed in as Demo member. Sample account for this demo.</p></div>' +
+    var wallet = isMember() ?
+      '<section class="card wallet rv" aria-labelledby="wal-h"><div><h2 id="wal-h" style="font-family:var(--sans);font-size:1rem;font-weight:500;letter-spacing:0">The Werk Club, founding member</h2><p class="small">£79 a month, renews 1 December</p></div><div><p class="wallet__n">All</p><p class="small" style="margin:0">weekly classes included</p><p class="small" style="margin:14px 0 0">Booking opens four weeks ahead for you, 10% off events, and one guest place a month.</p></div><a class="btn btn--paper btn--sm" href="#/book?ahead=1"><span class="btn__label">Book ahead</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a></section>' :
+      '<section class="card wallet rv" aria-labelledby="wal-h"><div><h2 id="wal-h" style="font-family:var(--sans);font-size:1rem;font-weight:500;letter-spacing:0">5 class pass</h2><p class="small">Expires 13 January 2027</p></div><div><p class="wallet__n">' + credits + '</p><p class="small" style="margin:0">of 5 credits left</p><p class="small" style="margin:14px 0 0">Your oldest pass is used first. Top up any time from The Werk Club page, and unused credits stay until the expiry date.</p></div><a class="btn btn--paper btn--sm" href="#/book?ahead=1"><span class="btn__label">Book ahead</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a></section>';
+    return '<div class="app"><div class="app__top"><h1>Me</h1><div class="plan-switch" role="group" aria-label="Demo member plan"><span class="small">Demo member has:</span><button type="button" class="btn btn--sm ' + (isMember() ? 'btn--ghost' : '') + '" data-plan="pass" aria-pressed="' + !isMember() + '"><span class="btn__label">5 class pass</span></button><button type="button" class="btn btn--sm ' + (isMember() ? '' : 'btn--ghost') + '" data-plan="member" aria-pressed="' + isMember() + '"><span class="btn__label">Werk Club member</span></button></div></div>' +
       '<div class="me">' +
-        '<section class="card wallet rv" aria-labelledby="wal-h"><div><h2 id="wal-h" style="font-family:var(--sans);font-size:1rem;font-weight:500;letter-spacing:0">5 class pass</h2><p class="small">Expires 13 January 2027</p></div><div><p class="wallet__n">' + credits + '</p><p class="small" style="margin:0">' + (credits === 1 ? 'credit' : 'credits') + ' left</p><p class="small" style="margin:14px 0 0">Your oldest pass is used first. Top up any time from The Werk Club page, and unused credits stay until the expiry date.</p></div><a class="btn btn--paper btn--sm" href="#/book?pay=wallet"><span class="btn__label">Book with a credit</span><span class="btn__arrow" aria-hidden="true">&rarr;</span></a></section>' +
+        wallet +
         '<section class="card upcoming rv" style="--d:1" aria-labelledby="up-h"><h2 id="up-h">Upcoming</h2>' + list.map(function (b, i) {
           var d = D(b.date);
           return '<div class="bk' + (i === 0 && !b.sample && Date.now() - b.at < 600000 ? ' is-new' : '') + '"><div class="bk__date"><b>' + d.getDate() + '</b><small>' + MONTHS[d.getMonth()] + '</small></div><div><b style="font-weight:500">' + esc(b.title) + '</b>' + (i === 0 && !b.sample && Date.now() - b.at < 600000 ? '<span class="new-tag">New</span>' : '') + '<br><span class="small">' + fmtDate(b.date, true) + ', ' + time12(b.time) + (b.waitlist ? ' &middot; waitlist' : '') + (b.sample ? ' &middot; sample' : '') + '</span></div>' + (b.sample ? '' : '<button type="button" class="btn btn--ghost btn--sm" data-ics="' + b.id + '" aria-label="Add ' + esc(b.title) + ' to calendar"><span class="btn__label">Calendar</span></button>') + '</div>';
@@ -731,11 +894,19 @@
   function renderFooter() {
     var F = W.footer;
     $('#foot').innerHTML = '<div class="foot__name">' + window.WW_LOGO + '<span class="vh">Werk Well Studio</span></div>' +
-      '<div class="foot__row"><div class="foot__places"><a class="lnk" href="mailto:' + W.meta.email + '">' + W.meta.email + '</a><a class="lnk" href="' + GMAPS + '" target="_blank" rel="noopener">31 Wharfside, MK2 2AZ</a><a class="lnk" href="' + IG + '" target="_blank" rel="noopener">' + esc(W.meta.socials.instagram.handle) + '</a><p class="small" style="color:#cfc6bc;margin-top:16px;max-width:36ch">' + v(F.blurb) + '</p></div>' +
-      '<div class="foot__cols"><div><h2>' + v(F.quick_links_heading) + '</h2><a class="lnk" href="#/classes">Classes</a><a class="lnk" href="#/book">Book</a><a class="lnk" href="#/club">The Werk Club</a><a class="lnk" href="#/events">Events</a></div>' +
-      '<div><h2>More</h2><a class="lnk" href="#/journal">Journal</a><a class="lnk" href="#/about">About</a><a class="lnk" href="#/private-hire">Private hire</a><a class="lnk" href="#/contact">Contact</a></div>' +
-      '<div><h2>' + v(F.newsletter_heading) + '</h2><form class="foot__news" data-form="news" novalidate><label class="vh" for="newsF">Email address</label><input id="newsF" type="email" placeholder="' + esc(F.newsletter_placeholder) + '" autocomplete="email"><button type="submit" class="btn btn--paper btn--sm"><span class="btn__label">' + esc(F.newsletter_button) + '</span></button></form></div></div></div>' +
-      '<div class="foot__legal"><span>' + esc(F.bottom) + ' <a class="lnk" href="#/contact">' + esc(F.privacy_link) + '</a> &middot; <a class="lnk" href="#/studio">' + esc(F.studio_login_link) + '</a></span><a class="lnk" href="#top" data-top>Back to top</a></div>';
+      '<p class="foot__sign">See you on Wednesday.</p>' +
+      '<div class="foot__row">' +
+        '<div class="foot__places">' +
+          '<a class="flink" href="mailto:' + W.meta.email + '">' + W.meta.email + '</a>' +
+          '<a class="flink flink--addr" href="' + GMAPS + '" target="_blank" rel="noopener"><span>31 Wharfside, Fenny Stratford,</span> <span>Milton Keynes MK2 2AZ</span></a>' +
+          '<a class="flink" href="' + GMAPS + '" target="_blank" rel="noopener">5.0 on Google, 38 reviews</a>' +
+        '</div>' +
+        '<div class="foot__cols">' +
+          '<div><h2>Follow</h2><a class="flink" href="' + IG + '" target="_blank" rel="noopener">Instagram</a><a class="flink" href="' + TT + '" target="_blank" rel="noopener">TikTok</a><a class="flink" href="' + FB + '" target="_blank" rel="noopener">Facebook</a></div>' +
+          '<div><h2>More</h2><a class="flink" href="#/about">About</a><a class="flink" href="#/private-hire">Private hire</a><a class="flink" href="#/contact">Contact</a></div>' +
+          '<div><h2>' + v(F.newsletter_heading) + '</h2><form class="foot__news" data-form="news" novalidate><label class="vh" for="newsF">Email address</label><input id="newsF" type="email" placeholder="' + esc(F.newsletter_placeholder) + '" autocomplete="email"><button type="submit" class="btn btn--paper btn--sm"><span class="btn__label">' + esc(F.newsletter_button) + '</span></button></form></div>' +
+        '</div></div>' +
+      '<div class="foot__legal"><span>' + esc(F.bottom) + '</span><span class="foot__legal-links"><a class="flink" href="#/contact">' + esc(F.privacy_link) + '</a><a class="flink" href="#/studio">' + esc(F.studio_login_link) + '</a><a class="flink" href="#top" data-top>Back to top</a></span></div>';
   }
 
   /* ================= ROUTER ================= */
@@ -752,7 +923,7 @@
     var r = parse(); if (!views[r.name]) r.name = 'home';
     var view = $('#view'), y = window.scrollY;
     if (P.io) { P.io.disconnect(); P.io = null; } P.frame = null; P.el = null;
-    clearInterval(fadeTimer);
+    clearInterval(fadeTimer); if (globeStop) { globeStop(); globeStop = null; }
     view.innerHTML = views[r.name](r.q, r.id);
     doc.title = TITLES[r.name] || TITLES.home;
     if (!keepScroll) { view.classList.remove('is-entering'); void view.offsetWidth; view.classList.add('is-entering'); setTimeout(function () { view.classList.remove('is-entering'); }, 600); }
@@ -783,6 +954,7 @@
     if (r.name === 'home') { setupPlayer(); setupGuest(); setupFade(); setupRise(); }
     if (r.name === 'classes') { renderDays($('#view')); setupCards(); }
     if (r.name === 'book') bookRender(1);
+    if (r.name === 'club') setupGlobe();
     if (r.name === 'me' || r.name === 'studio') { $$('.bar i, .fill i').forEach(function (i) { var t = i.style.transform; i.style.transform = 'scaleX(0)'; requestAnimationFrame(function () { requestAnimationFrame(function () { i.style.transform = t; }); }); }); }
   }
 
@@ -885,7 +1057,7 @@
       if (current && current.name === 'book' && B) { bookRender(0); }
       else { var bs = B; render(true); B = bs; }
       $('#view').classList.add('voice-swap'); setTimeout(function () { $('#view').classList.remove('voice-swap'); }, 500);
-      toast(vv === 'original' ? 'Showing her words, exactly as on her site' : 'Showing our suggested rewrite');
+      toast(vv === 'original' ? 'Showing your words, exactly as on your site' : 'Showing my suggested rewrite');
     }
   }
 
@@ -906,6 +1078,9 @@
     if (t.closest('[data-back]')) { bookBack(); return; }
     if (t.closest('#confirmBtn')) { bookConfirm(t.closest('#confirmBtn')); return; }
     if (t.closest('#useDemo')) { var st = $('#stage'); $('[name=name]', st).value = 'Demo member'; $('[name=email]', st).value = 'demo.member@example.com'; $('[name=mobile]', st).value = '07700 900123'; return; }
+    var gb = t.closest('[data-gallery]'); if (gb && !t.closest('.gtile')) { openLightbox(+gb.dataset.gallery); return; }
+    var ia = t.closest('[data-ics-all]'); if (ia) { var ids = ia.dataset.icsAll.split(','); icsMany(S.bookings.filter(function (b) { return ids.indexOf(b.id) >= 0; }), 'werk-well-bookings.ics'); return; }
+    var pl = t.closest('[data-plan]'); if (pl) { S.plan = pl.dataset.plan; save(); render(true); toast(S.plan === 'member' ? 'Demo member is now a Werk Club member' : 'Demo member now has a 5 class pass'); return; }
     var ic = t.closest('[data-ics]'); if (ic) { var rec = S.bookings.filter(function (b) { return b.id === ic.dataset.ics; })[0]; if (rec) ics(rec); return; }
     if (t.closest('[data-request]')) { requestSheet(); return; }
     var buy = t.closest('[data-buy]'); if (buy) { buySheet(buy.dataset.buy); return; }
@@ -922,6 +1097,7 @@
     if (t.closest('.offer__x')) { var o = $('#offer'); o.classList.add('is-leaving'); S.offerGone = true; save(); setTimeout(function () { o.hidden = true; root.classList.remove('has-offer'); }, 300); return; }
   });
   doc.addEventListener('change', function (e) {
+    if (e.target.name === 'pick') { var n = $$('[name="pick"]:checked').length, c = $('#aheadCount'); if (c) c.textContent = n ? (isMember() ? n + (n === 1 ? ' class' : ' classes') + ', included in your membership' : 'Uses ' + n + ' of your 5 credits' + (n > creditsLeft() ? ' (you have ' + creditsLeft() + ' left)' : '')) : ''; }
     if (e.target.name === 'injury') { var d = $('#injDet'); if (d) d.hidden = e.target.value !== 'yes'; }
   });
   doc.addEventListener('submit', function (e) {

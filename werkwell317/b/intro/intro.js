@@ -74,11 +74,18 @@
 
   function onKey(e) { if (e.key === 'Escape') finish(false, true); }
 
+  // On narrow screens the wordmark sits on two lines (WERK / WELL) so the first W is big enough to see.
+  function logoMarkup() {
+    if (!(window.matchMedia && matchMedia('(max-width: 600px)').matches)) return LOGO;
+    var a = LOGO.replace('viewBox="100 800 4310 735"', 'viewBox="100 800 2160 735"').replace('class="werk-intro__logo"', 'class="werk-intro__logo werk-intro__logo--a"');
+    var b = LOGO.replace('viewBox="100 800 4310 735"', 'viewBox="2440 800 1980 735"').replace('class="werk-intro__logo"', 'class="werk-intro__logo werk-intro__logo--b"').replace('aria-label="Werk Well"', 'aria-hidden="true"').replace('role="img" ', '');
+    return a + b;
+  }
   function init() {
     root = document.getElementById('werk-intro');
     audioSrc = new URL((root && root.getAttribute('data-audio')) || 'audio/01-momentum-jmhbm.mp3', scriptSrc).href;
     if (!root) return;
-    if ((seen() && !forced()) || /[?&]intro=0(&|$)/.test(location.search)) {
+    if (/[?&]intro=0(&|$)/.test(location.search)) {
       root.parentNode.removeChild(root); root = null; done = true;
       setTimeout(function () { fire(true, false); }, 0);
       return;
@@ -90,7 +97,7 @@
     root.innerHTML =
       '<button type="button" class="werk-intro__btn werk-intro__skip" data-act="skip">Skip</button>' +
       '<div class="werk-intro__stage">' +
-        '<div class="werk-intro__logo-wrap">' + LOGO + '</div>' +
+        '<div class="werk-intro__logo-wrap">' + logoMarkup() + '</div>' +
         '<div class="werk-intro__prompt">' +
           '<p class="werk-intro__note">Sound on for the full experience</p>' +
           '<button type="button" class="werk-intro__btn werk-intro__enter" data-act="enter">Enter</button>' +
