@@ -15,7 +15,7 @@
   --bg:#EEF2F0; --surface:#FFFFFF; --sunk:#E3E9E6; --ink:#14201B; --muted:#5A6A64; --line:#D5DDD9;
   --accent:#1D5C55; --accent-ink:#FFFFFF; --accent-soft:#D6E9E5;
   --good:#2C7548; --good-soft:#DCEFE2; --warn:#9A5B0E; --warn-soft:#F6E7CF; --bad:#AE2A21; --bad-soft:#F7DAD6;
-  --hsbc:#AE2A21; --monzo:#1D5C55;
+  --acct-a:#AE2A21; --acct-b:#1D5C55;
   --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
   --f-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-num:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -25,14 +25,14 @@
   --bg:#0C1311; --surface:#141D1A; --sunk:#1B2622; --ink:#E3ECE8; --muted:#8C9E97; --line:#26332F;
   --accent:#71C2B5; --accent-ink:#0C1311; --accent-soft:#1A302B;
   --good:#6FC78C; --good-soft:#18301F; --warn:#E6A650; --warn-soft:#33260F; --bad:#F27C70; --bad-soft:#3A1916;
-  --hsbc:#F27C70; --monzo:#71C2B5;
+  --acct-a:#F27C70; --acct-b:#71C2B5;
 }}
 :root[data-theme="dark"]{
   color-scheme:dark;
   --bg:#0C1311; --surface:#141D1A; --sunk:#1B2622; --ink:#E3ECE8; --muted:#8C9E97; --line:#26332F;
   --accent:#71C2B5; --accent-ink:#0C1311; --accent-soft:#1A302B;
   --good:#6FC78C; --good-soft:#18301F; --warn:#E6A650; --warn-soft:#33260F; --bad:#F27C70; --bad-soft:#3A1916;
-  --hsbc:#F27C70; --monzo:#71C2B5;
+  --acct-a:#F27C70; --acct-b:#71C2B5;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);margin:0}
@@ -65,7 +65,7 @@ header.top{display:flex;justify-content:space-between;align-items:center;gap:8px
 .nextdd{display:flex;flex-direction:column;gap:6px}
 .nextdd .dd{display:flex;justify-content:space-between;gap:10px;align-items:center}
 .src{font:600 10.5px/1 var(--f-body);letter-spacing:.04em;padding:3px 6px;border-radius:5px;border:1px solid currentColor}
-.src.HSBC{color:var(--hsbc)} .src.Monzo{color:var(--monzo)} .src.unknown{color:var(--muted)}
+.src.acctA{color:var(--acct-a)} .src.acctB{color:var(--acct-b)} .src.unknown{color:var(--muted)}
 
 /* 2 — debt-free */
 .hero{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
@@ -284,7 +284,7 @@ header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 
         <div class="wi-grid">
           <label for="wiPay">Net pay £/wk<input id="wiPay" type="number" step="0.01" inputmode="decimal"></label>
           <label for="wiSo">Cards SO £/wk<input id="wiSo" type="number" step="1" inputmode="decimal"></label>
-          <label class="wi-check" for="wiLump"><input id="wiLump" type="checkbox"> <span id="wiLumpTxt">Money owed to you</span> lands in Jan 2027</label>
+          <label class="wi-check" for="wiLump"><input id="wiLump" type="checkbox"> <span id="wiLumpTxt"></span></label>
           <div class="wi-out" id="wiOut"></div>
         </div>
       </details>
@@ -299,10 +299,10 @@ header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 
 
   <!-- 4 -->
   <section aria-labelledby="h-cash">
-    <h2 id="h-cash">Next 14 days · HSBC and Monzo</h2>
+    <h2 id="h-cash">Next 14 days</h2>
     <div class="panel">
-      <div class="legend"><span><i style="background:var(--hsbc)"></i>HSBC</span><span><i style="background:var(--monzo)"></i>Monzo cards</span></div>
-      <svg class="chart" id="cashChart" viewBox="0 0 340 130" role="img" aria-label="Projected HSBC and Monzo balances, next 14 days"></svg>
+      <div class="legend" id="legend"></div>
+      <svg class="chart" id="cashChart" viewBox="0 0 340 130" role="img" aria-label="Projected balances, next 14 days"></svg>
       <div class="days" id="days"></div>
       <p class="small muted" style="margin:8px 0 0" id="cashNote"></p>
     </div>
@@ -325,7 +325,7 @@ header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 
         <button type="button" id="s-bal" data-sort="bal" aria-pressed="true">Kill order</button>
         <button type="button" id="s-apr" data-sort="apr" aria-pressed="false">APR</button>
         <button type="button" id="s-dd" data-sort="dd" aria-pressed="false">DD date</button>
-        <button type="button" id="s-delta" data-sort="delta" aria-pressed="false">Since Aug</button>
+        <button type="button" id="s-delta" data-sort="delta" aria-pressed="false">Change</button>
       </div>
       <div class="board"><table id="board"></table></div>
       <div class="noncard" id="noncard"></div>
@@ -369,11 +369,28 @@ header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0 
   <button type="button" role="tab" data-go="progress">Progress</button>
 </div></nav>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.min.js" integrity="sha384-gnyZit14c5lnGcarmA166QQjjJXpucw25ogZXuwH3HxxY904zHkBqmxVpelsPorb" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.min.js" integrity="sha384-7i/4BYWz4Mn+lJfg2HWfEPfZQ7tmFKF3CTSKlXBpxWjNlLjcg+T6smpHG4gLmU1u" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script>
 window.renderDashboard = function(S){
+const ST = S.static;   // personal constants arrive with the snapshot, never in this file
+const SECS = ':scope > section, #foot';
+if(!ST){
+  const wrap = document.querySelector('.wrap'); if(!wrap) return;
+  wrap.querySelectorAll(SECS).forEach(x=>{ x.style.display='none'; });
+  if(!document.getElementById('staleMsg')){
+    const m = document.createElement('div'); m.id='staleMsg'; m.className='panel';
+    m.innerHTML = '<b>Tap Update to refresh</b><div class="small muted" style="margin-top:4px">This copy of your data is from an older version. Press Update to load the latest.</div>';
+    const h = wrap.querySelector('header'); if(h) h.insertAdjacentElement('afterend', m); else wrap.prepend(m);
+  }
+  return;
+}
+{ const old = document.getElementById('staleMsg'); if(old) old.remove();
+  const wrap = document.querySelector('.wrap'); if(wrap) wrap.querySelectorAll(SECS).forEach(x=>{ x.style.display=''; }); }
+const K = ST.k;
 const D = S.debts, B = S.budget, SO = S.standing_orders, A = S.actuals;
+const OWED = D[K.owed], OWED_TOTAL = OWED.reduce((s,o)=>s+o.amount_est,0);
+const SOW = SO[K.soWeekly];
 
 /* ---------- formatting ---------- */
 const gbp = (n, dp=2) => (n<0?'−':'') + '£' + Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:dp,maximumFractionDigits:dp});
@@ -388,6 +405,10 @@ const fmtLong = dt => `${dt.getDate()} ${MON[dt.getMonth()]} ${dt.getFullYear()}
 const daysBetween = (a,b) => Math.round((b - a)/864e5);
 const ymd = dt => dt.getFullYear()*10000 + (dt.getMonth()+1)*100 + dt.getDate();
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const T = (s,o={}) => String(s).replace(/\{(\w+)\}/g, (m,k)=> k in o ? o[k] : m);
+const acctKey = n => Object.keys(ST.acct).find(k=>ST.acct[k]===n) || n;
+const an = k => ST.acct[k] || k;
+const acctCls = k => ST.acct[k] ? 'acct'+k : k;
 const $ = id => document.getElementById(id);
 const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
                 set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
@@ -399,18 +420,18 @@ const TX_DAY = A ? iso(A.asof) : null;
 $('freshness').textContent = `Balances ${SEED_DAY.getDate()} ${MON[SEED_DAY.getMonth()]}` + (TX_DAY ? ` · txns ${TX_DAY.getDate()} ${MON[TX_DAY.getMonth()]}` : '');
 
 /* ---------- engines ---------- */
-const cardName = c => (c.issuer.replace(' Bank','').replace('American Express','Amex').replace('Virgin Money','Virgin') + (c.last4 ? ' ' + c.last4 : '')).trim();
-const SAINSBURYS_APR_ASSUMED = 0.25, BW_START = 400, BW_PM = 108.33;
+const cardName = c => (ST.name_replace.reduce((t,[a,b])=>t.replace(a,b), c.issuer) + (c.last4 ? ' ' + c.last4 : '')).trim();
+const ASSUMED_APR = ST.num.assumed_apr, FINE_START = ST.num.fine_start, FINE_PM = ST.num.fine_pm;
 
-// Port of engine/snowball.py run(): the plan-of-record. Aug balances, 11 cards, freed minimums do not roll.
-const PLAN_CARDS = [['Capital One',947.20,0.2247,37.96],['Fluid',1360.11,0.372,58.01],['NatWest',1541.11,0.225,60.18],['Tesco 5661',2630.49,0.265,130.00],['Vanquis',2741.42,0.293,101.83],['Virgin',3144.49,0.2649,101.92],['Lloyds 2732',3576.38,0.2805,164.37],['Tesco 1369',3938.74,0.265,179.00],['MBNA',4497.90,0.2731,204.19],['Amex',6659.12,0.332,291.81],['Lloyds 8080',6680.47,0.263,294.58]];
+// Port of engine/snowball.py run(): the plan of record. Freed minimums do not roll.
+const PLAN_CARDS = ST.plan_cards;
 function runPlan(extraBase){
   const bal={}, rate={}, mn={}; PLAN_CARDS.forEach(([n,b,r,m])=>{bal[n]=b;rate[n]=r;mn[n]=m;});
   const order=[...PLAN_CARDS].sort((a,b)=>a[1]-b[1]).map(c=>c[0]);
-  let bw=BW_START, mo=0, tot=0;
+  let fn=FINE_START, mo=0, tot=0;
   while(Object.keys(bal).length && mo<600){
     mo++; let extra=extraBase;
-    if(bw>0){ const p=Math.min(BW_PM,bw); bw-=p; extra+=BW_PM-p; } else extra+=BW_PM;
+    if(fn>0){ const p=Math.min(FINE_PM,fn); fn-=p; extra+=FINE_PM-p; } else extra+=FINE_PM;
     let pool=Object.keys(bal).reduce((s,n)=>s+mn[n],0)+Math.max(extra,0);
     for(const n in bal){ const i=bal[n]*rate[n]/12; bal[n]+=i; tot+=i; }
     for(const n of Object.keys(bal)){ const p=Math.min(mn[n],bal[n],pool); bal[n]-=p; pool-=p; }
@@ -424,7 +445,7 @@ function monthLabel(y,m,add){ const k=y*12+m-1+add; return MON[k%12]+' '+Math.fl
 // Port of engine/live.py: promo-aware, every card, live balances, freed minimums roll.
 function loadCards(){
   return D.cards.filter(c=>(c.balance_live||0)>0).map(c=>{
-    const apr = c.interest_precomputed ? 0 : c.apr!=null ? c.apr : SAINSBURYS_APR_ASSUMED, promos=c.promo||[];
+    const apr = c.interest_precomputed ? 0 : c.apr!=null ? c.apr : ASSUMED_APR, promos=c.promo||[];
     const tr = promos.map(p=>({bal:p.amount, apr, until:ymd(iso(p.expires))}));
     const rest = c.balance_live - promos.reduce((s,p)=>s+p.amount,0);
     if(rest>0.005) tr.push({bal:rest, apr, until:null});
@@ -441,16 +462,16 @@ function payCard(card, amount, day, promoOk){
   }
   return paid;
 }
-function runLive(extraBase, {start=[2026,10], overpayFrom=1, bw=true, lumps={}}={}){
+function runLive(extraBase, {start=[2026,10], overpayFrom=1, fn=true, lumps={}}={}){
   const cards = loadCards();
   const totalMin = cards.reduce((s,c)=>s+c.min,0);
   const bal = c => c.tr.reduce((s,t)=>s+t.bal,0);
-  let bwbal = bw?BW_START:0, mo=0, tot=0; const killed={}, path=[cards.reduce((s,c)=>s+bal(c),0)];
+  let fnbal = fn?FINE_START:0, mo=0, tot=0; const killed={}, path=[cards.reduce((s,c)=>s+bal(c),0)];
   while(cards.some(c=>bal(c)>0.01) && mo<600){
     const k=start[0]*12+start[1]-1+mo, day=Math.floor(k/12)*10000+(k%12+1)*100+1;
     mo++;
     let extra = mo>overpayFrom ? extraBase : 0;
-    if(bwbal>0){ const p=Math.min(BW_PM,bwbal); bwbal-=p; extra+=BW_PM-p; } else if(bw) extra+=BW_PM;
+    if(fnbal>0){ const p=Math.min(FINE_PM,fnbal); fnbal-=p; extra+=FINE_PM-p; } else if(fn) extra+=FINE_PM;
     extra += lumps[mo]||0;
     let pool = totalMin + extra;
     for(const c of cards) for(const t of c.tr){ const i=t.bal*rateOf(t,day)/12; t.bal+=i; tot+=i; }
@@ -468,38 +489,31 @@ function runLive(extraBase, {start=[2026,10], overpayFrom=1, bw=true, lumps={}}=
 
 /* ---------- plan inputs ---------- */
 const MIN_TOTAL = D.minimums_total;
-const cardsSoWeekly = SO.hsbc_weekly_friday.find(s=>s.ref==='Cards').amount;
+const cardsSoWeekly = SOW.find(s=>s.ref===ST.ids.so_cards).amount;
 const L = B.lines_monthly;
-const BILLS_MONZO = B.bills_via_monzo ? L.subs_insurance + L.bw_legal : 0;
-const overpayFromSo = so => so*52/12 - MIN_TOTAL - BILLS_MONZO;
+const BILLS_B = B[K.billsVia] ? L.subs_insurance + L[K.fine] : 0;
+const overpayFromSo = so => so*52/12 - MIN_TOTAL - BILLS_B;
 const plan = runPlan(S.checks.plan.overpay);
 const BUF = B.unpaid_weeks_buffer;
 const bufferLumps = () => { if(!BUF) return {}; const per=BUF.target/BUF.months.length, o={};
   for(const m of BUF.months){ o[(Number(m.slice(0,4))-2026)*12+Number(m.slice(5,7))-10+1] = -per; } return o; };
 const live = runLive(overpayFromSo(cardsSoWeekly), {lumps:bufferLumps()});
-const liveLump = runLive(overpayFromSo(cardsSoWeekly), {lumps:{...bufferLumps(), 4:(bufferLumps()[4]||0)+D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0)}});
+const OI = ST.num.owed_idx;
+const liveLump = runLive(overpayFromSo(cardsSoWeekly), {lumps:{...bufferLumps(), [OI]:(bufferLumps()[OI]||0)+OWED_TOTAL}});
 const planOK = plan.months===S.checks.plan.months && Math.abs(plan.interest-S.checks.plan.interest)<1;
 const liveOK = live.months===S.checks.live.months && Math.abs(live.interest-S.checks.live.interest)<1;
 
-// weekly plumbing: what's left in HSBC for living after every SO and HSBC-side commitment
-// HSBC after Friday's standing orders = free money for food, fuel and living
-const otherSOs = SO.hsbc_weekly_friday.filter(s=>s.ref!=='Cards').reduce((t,s)=>t+s.amount,0);
-const FOOD_POT = SO.hsbc_weekly_friday.some(s=>s.ref==='Food Fuel');
+// weekly flow: what's left in the main account for living after every standing order and its own commitments
+const otherSOs = SOW.filter(s=>s.ref!==ST.ids.so_cards).reduce((t,s)=>t+s.amount,0);
+const FOOD_POT = SOW.some(s=>s.ref===ST.ids.so_food);
 const LIVING_WK = ((FOOD_POT ? 0 : L.food_fuel) + L.other_living)*12/52;
-function hsbcWeekly(pay, cardsSo){
-  const hsbcBills = B.bills_via_monzo ? 0 : L.subs_insurance + L.bw_legal;
-  return pay - cardsSo - otherSOs - (hsbcBills + (L.emergency_fund||0))*12/52;
+function mainWeekly(pay, cardsSo){
+  const mainBills = B[K.billsVia] ? 0 : L.subs_insurance + L[K.fine];
+  return pay - cardsSo - otherSOs - (mainBills + (L.emergency_fund||0))*12/52;
 }
 
 /* ---------- 1. today's one action ---------- */
-const ACTIONS = [
-  {id:'rumbi-trip', t:'Ask Rumbi to confirm she’s saving her half of the Thailand flights — then drop your £95 SO to £25', where:'chat with Rumbi', mins:5, due:'2026-11-05'},
-  {id:'bills-to-monzo', t:'Move bills to Monzo: Admiral, The One, TomTom ×2, Vodafone, PureGym, Prime, BW Legal', where:'each provider', mins:30, due:'2026-10-31'},
-  {id:'chrome-sites', t:'Claude extension on the home lab: allow Bunzl, Power BI and BrightHR', where:'home lab Chrome', mins:2, due:null},
-  {id:'vanquis-fee', t:'Ask Vanquis to refund the £12 late fee from the 28 Sep bounce (first time, paid next day)', where:'Vanquis app chat', mins:5, due:null},
-  {id:'azp', t:'Check the Allianz home emergency (AZP HE) £54 doesn’t renew', where:'HSBC, ~13 Oct', mins:2, due:'2026-10-13', from:'2026-10-10'},
-  {id:'mandates', t:'Cancel dead mandates AWP P&C and Stripe', where:'HSBC app', mins:3, due:null},
-];
+const ACTIONS = ST.actions.map(a=>({...a}));
 const knownLoan = l => D.cards.some(c=>c.match && l.name.toLowerCase().includes(c.match));
 // urgent actions derived from the latest export
 if(A){
@@ -507,13 +521,13 @@ if(A){
     const c = D.cards.find(c=>c.id===r.card); if(!c || daysBetween(iso(r.date),TODAY)>10 || (c.returned_resolved||[]).includes(r.date)) continue;
     ACTIONS.unshift({id:`returned-${r.card}-${r.date}`, t:`Pay ${cardName(c)} ${gbp(r.amount)} by debit card now — the direct debit was returned on ${fmtD(iso(r.date))}`, where:`${c.issuer} app`, mins:3, due:A.asof});
   }
-  const sb = A.last_paid.sainsburys, sa = ACTIONS.find(a=>a.id==='sainsburys');
-  const sbCard = D.cards.find(c=>c.id==='sainsburys');
+  const sb = A.last_paid[ST.ids.stale], sa = ACTIONS.find(a=>a.id===ST.ids.stale_action);
+  const sbCard = D.cards.find(c=>c.id===ST.ids.stale);
   if(sbCard && sbCard.status==='closed'){ const i=ACTIONS.indexOf(sa); if(i>=0) ACTIONS.splice(i,1); }
-  else if(sb && sa && daysBetween(iso(sb.date),TODAY)>45){ sa.t = `Sainsbury’s Bank card 4329 (£383.28): no payment found since ${fmtLong(iso(sb.date))}. Log in, pay the minimum, set a DD`; sa.due = addDays(TODAY,1).toISOString().slice(0,10); sa.mins=10; }
+  else if(sb && sa && daysBetween(iso(sb.date),TODAY)>45){ sa.t = T(ST.t.a_stale, {date:fmtLong(iso(sb.date))}); sa.due = addDays(TODAY,1).toISOString().slice(0,10); sa.mins=10; }
   for(const l of A.unknown_loans.filter(l=>!knownLoan(l))) ACTIONS.push({id:`loan-${l.name}`, t:`What is “${l.name}” (${gbp(l.amount)} on ${fmtD(iso(l.last))})? Balance, rate, end date — it’s not on the board`, where:'app or email', mins:5, due:null});
-  const sv = ACTIONS.find(a=>a.id==='savings-sos');
-  if(sv && A.leaks.length) sv.t = `Stop savings still running: ${A.leaks.map(l=>`${l.name.replace(/ Trading212$/,'')} ${gbp0(l.total)}`).join(', ')} (last 7 days). Nationwide £433 → £20`;
+  const sv = ACTIONS.find(a=>a.id===ST.ids.savings_action);
+  if(sv && A.leaks.length) sv.t = T(ST.t.a_sav, {list:A.leaks.map(l=>`${l.name.replace(new RegExp(ST.strip_rx),'')} ${gbp0(l.total)}`).join(', ')});
 }
 let done = store.get('kde-done', []);
 let later = [];
@@ -540,43 +554,41 @@ function renderToday(){
 }
 
 /* ---------- 4. cash-flow projection ---------- */
-// Opening balances: latest WPS snapshot (data/balances.json); falls back to the plan's 29 Sep projection.
+// Opening balances: latest account snapshot (data/balances.json); falls back to a fixed projection.
 const BAL = S.balances;
-const OPENING = BAL ? {date:BAL.as_of.slice(0,10), hsbc:BAL.hsbc, monzo:BAL.monzo_current + (BAL.monzo_credit_cards_pot||0), live:true}
-                    : {date:'2026-09-29', hsbc:143, monzo:170, live:false};
-// Where each card DD pulls from during the October transition (doc 03). Later entries win from their date.
-const ROUTE = {
-  amex:[['HSBC','2026-09-01'],['Monzo','2026-10-20']],
-  vanquis:[['HSBC','2026-09-01'],['Monzo','2026-10-01']],
-};
-const OTHER_DD = [{n:'Admiral car',day:2,amt:59.57},{n:'The One (mum’s broadband)',day:4,amt:29.00},{n:'TomTom life + CIC',day:25,amt:70.20}];
+const OPENING = BAL ? {date:BAL.as_of.slice(0,10), a:BAL[K.balA], b:BAL[K.balB] + (BAL[K.balBpot]||0), live:true}
+                    : {...ST.opening_fb, live:false};
+// Where each card DD pulls from when the account changes. Later entries win from their date.
+const ROUTE = ST.route;
+const OTHER_DD = ST.other_dd;
 function routeFor(c, dt){
-  const r = ROUTE[c.id]; if(!r) return /Monzo/.test(c.pays_from||'') ? 'Monzo' : /HSBC/.test(c.pays_from||'') ? 'HSBC' : 'unknown';
+  const r = ROUTE[c.id]; if(!r){ const pf=c.pays_from||''; for(const k of ST.acct_match) if(new RegExp(ST.acct[k]).test(pf)) return k; return 'unknown'; }
   let v=r[0][0]; for(const [acct,from] of r) if(iso(from)<=dt) v=acct; return v;
 }
 function eventsOn(dt){
   const ev=[], d=dt.getDate(), wd=dt.getDay();
-  if(wd===4) ev.push({n:'Pay', acct:'HSBC', amt:+B.income.net_weekly});
-  if(wd===5){
-    for(const s of SO.hsbc_weekly_friday) if(iso(s.first)<=dt && (!s.last || dt<=iso(s.last))){
-      ev.push({n:`SO ${s.ref}`, acct:'HSBC', amt:-s.amount});
-      if(s.ref==='Cards') ev.push({n:'SO Cards in', acct:'Monzo', amt:+s.amount});
+  if(wd===ST.num.pay_wd) ev.push({n:'Pay', acct:'A', amt:+B.income.net_weekly});
+  if(wd===ST.num.so_wd){
+    for(const s of SOW) if(iso(s.first)<=dt && (!s.last || dt<=iso(s.last))){
+      ev.push({n:`SO ${s.ref}`, acct:'A', amt:-s.amount});
+      if(s.ref===ST.ids.so_cards) ev.push({n:`SO ${ST.ids.so_cards} in`, acct:'B', amt:+s.amount});
     }
-    if(daysBetween(iso('2026-09-25'),dt)%14===0) ev.push({n:'BW Legal', acct:'HSBC', amt:-50});
+    const F = ST.fine_sched;
+    if(daysBetween(iso(F.anchor),dt)%14===0) ev.push({n:F.n, acct:'A', amt:-F.amt});
   }
-  for(const o of SO.one_offs) if(sameDay(iso(o.date),dt)){ ev.push({n:`One-off → ${o.to}`, acct:o.from, amt:-o.amount}); ev.push({n:'One-off in', acct:o.to, amt:+o.amount}); }
+  for(const o of SO.one_offs) if(sameDay(iso(o.date),dt)){ ev.push({n:`One-off → ${o.to}`, acct:acctKey(o.from), amt:-o.amount}); ev.push({n:'One-off in', acct:acctKey(o.to), amt:+o.amount}); }
   for(const c of D.cards) if(c.dd_day===d && (c.balance_live||0)>0){
     const acct=routeFor(c,dt); if(acct==='unknown') continue;
     ev.push({n:cardName(c), acct, amt:-(c.paying||c.min), card:true});
   }
-  for(const o of OTHER_DD) if(o.day===d) ev.push({n:o.n, acct:'HSBC', amt:-o.amt});
+  for(const o of OTHER_DD) if(o.day===d) ev.push({n:o.n, acct:'A', amt:-o.amt});
   return ev;
 }
 function cashflow(fromDt, nDays){
-  let h=OPENING.hsbc, m=OPENING.monzo; const out=[];
+  let h=OPENING.a, m=OPENING.b; const out=[];
   for(let dt=addDays(iso(OPENING.date),1); dt<addDays(fromDt,nDays); dt=addDays(dt,1)){
     const ev=eventsOn(dt);
-    for(const e of ev){ if(e.acct==='HSBC') h+=e.amt; else if(e.acct==='Monzo') m+=e.amt; }
+    for(const e of ev){ if(e.acct==='A') h+=e.amt; else if(e.acct==='B') m+=e.amt; }
     if(dt>=fromDt) out.push({dt, ev, h, m});
   }
   return out;
@@ -592,7 +604,7 @@ const CF = cashflow(START, 14);
   const cds = first.ev.filter(e=>e.card);
   const dl = daysBetween(TODAY, first.dt);
   $('nextdd').innerHTML = `<div class="row"><span class="small muted">Next card DD · ${dl===0?'today':dl===1?'tomorrow':'in '+dl+' days'}</span><span class="small muted">${fmtD(first.dt)}</span></div>` +
-    cds.map(e=>`<div class="dd"><span><b>${esc(e.n)}</b></span><span style="display:flex;gap:8px;align-items:center"><span class="num">${gbp(-e.amt)}</span><span class="src ${e.acct}">${e.acct}</span></span></div>`).join('');
+    cds.map(e=>`<div class="dd"><span><b>${esc(e.n)}</b></span><span style="display:flex;gap:8px;align-items:center"><span class="num">${gbp(-e.amt)}</span><span class="src ${acctCls(e.acct)}">${an(e.acct)}</span></span></div>`).join('');
 })();
 
 /* ---------- left this month + windfall ---------- */
@@ -616,15 +628,15 @@ function windfallEffect(amount){
   const span = Math.max(1, daysBetween(START, monthEnd) + 22);
   const cf = cashflow(START, span);
   const after = cf.filter(r=>r.dt>=monthEnd);
-  const low = after.length ? Math.min(...after.map(r=>r.m)) : OPENING.monzo;
+  const low = after.length ? Math.min(...after.map(r=>r.m)) : OPENING.b;
   const lowDay = after.find(r=>r.m===low);
   const endRow = cf.find(r=>sameDay(r.dt, monthEnd));
-  const BUFFER = 50;
-  // Money that leaves Monzo but isn't in the dated schedule: bills paid from Monzo and the weekly trip-cover deposit.
-  const billsMonzo = B.bills_via_monzo ? (L.subs_insurance + L.bw_legal) * span / 30.44 : 0;
-  let tripCover = 0;
-  if(BUF) for(let d=START; d<=addDays(START, span); d=addDays(d,1)) if(d.getDay()===5 && d>=iso(BUF.first) && d<=iso(BUF.last)) tripCover += BUF.weekly;
-  const unscheduled = billsMonzo + tripCover;
+  const BUFFER = ST.num.buffer;
+  // Money that leaves the card account but isn't in the dated schedule: bills paid from it and the weekly buffer deposit.
+  const billsB = B[K.billsVia] ? (L.subs_insurance + L[K.fine]) * span / 30.44 : 0;
+  let bufCover = 0;
+  if(BUF) for(let d=START; d<=addDays(START, span); d=addDays(d,1)) if(d.getDay()===ST.num.so_wd && d>=iso(BUF.first) && d<=iso(BUF.last)) bufCover += BUF.weekly;
+  const unscheduled = billsB + bufCover;
   const spare = Math.max(0, Math.floor((low - unscheduled - BUFFER)/5)*5);
   const t = killTargets()[0];
   const planned = overpayFromSo(cardsSoWeekly) + (bufferLumps()[MO_NOW]||0);
@@ -632,14 +644,14 @@ function windfallEffect(amount){
   $('leftover').innerHTML = !t ? `<div class="eyebrow">Left this month</div><div class="to">No card left to target 🎉</div>` : `
     <div class="eyebrow">Left at the end of ${mName}</div>
     <div class="amt num">${gbp0(spare)}</div>
-    <div class="to">${spare>0 ? `→ pay it to <b>${esc(cardName(t))}</b> on ${fmtD(monthEnd)}` : `Nothing spare this month. Monzo only covers what’s due.`}</div>
+    <div class="to">${spare>0 ? `→ pay it to <b>${esc(cardName(t))}</b> on ${fmtD(monthEnd)}` : ST.t.nothing_spare}</div>
     <div class="small muted">${esc(cardName(t))}: ${gbp(t.balance_live)} at ${t.apr!=null?(t.apr*100).toFixed(1)+'%':'?'} · clears ${monthLabel(2026,10,live.killed[t.id]-1)} on the plan.
-      ${spare>0?`Keeps ${gbp0(BUFFER)} in Monzo for the card payments in early ${MON[(TODAY.getMonth()+1)%12]}.`:''}</div>
+      ${spare>0?T(ST.t.keeps,{buf:gbp0(BUFFER),mon:MON[(TODAY.getMonth()+1)%12]}):''}</div>
     <div class="sub-lines" style="margin-top:2px">
-      <div class="row"><span class="muted">Monzo at month end (scheduled money only)</span><span class="num">${endRow?gbp0(endRow.m):'—'}</span></div>
+      <div class="row"><span class="muted">${ST.t.l_end}</span><span class="num">${endRow?gbp0(endRow.m):'—'}</span></div>
       <div class="row"><span class="muted">Lowest point in the 3 weeks after</span><span class="num">${gbp0(low)}${lowDay?' · '+fmtD(lowDay.dt):''}</span></div>
-      <div class="row"><span class="muted">Less bills and trip cover from Monzo (not dated)</span><span class="num">−${gbp0(unscheduled)}</span></div>
-      <div class="row"><span class="muted">Planned surplus from the £${cardsSoWeekly}/wk SO</span><span class="num">${gbp0(planned)}/mo</span></div>
+      <div class="row"><span class="muted">${ST.t.l_less}</span><span class="num">−${gbp0(unscheduled)}</span></div>
+      <div class="row"><span class="muted">${T(ST.t.l_plan,{so:cardsSoWeekly})}</span><span class="num">${gbp0(planned)}/mo</span></div>
     </div>`;
   const draw = () => {
     const amt = Math.max(0, parseFloat($('wfAmt').value)||0);
@@ -667,15 +679,15 @@ function windfallEffect(amount){
     <div><div class="lbl">Projected</div><div class="big">${live.label}</div><div style="margin-top:6px">${aheadChip}</div></div>
     <div><div class="lbl">Plan of record</div><div class="big muted" style="font-weight:500">${S.checks.plan.label}</div><div class="small muted" style="margin-top:6px">interest ${gbp0(S.checks.plan.interest)}</div></div>
     <div><div class="lbl">Total on cards</div><div class="mid num">${gbp0(D.total_live)}</div></div>
-    <div><div class="lbl">Since Aug statements</div><div class="mid num ${delta>0?'up':'down'}">${delta>0?'+':''}${gbp0(delta)}</div></div>`;
+    <div><div class="lbl">${ST.t.since_lbl}</div><div class="mid num ${delta>0?'up':'down'}">${delta>0?'+':''}${gbp0(delta)}</div></div>`;
   $('heroSub').innerHTML = `
     ${(()=>{ const cs=D.cards.filter(c=>c.limit && c.type!=='loan'); const b=cs.reduce((t,c)=>t+(c.balance_live||0),0), l=cs.reduce((t,c)=>t+c.limit,0)+(D.extra_accounts_on_credit_report||[]).reduce((t,a)=>t+a.limit,0);
       return l?`<div class="row"><span class="muted">Credit used (limits from credit report)</span><span class="num">${Math.round(b/l*100)}% of ${gbp0(l)}</span></div>`:''; })()}
-    <div class="row"><span class="muted">Projected interest from Oct</span><span class="num">${gbp0(live.interest)}</span></div>
-    <div class="row"><span class="muted">Overpay (£${cardsSoWeekly}/wk to Monzo)</span><span class="num">${gbp0(overpayFromSo(cardsSoWeekly))}/mo</span></div>
-    ${BUF?`<div class="row"><span class="muted">Trip cover held back Nov–Apr</span><span class="num">${gbp0(BUF.target)}</span></div>`:''}
-    <div class="row"><span class="muted">If the ${gbp0(D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0))} owed lands Jan 2027</span><span class="num">${liveLump.label}</span></div>
-    <div class="row"><span class="muted">Stretch goal (Moza Maas profit)</span><span class="num">Dec 2027 · not modelled</span></div>`;
+    <div class="row"><span class="muted">${ST.t.int_lbl}</span><span class="num">${gbp0(live.interest)}</span></div>
+    <div class="row"><span class="muted">${T(ST.t.overpay_lbl,{so:cardsSoWeekly})}</span><span class="num">${gbp0(overpayFromSo(cardsSoWeekly))}/mo</span></div>
+    ${BUF?`<div class="row"><span class="muted">${ST.t.buf_lbl}</span><span class="num">${gbp0(BUF.target)}</span></div>`:''}
+    <div class="row"><span class="muted">${T(ST.t.owed_lbl,{amt:gbp0(OWED_TOTAL)})}</span><span class="num">${liveLump.label}</span></div>
+    <div class="row"><span class="muted">${ST.t.stretch_lbl}</span><span class="num">${ST.t.stretch_val}</span></div>`;
   drawPath();
 })();
 function drawPath(){
@@ -701,9 +713,9 @@ function drawPath(){
   const inPlan = D.non_card.filter(n=>n.in_plan!==false), outPlan = D.non_card.filter(n=>n.in_plan===false);
   const sum = a => a.reduce((t,n)=>t+(n.balance_est||0),0);
   const owe = cards + loans + sum(inPlan) + sum(outPlan);
-  const CASH = [['hsbc','HSBC'],['monzo_current','Monzo main'],['monzo_credit_cards_pot','Monzo cards pot'],['monzo_food_fuel','Monzo food & fuel'],['monzo_trip_cover','Trip cover pot'],['monzo_emergency_fund','Emergency Fund'],['chase','Chase (trip savings)'],['metro','Metro'],['joint_monzo','Joint'],['nationwide','Nationwide'],['revolut','Revolut']];
+  const CASH = ST.cash_list;
   const cash = BAL ? CASH.reduce((t,[k])=>t+(BAL[k]||0),0) : 0;
-  const owed = D.owed_to_kola.reduce((t,o)=>t+o.amount_est,0);
+  const owed = OWED_TOTAL;
   const row = (l,v,cls='') => `<div class="row"><span class="muted">${l}</span><span class="num ${cls}">${gbp(v)}</span></div>`;
   $('total').innerHTML = `
     <div class="hero">
@@ -712,28 +724,28 @@ function drawPath(){
     </div>
     <div class="sub-lines">
       ${row(`Credit cards (${D.cards.filter(c=>c.type!=='loan'&&(c.balance_live||0)>0).length})`, cards)}
-      ${row('Abound Super Credit', loans)}
+      ${row(ST.t.loan_row, loans)}
       ${inPlan.map(n=>row(esc(n.name), n.balance_est)).join('')}
       ${outPlan.map(n=>row(esc(n.name)+' · outside plan', n.balance_est)).join('')}
       <div class="row" style="border-top:1px solid var(--line);padding-top:6px"><span><b>Net (cash − debt)</b></span><span class="num up"><b>${gbp(cash-owe)}</b></span></div>
-      ${row('Owed to you (Elite Edge + Moza Maas), not counted', owed, 'down')}
+      ${row(ST.t.owed_row, owed, 'down')}
       ${(D.investments||[]).map(i=>row(esc(i.name)+' · at cost, not counted', i.cost_gbp)).join('')}
-      <div class="small muted">Cash = personal accounts and pots in WPS ${BAL?fmtD(iso(BAL.as_of.slice(0,10))):''} (Santander and Tide excluded). Properties and mortgages not included.</div>
+      <div class="small muted">${T(ST.t.cash_note,{date:BAL?fmtD(iso(BAL.as_of.slice(0,10))):''})}</div>
     </div>`;
 })();
 
 /* ---------- what-if ---------- */
 (function(){
-  $('wiLumpTxt').textContent = gbp0(D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0)) + ' owed to you';
+  $('wiLumpTxt').textContent = gbp0(OWED_TOTAL) + ST.t.wi_lump_tail;
   $('wiPay').value = B.income.net_weekly.toFixed(2); $('wiSo').value = cardsSoWeekly;
   const upd=()=>{
     const pay=parseFloat($('wiPay').value)||0, so=parseFloat($('wiSo').value)||0;
-    const lumps = bufferLumps(); if($('wiLump').checked) lumps[4]=(lumps[4]||0)+D.owed_to_kola.reduce((s,o)=>s+o.amount_est,0);
+    const lumps = bufferLumps(); if($('wiLump').checked) lumps[OI]=(lumps[OI]||0)+OWED_TOTAL;
     const r = runLive(overpayFromSo(so), {lumps});
-    const left = hsbcWeekly(pay, so), living = LIVING_WK;
+    const left = mainWeekly(pay, so), living = LIVING_WK;
     $('wiOut').innerHTML = `<div><span class="small muted">Debt-free</span><b>${r.months>=600?'never':r.label}</b></div>
       <div><span class="small muted">Interest</span><b class="num">${gbp0(r.interest)}</b></div>
-      <div><span class="small muted">HSBC free</span><b class="num ${left<living?'neg':''}">${gbp0(left)}/wk</b></div>`;
+      <div><span class="small muted">${ST.t.wi_free}</span><b class="num ${left<living?'neg':''}">${gbp0(left)}/wk</b></div>`;
   };
   ['wiPay','wiSo','wiLump'].forEach(id=>$(id).addEventListener('input',upd)); upd();
 })();
@@ -766,13 +778,14 @@ function drawPath(){
   for(let v=ymin; v<=ymax; v+=step) g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="${v===0?1.5:1}"/><text x="${pl-5}" y="${y(v)+3}" text-anchor="end">${v<0?'−':''}£${Math.abs(v)}</text>`;
   const step_ = key => CF.map((r,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(r[key]).toFixed(1)}`).join('');
   let lbls=''; CF.forEach((r,i)=>{ if(i%3===0) lbls+=`<text x="${x(i)}" y="${H-5}" text-anchor="middle">${r.dt.getDate()} ${MON[r.dt.getMonth()]}</text>`; });
-  const endDots = CF.length ? `<circle cx="${x(n-1)}" cy="${y(CF[n-1].h)}" r="3" fill="var(--hsbc)"/><circle cx="${x(n-1)}" cy="${y(CF[n-1].m)}" r="3" fill="var(--monzo)"/>` : '';
-  svg.innerHTML = g + `<path d="${step_('h')}" fill="none" stroke="var(--hsbc)" stroke-width="2"/><path d="${step_('m')}" fill="none" stroke="var(--monzo)" stroke-width="2"/>` + lbls + endDots;
+  const endDots = CF.length ? `<circle cx="${x(n-1)}" cy="${y(CF[n-1].h)}" r="3" fill="var(--acct-a)"/><circle cx="${x(n-1)}" cy="${y(CF[n-1].m)}" r="3" fill="var(--acct-b)"/>` : '';
+  svg.innerHTML = g + `<path d="${step_('h')}" fill="none" stroke="var(--acct-a)" stroke-width="2"/><path d="${step_('m')}" fill="none" stroke="var(--acct-b)" stroke-width="2"/>` + lbls + endDots;
+  $('h-cash').textContent = ST.t.cash_h2; $('legend').innerHTML = ST.t.legend; svg.setAttribute('aria-label', ST.t.cash_aria);
   $('days').innerHTML = CF.filter(r=>r.ev.length).map(r=>`<div class="day">
       <div class="d">${r.dt.getDate()} ${MON[r.dt.getMonth()]}<small>${WD[r.dt.getDay()]}</small></div>
-      <div class="ev">${r.ev.filter(e=>!/ in$/.test(e.n)).map(e=>`<span>${esc(e.n)} <span class="num ${e.amt>0?'down':'muted'}">${e.amt>0?'+':''}${gbp(e.amt)}</span> <span class="src ${e.acct}">${e.acct}</span></span>`).join('')}</div>
-      <div class="bals num"><span class="${r.h<0?'neg':''}" style="color:${r.h<0?'':'var(--hsbc)'}">${gbp0(r.h)}</span><span class="${r.m<0?'neg':''}" style="color:${r.m<0?'':'var(--monzo)'}">${gbp0(r.m)}</span></div></div>`).join('');
-  $('cashNote').textContent = `Scheduled money only — your day-to-day spending comes off HSBC on top. ` + (OPENING.live ? `Starts from WPS balances ${fmtD(iso(OPENING.date))}: HSBC ${gbp(OPENING.hsbc)}, Monzo ${gbp(OPENING.monzo)}.` : `Opening balances are the plan’s projection for 29 Sep, not live.`);
+      <div class="ev">${r.ev.filter(e=>!/ in$/.test(e.n)).map(e=>`<span>${esc(e.n)} <span class="num ${e.amt>0?'down':'muted'}">${e.amt>0?'+':''}${gbp(e.amt)}</span> <span class="src ${acctCls(e.acct)}">${an(e.acct)}</span></span>`).join('')}</div>
+      <div class="bals num"><span class="${r.h<0?'neg':''}" style="color:${r.h<0?'':'var(--acct-a)'}">${gbp0(r.h)}</span><span class="${r.m<0?'neg':''}" style="color:${r.m<0?'':'var(--acct-b)'}">${gbp0(r.m)}</span></div></div>`).join('');
+  $('cashNote').textContent = ST.t.cash_note1 + (OPENING.live ? T(ST.t.cash_note_live,{date:fmtD(iso(OPENING.date)),a:gbp(OPENING.a),b:gbp(OPENING.b)}) : ST.t.cash_note_fb);
 })();
 
 /* ---------- render: budget ---------- */
@@ -780,23 +793,23 @@ function drawPath(){
   const wk = n => n*52/12, pay = wk(B.income.net_weekly), soM = wk(cardsSoWeekly);
   const rows = [
     [`Pay (£${B.income.net_weekly}/wk)`, pay, null],
-    ['→ Monzo: card minimums + Abound', -MIN_TOTAL, null],
-    ['→ Monzo: bills + BW Legal', -BILLS_MONZO, null],
-    ['→ Monzo: overpay', -(soM-MIN_TOTAL-BILLS_MONZO), null],
-    ...SO.hsbc_weekly_friday.filter(s=>s.ref!=='Cards').map(s=>[`→ ${s.ref} (${s.to})`, -wk(s.amount), null]),
+    [ST.t.b_min, -MIN_TOTAL, null],
+    [ST.t.b_bills, -BILLS_B, null],
+    [ST.t.b_over, -(soM-MIN_TOTAL-BILLS_B), null],
+    ...SOW.filter(s=>s.ref!==ST.ids.so_cards).map(s=>[`→ ${s.ref} (${s.to})`, -wk(s.amount), null]),
   ];
   const free = rows.reduce((t,r)=>t+r[1],0);
   const actCell = (v, cap) => v==null ? '<td></td>' : typeof v==='string' ? `<td class="num muted">${v}</td>` : `<td class="num ${v>cap+0.005?'up':'down'}">${gbp(v)}</td>`;
   if(A){ const m=iso(A.month+'-01'); $('h-budget').textContent = `Budget · ${MON[m.getMonth()]} actual to ${iso(A.asof).getDate()} ${MON[iso(A.asof).getMonth()]}`; }
   $('budget').innerHTML = `<thead><tr><th>Line</th><th>Monthly</th><th>Actual</th></tr></thead><tbody>` +
     rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${gbp(r[1])}</td>${actCell(r[2], -r[1])}</tr>`).join('') +
-    `<tr class="total"><td>Free in HSBC</td><td class="num">${gbp(free)}</td><td></td></tr>` +
-    `<tr><td>Food + fuel ${FOOD_POT?'(Monzo pot)':'(from free)'}</td><td class="num">${gbp(-L.food_fuel)}</td>${actCell(A ? A.actual.food_fuel : '—', L.food_fuel)}</tr>` +
+    `<tr class="total"><td>${ST.t.b_free}</td><td class="num">${gbp(free)}</td><td></td></tr>` +
+    `<tr><td>${FOOD_POT?ST.t.b_food_a:ST.t.b_food_b}</td><td class="num">${gbp(-L.food_fuel)}</td>${actCell(A ? A.actual.food_fuel : '—', L.food_fuel)}</tr>` +
     `<tr><td>Other living (from free)</td><td class="num">${gbp(-L.other_living)}</td>${actCell(A ? A.actual.other_living : '—', L.other_living)}</tr>` +
     `<tr><td>New spend on cards</td><td class="num">£0.00</td>${actCell(A?A.actual.new_card_spend:'—', 0)}</tr>` +
     `<tr><td>Card interest charged</td><td class="num muted">~${gbp0(D.monthly_interest_est)}</td>${actCell(A?A.actual.card_interest:'—', D.monthly_interest_est)}</tr></tbody>`;
-  const left = hsbcWeekly(B.income.net_weekly, cardsSoWeekly);
-  $('gap').innerHTML = `After Friday’s standing orders, <b>${gbp(left)}/wk</b> is free in HSBC ${FOOD_POT?'to spend on anything (food & fuel has its own Monzo pot)':'for food, fuel and living'} — the plan budgets <b>${gbp(LIVING_WK)}/wk</b>. If a week runs short, pause the Thailand payment first, never the cards.`;
+  const left = mainWeekly(B.income.net_weekly, cardsSoWeekly);
+  $('gap').innerHTML = T(ST.t.gap, {left:gbp(left), food:FOOD_POT?ST.t.gap_food_a:ST.t.gap_food_b, living:gbp(LIVING_WK)});
   // "Actual" needs the daily sync (phase 2)
 })();
 
@@ -812,7 +825,7 @@ function renderBoard(){
   const routeChip = c => {
     const r = routeFor(c, TODAY);
     const s = c.status==='call_to_switch' ? '<span class="chip bad">call</span>' : c.status==='investigate' ? '<span class="chip warn">?</span>' : c.type==='loan' ? '<span class="chip">loan · interest fixed</span>' : '';
-    return `<span class="src ${r}">${r==='unknown'?'?':r}</span>${s}`;
+    return `<span class="src ${acctCls(r)}">${r==='unknown'?'?':an(r)}</span>${s}`;
   };
   let html = `<thead><tr><th>Card</th><th>Balance</th><th>APR</th><th>Min</th><th>Clears</th></tr></thead><tbody>`;
   for(const c of cards){
@@ -833,46 +846,47 @@ function renderBoard(){
 }
 function ordinal(n){ const s=['th','st','nd','rd'], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
 document.querySelectorAll('.sorts button').forEach(b=>b.addEventListener('click',()=>{ sortKey=b.dataset.sort; store.set('kde-sort',sortKey); renderBoard(); }));
+$('s-delta').textContent = ST.t.sort_delta;
 renderBoard();
 (function(){
   const nc = D.non_card.map(n=>`<div class="row"><span>${esc(n.name)}${n.in_plan===false?' <span class="chip">outside plan</span>':''}</span><span class="num muted">~${gbp0(n.balance_est)}${n.monthly_equiv?' · '+gbp0(n.monthly_equiv)+'/mo':''}</span></div>`);
   for(const c of D.cards.filter(c=>c.status==='closed')) nc.push(`<div class="row"><span>${esc(cardName(c))} <span class="chip good">closed</span></span><span class="small muted">cleared</span></div>`);
-  const hal = D.cards.find(c=>c.id==='halifax');
-  if(hal) nc.push(`<div class="row"><span>Halifax 9728 <span class="chip good">cleared</span></span><span class="small muted">0% BT option vs Amex 33.2%</span></div>`);
+  const hal = D.cards.find(c=>c.id===ST.ids.cleared);
+  if(hal) nc.push(ST.t.cleared_row);
   $('noncard').innerHTML = nc.join('');
 })();
 
 /* ---------- render: pots ---------- */
 (function(){
-  const endMonzo = CF.length ? CF[CF.length-1].m : OPENING.monzo;
+  const endB = CF.length ? CF[CF.length-1].m : OPENING.b;
   const pot = (name, bal, cap, note) => `<div class="pot"><div class="row"><b>${name}</b><span class="num">${bal==null?'<span class="muted">—</span>':gbp0(bal)} <span class="muted">/ ${gbp0(cap)}</span></span></div>
     <div class="bar"><i style="width:${bal==null?0:Math.min(100,bal/cap*100)}%"></i></div><div class="small muted" style="margin-top:5px">${note}</div></div>`;
   $('pots').innerHTML =
-    `<div class="pot"><div class="row"><b>Monzo · cards + bills</b><span class="num">${gbp0(endMonzo)}</span></div><div class="small muted">Projected in 14 days. The £${cardsSoWeekly}/wk SO leaves ~${gbp0(overpayFromSo(cardsSoWeekly))}/mo surplus → pay it to the snowball target.</div></div>` +
-    pot('Emergency Fund', A?A.pots.emergency_fund:null, B.pots.monzo_emergency_cap, A ? `From transaction history · plan +${gbp0(L.emergency_fund)}/mo, only round-ups seen` : `+${gbp0(L.emergency_fund)}/mo · balance needs sync`) +
-    (BUF ? pot('Monzo — Trip cover (unpaid weeks)', BAL&&BAL.monzo_trip_cover!=null?BAL.monzo_trip_cover:null, BUF.target, `£${BUF.weekly}/wk from ${fmtD(iso(BUF.first))} to ${fmtD(iso(BUF.last))} · covers bills for the 2 unpaid weeks`) : '') +
-    pot('Thailand flights — your half (Chase + Metro)', BAL?(B.pots.thailand_accounts||['metro']).reduce((t,k)=>t+(BAL[k]||0),0):null, B.pots.metro_bali_thailand_target, `£95/wk from 6 Nov (→ £25 once Rumbi confirms her half) · trip ${MON[iso(B.pots.thailand_trip+'-01').getMonth()]} ${B.pots.thailand_trip.slice(0,4)}${BAL?' · balance '+fmtD(iso(BAL.as_of.slice(0,10))):''}`);
+    `<div class="pot"><div class="row"><b>${ST.t.pot_main_name}</b><span class="num">${gbp0(endB)}</span></div><div class="small muted">${T(ST.t.pot_main_note,{so:cardsSoWeekly,sur:gbp0(overpayFromSo(cardsSoWeekly))})}</div></div>` +
+    pot(ST.t.pot_ef, A?A.pots.emergency_fund:null, B.pots[K.efCap], A ? T(ST.t.pot_ef_a,{ef:gbp0(L.emergency_fund)}) : T(ST.t.pot_ef_b,{ef:gbp0(L.emergency_fund)})) +
+    (BUF ? pot(ST.t.pot_buf, BAL&&BAL[K.balBuf]!=null?BAL[K.balBuf]:null, BUF.target, T(ST.t.pot_buf_note,{w:BUF.weekly,first:fmtD(iso(BUF.first)),last:fmtD(iso(BUF.last))})) : '') +
+    pot(ST.t.pot_goal, BAL?(B.pots[K.goalAccts]||K.goalAcctsDefault).reduce((t,k)=>t+(BAL[k]||0),0):null, B.pots[K.goalTarget], T(ST.t.pot_goal_note,{mon:MON[iso(B.pots[K.goalMonth]+'-01').getMonth()],yr:B.pots[K.goalMonth].slice(0,4),bal:BAL?' · balance '+fmtD(iso(BAL.as_of.slice(0,10))):''}));
 })();
 
 /* ---------- render: flags ---------- */
 (function(){
   const F=[];
-  const left = hsbcWeekly(B.income.net_weekly, cardsSoWeekly);
-  if(left<LIVING_WK) F.push(['warn', `<b>Tight week money:</b> ${gbp(left)}/wk free in HSBC vs ${gbp(LIVING_WK)}/wk budgeted for food, fuel and living. Thailand £95/wk is the first thing to pause.`]);
-  if(BUF && TODAY>=iso('2027-04-01') && TODAY<=iso('2027-05-31')) F.push(['bad', `<b>Trip reminder:</b> ${esc(BUF.reminder)}`]);
-  if(B.emergency_fund_note) F.push(['info', `Emergency Fund paused — revisit when BW Legal clears (~Jan 2027).`]);
-  const in30 = cashflow(START, 30).flatMap(r=>r.ev.filter(e=>e.card && e.acct==='HSBC').map(e=>`${e.n} ${r.dt.getDate()} ${MON[r.dt.getMonth()]}`));
-  if(in30.length) F.push(['warn', `<b>${in30.length} card DDs pull from HSBC</b> in the next 30 days: ${in30.map(esc).join(', ')}.`]);
+  const left = mainWeekly(B.income.net_weekly, cardsSoWeekly);
+  if(left<LIVING_WK) F.push(['warn', T(ST.t.f_tight,{left:gbp(left),living:gbp(LIVING_WK)})]);
+  if(BUF && TODAY>=iso(ST.windows.buf[0]) && TODAY<=iso(ST.windows.buf[1])) F.push(['bad', T(ST.t.f_buf,{rem:esc(BUF.reminder)})]);
+  if(B.emergency_fund_note) F.push(['info', ST.t.f_ef]);
+  const in30 = cashflow(START, 30).flatMap(r=>r.ev.filter(e=>e.card && e.acct==='A').map(e=>`${e.n} ${r.dt.getDate()} ${MON[r.dt.getMonth()]}`));
+  if(in30.length) F.push(['warn', T(ST.t.f_dd,{n:in30.length,list:in30.map(esc).join(', ')})]);
   for(const c of D.cards){
     if(c.status==='investigate' && !(A && A.last_paid[c.id])) F.push(['warn', `<b>${esc(cardName(c))} ${gbp(c.balance_live)}</b> — no APR, minimum or DD on record. If nothing’s paying it, it’s missing payments.`]);
-    if(c.balance_aug!=null && c.balance_live-c.balance_aug>=150) F.push(['warn', `<b>${esc(cardName(c))} up ${gbp0(c.balance_live-c.balance_aug)}</b> since the August statement — new spending or a fee?`]);
+    if(c.balance_aug!=null && c.balance_live-c.balance_aug>=150) F.push(['warn', T(ST.t.f_up,{name:esc(cardName(c)),amt:gbp0(c.balance_live-c.balance_aug)})]);
     for(const p of (c.promo||[])){ const dl=daysBetween(TODAY, iso(p.expires)); if(dl<=60) F.push(['bad', `<b>0% ends in ${dl}d</b> on ${esc(cardName(c))} (${gbp0(p.amount)}) — it jumps to the front of the queue.`]); }
   }
   const maxed = D.cards.filter(c=>c.limit && c.type!=='loan' && c.balance_live/c.limit>=0.9).sort((a,b)=>b.balance_live/b.limit-a.balance_live/a.limit);
   if(maxed.length) F.push(['warn', `<b>${maxed.length} cards at 90%+ of limit:</b> ${maxed.map(c=>`${esc(cardName(c))} ${Math.round(c.balance_live/c.limit*100)}% (${gbp0(c.limit-c.balance_live)} left)`).join(', ')}. Interest alone could push one over — over-limit fees.`]);
   const promos = D.cards.flatMap(c=>(c.promo||[]).map(p=>({c,p,dl:daysBetween(TODAY,iso(p.expires))}))).filter(x=>x.dl>60).sort((a,b)=>a.dl-b.dl);
   if(promos[0]) F.push(['info', `Next 0% expiry: ${esc(cardName(promos[0].c))} ${gbp0(promos[0].p.amount)} on ${fmtLong(iso(promos[0].p.expires))} (${promos[0].dl}d).`]);
-  if(TODAY<=iso('2026-10-20')) F.push(['info', `Allianz home emergency (AZP) renewed £54 on 13 Oct last year — cancelled; make sure it doesn’t fire.`]);
+  for(const f of ST.dated_flags) if(TODAY<=iso(f.until)) F.push([f.kind, f.t]);
   if(A){
     const mon = A.month, monName = MON[iso(mon+'-01').getMonth()];
     const ret = A.returned.filter(r=>r.date.startsWith(mon));
@@ -880,8 +894,8 @@ renderBoard();
       if(c && (c.returned_resolved||[]).includes(r.date)) F.push(['good', `${esc(cardName(c))} ${gbp(r.amount)} DD returned ${fmtD(iso(r.date))} — paid manually.`]);
       else F.push(['bad', `<b>Returned payment:</b> ${esc(c?cardName(c):r.account)} ${gbp(r.amount)} on ${fmtD(iso(r.date))}. Unpaid until you pay it by card.`]); }
     if(!ret.length) F.push(['good', `No returned payments in ${monName}.`]);
-    const sb=A.last_paid.sainsburys;
-    if(sb && D.cards.find(c=>c.id==='sainsburys')?.status!=='closed' && daysBetween(iso(sb.date),TODAY)>45) F.push(['bad', `<b>Sainsbury’s Bank 4329:</b> last payment found ${fmtLong(iso(sb.date))} (${gbp0(sb.amount)} from ${esc(sb.from)}). Possibly ${Math.floor(daysBetween(iso(sb.date),TODAY)/30)} months unpaid.`]);
+    const sb=A.last_paid[ST.ids.stale];
+    if(sb && D.cards.find(c=>c.id===ST.ids.stale)?.status!=='closed' && daysBetween(iso(sb.date),TODAY)>45) F.push(['bad', T(ST.t.f_stale,{date:fmtLong(iso(sb.date)),amt:gbp0(sb.amount),from:esc(sb.from),n:Math.floor(daysBetween(iso(sb.date),TODAY)/30)})]);
     for(const l of A.unknown_loans.filter(l=>!knownLoan(l))) F.push(['warn', `<b>Loan not on the board:</b> ${esc(l.name)} — ${gbp(l.amount)} paid ${fmtD(iso(l.last))}.`]);
     const cs=A.card_spend.filter(x=>x.amount>0);
     if(cs.length) F.push(['warn', `<b>${gbp(A.actual.new_card_spend)} new on cards in ${monName}</b> (rule is £0): ${cs.map(x=>`${esc(x.what.split(/\s{2,}/)[0].slice(0,22))} ${gbp0(x.amount)}`).join(', ')}.`]);
@@ -898,14 +912,11 @@ renderBoard();
 $('foot').innerHTML = `
   <div>Engine checks: plan re-run ${planOK?'matches':'<b class="neg">differs from</b>'} snowball.py (${S.checks.plan.label}, ${gbp0(S.checks.plan.interest)}) · live ${liveOK?'matches':'<b class="neg">differs from</b>'} live.py (${S.checks.live.label}).</div>
   <ul>
-    <li>Card balances: aggregator app, ${fmtLong(SEED_DAY)}. APRs and minimums: August statements.</li>
-    <li>Projection starts Oct 2026 (minimums only), overpay from Nov. 0% balances accrue nothing until expiry; freed minimums roll.</li>
-    <li>Plan of record uses Aug balances, 11 cards (Barclaycard, Nationwide, Sainsbury’s left out) and freed minimums don’t roll.</li>
-    <li>Sainsbury’s APR assumed ${SAINSBURYS_APR_ASSUMED*100}%. DD dates as scheduled; weekend shifts ignored.</li>
+    ${ST.t.foot.map(l=>`<li>${T(l,{asof:fmtLong(SEED_DAY),apr:ASSUMED_APR*100})}</li>`).join('\n    ')}
     <li>Built ${esc(S.built.replace('T',' '))}. ${A?`Transactions: ${esc(A.file)} (${A.new_rows??'?'} new rows). Emergency Fund summed from its transaction history.`:'No transaction export yet.'} Balances only change when debts.json is updated from screenshots.</li>
   </ul>`;
 
-window.DE = {S, D, B, SO, A, BAL, runLive, bufferLumps, overpayFromSo, cardsSoWeekly, cardName, monthLabel,
+window.DE = {S, ST, OWED, D, B, SO, A, BAL, runLive, bufferLumps, overpayFromSo, cardsSoWeekly, cardName, monthLabel,
   live, gbp, gbp0, MON, iso, fmtD, fmtLong, esc, TODAY};
 renderToday();
 };
@@ -1056,10 +1067,10 @@ const WI = (() => {
   let form = null;
 
   function defaults(){
-    const DE = window.DE, inc = DE.B.income, hrs = inc.hours || 50, nm = addMonths(new Date(), 1);
+    const DE = window.DE, inc = DE.B.income, hrs = inc.hours || DE.ST.num.hours_default, nm = addMonths(new Date(), 1);
     return { hours: hrs, netPerHour: Math.round(inc.net_weekly / hrs * 100) / 100, payFrom: nm, costs: 0, costsFrom: nm,
       disc: DE.B.lines_monthly.other_living, discFrom: nm, oneOff: 0, oneOffMonth: nm,
-      windfalls: DE.D.owed_to_kola.map((o, i) => ({ id: 'owed' + i, label: `${o.from} pays you back`, amount: o.amount_est, month: '2027-01', on: false })) };
+      windfalls: DE.OWED.map((o, i) => ({ id: 'owed' + i, label: `${o.from} pays you back`, amount: o.amount_est, month: DE.ST.num.owed_month, on: false })) };
   }
   function lumpsFor(inp){
     const DE = window.DE, base = DE.B.income.net_weekly, L = { ...DE.bufferLumps() };
@@ -1088,7 +1099,7 @@ const WI = (() => {
   function drawForm(){
     const DE = window.DE, f = form;
     $('wiForm').innerHTML =
-      field('Hours a week', 'wiHours', f.hours, `Now ${DE.B.income.hours || 50} h`) +
+      field('Hours a week', 'wiHours', f.hours, `Now ${DE.B.income.hours || DE.ST.num.hours_default} h`) +
       field('Take-home per hour, £', 'wiRate', f.netPerHour, `${DE.gbp(DE.B.income.net_weekly)}/wk now`, 'number', '0.01') +
       sel('…starting with', 'wiPayFrom', f.payFrom) + '<div></div>' +
       field('Extra monthly costs, £', 'wiCosts', f.costs, 'Fuel, EV charging, a new bill… (use minus for savings)') +
